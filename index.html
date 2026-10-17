@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="hi" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>News Editor Pro | Advanced API Edition</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700;800&family=Yatra+One&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Mukta', sans-serif; touch-action: none; background-color: #111827; color: white; }
+        /* मोबाइल पर स्क्रॉलिंग और ज़ूम रोकने के लिए फिक्स */
+        body { font-family: 'Mukta', sans-serif; touch-action: none; background-color: #111827; color: white; overscroll-behavior-y: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         canvas { max-width: 100%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
@@ -24,10 +24,12 @@
         input[type="range"] { accent-color: #3b82f6; }
     </style>
 </head>
-<body class="flex flex-col h-screen overflow-hidden">
 
-    <!-- Header -->
-    <header class="flex justify-between items-center p-3 bg-gray-900 border-b border-gray-700 z-10 shadow-lg">
+<!-- h-[100dvh] लगाने से यह मोबाइल स्क्रीन पर एकदम फिट बैठेगा -->
+<body class="flex flex-col h-[100dvh] w-full overflow-hidden fixed inset-0">
+
+    <!-- Header (ऊपर का हिस्सा - फिक्स हाइट) -->
+    <header class="flex-none flex justify-between items-center p-3 bg-gray-900 border-b border-gray-700 z-10 shadow-lg h-[60px]">
         <div class="flex gap-4">
             <button id="undoBtn" class="text-gray-400 hover:text-white"><i class="fas fa-undo"></i></button>
             <button id="redoBtn" class="text-gray-400 hover:text-white"><i class="fas fa-redo"></i></button>
@@ -41,19 +43,18 @@
         </div>
     </header>
 
-    <!-- Canvas Workspace -->
-    <main class="flex-1 flex justify-center items-center bg-black p-2 relative w-full h-full" id="workspace">
+    <!-- Canvas Workspace (बीच का हिस्सा - बची हुई पूरी जगह लेगा) -->
+    <main class="flex-1 flex justify-center items-center bg-black p-2 relative w-full h-full overflow-hidden" id="workspace">
         <canvas id="newsCanvas"></canvas>
     </main>
 
-    <!-- Floating Action Menu (Bottom Sheet for Selected Items) -->
-    <div id="bottomSheet" class="hidden absolute bottom-[80px] left-0 w-full bg-gray-800 rounded-t-2xl p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.5)] z-20 transition-transform">
+    <!-- Floating Action Menu (Bottom Sheet) -->
+    <div id="bottomSheet" class="hidden absolute bottom-[85px] left-0 w-full bg-gray-800 rounded-t-2xl p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.5)] z-20 transition-transform">
         <div class="flex justify-between items-center mb-3">
-            <h3 class="font-bold text-sm text-gray-300">लेयर सेटिंग्स (Layer Settings)</h3>
+            <h3 class="font-bold text-sm text-gray-300">लेयर सेटिंग्स</h3>
             <button id="closeSheet" class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
         </div>
         
-        <!-- Sliders -->
         <div class="mb-4 flex flex-col gap-2 text-xs">
             <div class="flex justify-between items-center">
                 <span>Opacity</span>
@@ -70,7 +71,6 @@
             </div>
         </div>
 
-        <!-- Action Grid -->
         <div class="grid grid-cols-5 gap-2 text-xs">
             <button class="tool-btn" onclick="bringFront()"><i class="fas fa-angle-double-up text-blue-400"></i>Front</button>
             <button class="tool-btn" onclick="sendBack()"><i class="fas fa-angle-double-down text-blue-400"></i>Back</button>
@@ -80,8 +80,8 @@
         </div>
     </div>
 
-    <!-- Main API & Tools Scroll Menu (PicsArt Style) -->
-    <footer class="bg-gray-900 border-t border-gray-800 p-2 z-10 w-full h-[80px]">
+    <!-- Main API & Tools Scroll Menu (नीचे का मेनू - फिक्स हाइट) -->
+    <footer class="flex-none bg-gray-900 border-t border-gray-800 p-2 z-10 w-full h-[85px]">
         <div class="flex overflow-x-auto hide-scrollbar gap-3 items-center px-1 h-full">
             
             <button class="tool-btn min-w-[70px]" onclick="loadBreakingNewsTemplate()">
