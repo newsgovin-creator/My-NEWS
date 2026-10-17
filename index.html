@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>News Editor Pro | Advanced API Edition</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fabric.js (Core Editor) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700;800&family=Yatra+One&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Mukta', sans-serif; touch-action: none; background-color: #111827; color: white; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        canvas { max-width: 100%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
+        .tool-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #374151; padding: 10px; border-radius: 10px; font-size: 12px; gap: 5px; transition: 0.2s; }
+        .tool-btn:hover { background: #4B5563; }
+        input[type="range"] { accent-color: #3b82f6; }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center p-3 bg-gray-900 border-b border-gray-700 z-10 shadow-lg">
+        <div class="flex gap-4">
+            <button id="undoBtn" class="text-gray-400 hover:text-white"><i class="fas fa-undo"></i></button>
+            <button id="redoBtn" class="text-gray-400 hover:text-white"><i class="fas fa-redo"></i></button>
+        </div>
+        <h1 class="font-extrabold text-xl text-red-500 tracking-wide">News<span class="text-white">Pro</span></h1>
+        <div class="flex gap-4 items-center">
+            <button id="shareBtn" class="text-green-400 text-lg"><i class="fas fa-share-nodes"></i></button>
+            <button id="exportBtn" class="bg-blue-600 px-4 py-1.5 rounded-full font-bold text-sm hover:bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                <i class="fas fa-download mr-1"></i> HD
+            </button>
+        </div>
+    </header>
+
+    <!-- Canvas Workspace -->
+    <main class="flex-1 flex justify-center items-center bg-black p-2 relative w-full h-full" id="workspace">
+        <canvas id="newsCanvas"></canvas>
+    </main>
+
+    <!-- Floating Action Menu (Bottom Sheet for Selected Items) -->
+    <div id="bottomSheet" class="hidden absolute bottom-[80px] left-0 w-full bg-gray-800 rounded-t-2xl p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.5)] z-20 transition-transform">
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="font-bold text-sm text-gray-300">लेयर सेटिंग्स (Layer Settings)</h3>
+            <button id="closeSheet" class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <!-- Sliders -->
+        <div class="mb-4 flex flex-col gap-2 text-xs">
+            <div class="flex justify-between items-center">
+                <span>Opacity</span>
+                <input type="range" id="opacitySlider" min="0" max="1" step="0.1" value="1" class="w-2/3">
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Shadow</span>
+                <input type="range" id="shadowSlider" min="0" max="20" value="0" class="w-2/3">
+            </div>
+            <div class="flex justify-between items-center">
+                <span>Stroke</span>
+                <input type="color" id="strokeColor" value="#000000" class="w-6 h-6 rounded">
+                <input type="range" id="strokeSlider" min="0" max="10" value="0" class="w-1/2">
+            </div>
+        </div>
+
+        <!-- Action Grid -->
+        <div class="grid grid-cols-5 gap-2 text-xs">
+            <button class="tool-btn" onclick="bringFront()"><i class="fas fa-angle-double-up text-blue-400"></i>Front</button>
+            <button class="tool-btn" onclick="sendBack()"><i class="fas fa-angle-double-down text-blue-400"></i>Back</button>
+            <button class="tool-btn" onclick="cloneObj()"><i class="fas fa-copy text-green-400"></i>Clone</button>
+            <button class="tool-btn" onclick="toggleLock()"><i class="fas fa-lock text-yellow-400"></i>Lock</button>
+            <button class="tool-btn" onclick="deleteObj()"><i class="fas fa-trash text-red-400"></i>Delete</button>
+        </div>
+    </div>
+
+    <!-- Main API & Tools Scroll Menu (PicsArt Style) -->
+    <footer class="bg-gray-900 border-t border-gray-800 p-2 z-10 w-full h-[80px]">
+        <div class="flex overflow-x-auto hide-scrollbar gap-3 items-center px-1 h-full">
+            
+            <button class="tool-btn min-w-[70px]" onclick="loadBreakingNewsTemplate()">
+                <i class="fas fa-newspaper text-purple-400 text-lg"></i><span>टेम्पलेट</span>
+            </button>
+            
+            <button class="tool-btn min-w-[70px]" onclick="document.getElementById('imageUpload').click()">
+                <i class="fas fa-image text-blue-400 text-lg"></i><span>फोटो</span>
+                <input type="file" id="imageUpload" accept="image/*" class="hidden">
+            </button>
+            
+            <button class="tool-btn min-w-[70px]" onclick="addTextLayer()">
+                <i class="fas fa-font text-green-400 text-lg"></i><span>टेक्स्ट</span>
+            </button>
+            
+            <button class="tool-btn min-w-[70px]" onclick="startVoiceTyping()">
+                <i class="fas fa-microphone text-red-400 text-lg"></i><span>बोलें</span>
+            </button>
+
+            <button class="tool-btn min-w-[70px]" onclick="translateText()">
+                <i class="fas fa-language text-yellow-400 text-lg"></i><span>अनुवाद</span>
+            </button>
+
+            <button class="tool-btn min-w-[70px]" onclick="removeBackground()">
+                <i class="fas fa-eraser text-pink-400 text-lg"></i><span>कट-आउट</span>
+            </button>
+
+            <button class="tool-btn min-w-[70px]" onclick="addLiveWeather()">
+                <i class="fas fa-cloud-sun text-cyan-400 text-lg"></i><span>मौसम</span>
+            </button>
+
+            <button class="tool-btn min-w-[70px]" onclick="addLiveLocation()">
+                <i class="fas fa-map-marker-alt text-red-500 text-lg"></i><span>लोकेशन</span>
+            </button>
+
+            <button class="tool-btn min-w-[70px]" onclick="addLiveTime()">
+                <i class="fas fa-clock text-orange-400 text-lg"></i><span>टाइम</span>
+            </button>
+
+            <button class="tool-btn min-w-[70px]" onclick="addQRCode()">
+                <i class="fas fa-qrcode text-white text-lg"></i><span>QR कोड</span>
+            </button>
+            
+            <button class="tool-btn min-w-[70px]" onclick="fetchBreakingNewsData()">
+                <i class="fas fa-bolt text-yellow-500 text-lg"></i><span>ताज़ा खबर</span>
+            </button>
+
+            <button class="tool-btn min-w-[70px]" onclick="addShapes()">
+                <i class="fas fa-shapes text-indigo-400 text-lg"></i><span>शेप्स</span>
+            </button>
+
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
