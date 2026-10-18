@@ -3,139 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>News Editor Pro | Advanced API Edition</title>
-    <!-- Tailwind CSS -->
+    <title>PNS News Editor Pro | 100% Working</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fabric.js (Core Editor) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700;800&family=Yatra+One&display=swap" rel="stylesheet">
     
     <style>
-        /* मोबाइल पर स्क्रॉलिंग और ज़ूम रोकने के लिए फिक्स */
         body { font-family: 'Mukta', sans-serif; touch-action: none; background-color: #111827; color: white; overscroll-behavior-y: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         canvas { max-width: 100%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
-        .tool-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #374151; padding: 10px; border-radius: 10px; font-size: 12px; gap: 5px; transition: 0.2s; }
-        .tool-btn:hover { background: #4B5563; }
-        input[type="range"] { accent-color: #3b82f6; }
+        .tool-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #374151; padding: 10px; border-radius: 10px; font-size: 12px; gap: 5px; min-width: 75px; transition: 0.2s; border: 1px solid #4B5563; }
+        .tool-btn:active { background: #4B5563; transform: scale(0.95); }
+        input[type="range"] { accent-color: #ef4444; }
     </style>
 </head>
-
-<!-- h-[100dvh] लगाने से यह मोबाइल स्क्रीन पर एकदम फिट बैठेगा -->
 <body class="flex flex-col h-[100dvh] w-full overflow-hidden fixed inset-0">
 
-    <!-- Header (ऊपर का हिस्सा - फिक्स हाइट) -->
-    <header class="flex-none flex justify-between items-center p-3 bg-gray-900 border-b border-gray-700 z-10 shadow-lg h-[60px]">
+    <!-- Top Header -->
+    <header class="flex-none flex justify-between items-center p-3 bg-gray-900 border-b border-gray-700 z-10 h-[60px]">
         <div class="flex gap-4">
-            <button id="undoBtn" class="text-gray-400 hover:text-white"><i class="fas fa-undo"></i></button>
-            <button id="redoBtn" class="text-gray-400 hover:text-white"><i class="fas fa-redo"></i></button>
+            <button onclick="clearCanvas()" class="text-red-400 hover:text-red-300 text-sm font-bold"><i class="fas fa-trash mr-1"></i> क्लियर</button>
         </div>
-        <h1 class="font-extrabold text-xl text-red-500 tracking-wide">News<span class="text-white">Pro</span></h1>
-        <div class="flex gap-4 items-center">
-            <button id="shareBtn" class="text-green-400 text-lg"><i class="fas fa-share-nodes"></i></button>
-            <button id="exportBtn" class="bg-blue-600 px-4 py-1.5 rounded-full font-bold text-sm hover:bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+        <h1 class="font-extrabold text-xl text-red-500 tracking-wide">PNS<span class="text-white">News</span></h1>
+        <div class="flex gap-3 items-center">
+            <button id="exportBtn" class="bg-red-600 px-4 py-1.5 rounded-md font-bold text-sm hover:bg-red-500">
                 <i class="fas fa-download mr-1"></i> HD
             </button>
         </div>
     </header>
 
-    <!-- Canvas Workspace (बीच का हिस्सा - बची हुई पूरी जगह लेगा) -->
+    <!-- Canvas Workspace -->
     <main class="flex-1 flex justify-center items-center bg-black p-2 relative w-full h-full overflow-hidden" id="workspace">
         <canvas id="newsCanvas"></canvas>
     </main>
 
-    <!-- Floating Action Menu (Bottom Sheet) -->
-    <div id="bottomSheet" class="hidden absolute bottom-[85px] left-0 w-full bg-gray-800 rounded-t-2xl p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.5)] z-20 transition-transform">
+    <!-- Bottom Settings Sheet -->
+    <div id="bottomSheet" class="hidden absolute bottom-[85px] left-0 w-full bg-gray-800 rounded-t-2xl p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.8)] z-20 transition-transform">
         <div class="flex justify-between items-center mb-3">
             <h3 class="font-bold text-sm text-gray-300">लेयर सेटिंग्स</h3>
-            <button id="closeSheet" class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
+            <button onclick="hideBottomSheet()" class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
         </div>
         
-        <div class="mb-4 flex flex-col gap-2 text-xs">
+        <div class="mb-4 flex flex-col gap-3 text-sm">
             <div class="flex justify-between items-center">
                 <span>Opacity</span>
                 <input type="range" id="opacitySlider" min="0" max="1" step="0.1" value="1" class="w-2/3">
             </div>
-            <div class="flex justify-between items-center">
-                <span>Shadow</span>
-                <input type="range" id="shadowSlider" min="0" max="20" value="0" class="w-2/3">
-            </div>
-            <div class="flex justify-between items-center">
-                <span>Stroke</span>
-                <input type="color" id="strokeColor" value="#000000" class="w-6 h-6 rounded">
-                <input type="range" id="strokeSlider" min="0" max="10" value="0" class="w-1/2">
-            </div>
         </div>
 
-        <div class="grid grid-cols-5 gap-2 text-xs">
-            <button class="tool-btn" onclick="bringFront()"><i class="fas fa-angle-double-up text-blue-400"></i>Front</button>
-            <button class="tool-btn" onclick="sendBack()"><i class="fas fa-angle-double-down text-blue-400"></i>Back</button>
-            <button class="tool-btn" onclick="cloneObj()"><i class="fas fa-copy text-green-400"></i>Clone</button>
-            <button class="tool-btn" onclick="toggleLock()"><i class="fas fa-lock text-yellow-400"></i>Lock</button>
-            <button class="tool-btn" onclick="deleteObj()"><i class="fas fa-trash text-red-400"></i>Delete</button>
+        <div class="grid grid-cols-4 gap-2 text-xs">
+            <button class="tool-btn bg-gray-700" onclick="bringFront()"><i class="fas fa-arrow-up text-blue-400"></i>Front</button>
+            <button class="tool-btn bg-gray-700" onclick="sendBack()"><i class="fas fa-arrow-down text-blue-400"></i>Back</button>
+            <button class="tool-btn bg-gray-700" onclick="cloneObj()"><i class="fas fa-copy text-green-400"></i>Clone</button>
+            <button class="tool-btn bg-gray-700" onclick="deleteObj()"><i class="fas fa-trash text-red-400"></i>Delete</button>
         </div>
     </div>
 
-    <!-- Main API & Tools Scroll Menu (नीचे का मेनू - फिक्स हाइट) -->
+    <!-- Bottom Scroll Menu -->
     <footer class="flex-none bg-gray-900 border-t border-gray-800 p-2 z-10 w-full h-[85px]">
-        <div class="flex overflow-x-auto hide-scrollbar gap-3 items-center px-1 h-full">
-            
-            <button class="tool-btn min-w-[70px]" onclick="loadBreakingNewsTemplate()">
-                <i class="fas fa-newspaper text-purple-400 text-lg"></i><span>टेम्पलेट</span>
+        <div class="flex overflow-x-auto hide-scrollbar gap-2 items-center px-1 h-full">
+            <button class="tool-btn" onclick="loadStandardTemplate()">
+                <i class="fas fa-tv text-red-500 text-lg"></i><span>फुल स्क्रीन</span>
             </button>
-            
-            <button class="tool-btn min-w-[70px]" onclick="document.getElementById('imageUpload').click()">
-                <i class="fas fa-image text-blue-400 text-lg"></i><span>फोटो</span>
+            <button class="tool-btn" onclick="loadSplitTemplate()">
+                <i class="fas fa-columns text-blue-400 text-lg"></i><span>स्प्लिट स्क्रीन</span>
+            </button>
+            <button class="tool-btn" onclick="document.getElementById('imageUpload').click()">
+                <i class="fas fa-image text-green-400 text-lg"></i><span>फोटो जोड़ें</span>
                 <input type="file" id="imageUpload" accept="image/*" class="hidden">
             </button>
-            
-            <button class="tool-btn min-w-[70px]" onclick="addTextLayer()">
-                <i class="fas fa-font text-green-400 text-lg"></i><span>टेक्स्ट</span>
+            <button class="tool-btn" onclick="addTextLayer()">
+                <i class="fas fa-font text-white text-lg"></i><span>टेक्स्ट</span>
             </button>
-            
-            <button class="tool-btn min-w-[70px]" onclick="startVoiceTyping()">
-                <i class="fas fa-microphone text-red-400 text-lg"></i><span>बोलें</span>
+            <button class="tool-btn" onclick="startVoiceTyping()">
+                <i class="fas fa-microphone text-orange-400 text-lg"></i><span>बोलें</span>
             </button>
-
-            <button class="tool-btn min-w-[70px]" onclick="translateText()">
-                <i class="fas fa-language text-yellow-400 text-lg"></i><span>अनुवाद</span>
+            <button class="tool-btn" onclick="addLiveLocation()">
+                <i class="fas fa-map-marker-alt text-pink-500 text-lg"></i><span>लोकेशन</span>
             </button>
-
-            <button class="tool-btn min-w-[70px]" onclick="removeBackground()">
-                <i class="fas fa-eraser text-pink-400 text-lg"></i><span>कट-आउट</span>
-            </button>
-
-            <button class="tool-btn min-w-[70px]" onclick="addLiveWeather()">
-                <i class="fas fa-cloud-sun text-cyan-400 text-lg"></i><span>मौसम</span>
-            </button>
-
-            <button class="tool-btn min-w-[70px]" onclick="addLiveLocation()">
-                <i class="fas fa-map-marker-alt text-red-500 text-lg"></i><span>लोकेशन</span>
-            </button>
-
-            <button class="tool-btn min-w-[70px]" onclick="addLiveTime()">
-                <i class="fas fa-clock text-orange-400 text-lg"></i><span>टाइम</span>
-            </button>
-
-            <button class="tool-btn min-w-[70px]" onclick="addQRCode()">
-                <i class="fas fa-qrcode text-white text-lg"></i><span>QR कोड</span>
-            </button>
-            
-            <button class="tool-btn min-w-[70px]" onclick="fetchBreakingNewsData()">
-                <i class="fas fa-bolt text-yellow-500 text-lg"></i><span>ताज़ा खबर</span>
-            </button>
-
-            <button class="tool-btn min-w-[70px]" onclick="addShapes()">
-                <i class="fas fa-shapes text-indigo-400 text-lg"></i><span>शेप्स</span>
-            </button>
-
         </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script>
+        // ==========================================
+        // 1. CANVAS SETUP (1:1 Ratio for News)
+        // ==========================================
+        const canvas = new fabric.Canvas('newsCanvas', { preserveObjectStacking: true, backgroundColor: '#111827' });
+
+        function resizeCanvas() {
+            const workspace = document.getElementById('workspace');
+            const size = Math.min(workspace.clientWidth - 10, workspace.clientHeight - 10, 1080);
+            canvas.setWidth(size);
+            canvas.setHeight(size);
+            canvas.renderAll();
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // ==========================================
+        // 2. LAYER CONTROLS (Bottom Sheet)
+        // ==========================================
+        canvas.on('selection:created', showBottomSheet);
+        canvas.on('selection:updated', showBottomSheet);
+        canvas.on('selection:cleared', hideBottomSheet);
+
+        function showBottomSheet() {
+            const obj = canvas.getActiveObject();
+            if(obj) {
+                document.getElementById('bottomSheet').classList.remove('hidden');
+                document.getElementById('opacitySlider').value = obj.opacity || 1;
+            }
+        }
+        function hideBottomSheet() { document.getElementById('bottomSheet').classList.add('hidden'); }
+        
+        document.getElementById('opacitySlider').addEventListener('input', (e) => {
+            const obj = canvas.getActiveObject();
+            if(obj) { obj.set('opacity', parseFloat(e.target.value)); canvas.renderAll(); }
+        });
+
+        function bringFront() { const obj = canvas.getActiveObject(); if(obj) canvas.bringToFront(obj); }
+        function sendBack() { const obj = canvas.getActiveObject(); if(obj) canvas.sendToBack(obj); }
+        function deleteObj() { const obj = canvas.getActiveObject(); if(obj) { canvas.remove(obj); hideBottomSheet(); } }
+        function cloneObj() {
+            const obj = canvas.getActiveObject();
+            if(obj) {
+                obj.clone((cloned) => {
+                    cloned.set({ left: obj.left + 20, top: obj.top + 20, evented: true });
+                    canvas.add(cloned);
+                    canvas.setActiveObject(cloned);
+                });
+            }
+        }
+        function clearCanvas() {
+            if(confirm("क्या आप पूरा कैनवास डिलीट करना चाहते हैं?")) {
+                canvas.clear();
+                canvas.setBackgroundColor('#111827', canvas.renderAll.bind(canvas));
+            }
+        }
+
+        // ==========================================
+        // 3. ADD ELEMENTS (Images, Text, Voice)
+        // ==========================================
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (f) => {
+                fabric.Image.fromURL(f.target.result, (img) => {
+                    img.scaleToWidth(canvas.width);
+                    img.set({ left: canvas.width/2, top: canvas.height/2, originX: 'center', originY: 'center' });
+                    canvas.add(img);
+                    canvas.sendToBack(img); // Background ke taur par
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function addTextLayer(textStr = "यहाँ अपनी खबर लिखें") {
+            const text = new fabric.Textbox(textStr, {
+                left: canvas.width / 2, top: canvas.height / 2, originX: 'center', originY: 'center',
+                fontFamily: 'Mukta', fontSize: canvas.width * 0.06, fill: '#ffffff', fontWeight: 'bold', textAlign: 'center', width: canvas.width * 0.9
+            });
+            canvas.add(text);
+            canvas.setActiveObject(text);
+        }
+
+        function startVoiceTyping() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!SpeechRecognition) return alert("आपका ब्राउज़र वॉइस टाइपिंग सपोर्ट नहीं करता। Chrome इस्तेमाल करें।");
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'hi-IN';
+            recognition.start();
+            alert("बोलना शुरू करें...");
+            recognition.onresult = (event) => addTextLayer(event.results[0][0].transcript);
+        }
+
+        async function addLiveLocation() {
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                const text = new fabric.Textbox(`📍 ${data.city || 'कानपुर देहात'}, यूपी`, {
+                    left: 20, top: canvas.height * 0.65, fontSize: canvas.width * 0.04, fill: '#ffffff', backgroundColor: '#000000', fontWeight: 'bold', fontFamily: 'Mukta'
+                });
+                canvas.add(text);
+            } catch(e) { addTextLayer("📍 कानपुर देहात, यूपी"); }
+        }
+
+        // ==========================================
+        // 4. PNS BHARAT NEWS TEMPLATES 
+        // ==========================================
+        function addBrandingElements() {
+            // Top Left Logo
+            const logoBg = new fabric.Rect({ left: 10, top: 10, width: 120, height: 50, fill: '#ffffff', rx: 5, ry: 5, selectable: false });
+            const logoPNS = new fabric.Text("PNS", { left: 20, top: 15, fontSize: 24, fill: '#cc0000', fontWeight: 'bold', fontFamily: 'Arial', selectable: false });
+            const logoBharat = new fabric.Text("भारत न्यूज़", { left: 20, top: 40, fontSize: 14, fill: '#000000', fontWeight: 'bold', fontFamily: 'Mukta', selectable: false });
+            
+            // Top Right Date & Live
+            const dateBg = new fabric.Rect({ left: canvas.width - 240, top: 10, width: 160, height: 30, fill: '#facc15', selectable: false });
+            const dateText = new fabric.Text("18 अक्टूबर 2026", { left: canvas.width - 230, top: 15, fontSize: 16, fill: '#000000', fontWeight: 'bold', fontFamily: 'Mukta', selectable: false });
+            const liveBg = new fabric.Rect({ left: canvas.width - 80, top: 10, width: 70, height: 30, fill: '#cc0000', selectable: false });
+            const liveText = new fabric.Text("LIVE", { left: canvas.width - 65, top: 15, fontSize: 16, fill: '#ffffff', fontWeight: 'bold', fontFamily: 'Arial', selectable: false });
+
+            // Bottom Red & Black Banners
+            const redBanner = new fabric.Rect({ left: 0, top: canvas.height * 0.72, width: canvas.width, height: canvas.height * 0.18, fill: '#b91c1c', selectable: false });
+            const blackBanner = new fabric.Rect({ left: 0, top: canvas.height * 0.90, width: canvas.width, height: canvas.height * 0.05, fill: '#000000', selectable: false });
+            const footerBanner = new fabric.Rect({ left: 0, top: canvas.height * 0.95, width: canvas.width, height: canvas.height * 0.05, fill: '#ffffff', selectable: false });
+
+            // Bottom Footer Text (@PawanKumarNews)
+            const footerSocial = new fabric.Text("@PNSBharatNews   @PawanKumarNews", { left: 10, top: canvas.height * 0.96, fontSize: canvas.width * 0.03, fill: '#000000', fontFamily: 'Arial', selectable: false });
+            const footerVerified = new fabric.Text("Verified by पवन कुमार ✅", { left: canvas.width - 200, top: canvas.height * 0.96, fontSize: canvas.width * 0.03, fill: '#000000', fontFamily: 'Mukta', selectable: false });
+
+            // Default Text Boxes for User to Edit
+            const mainHeadline = new fabric.Textbox("कानपुर देहात में बड़ी प्रशासनिक कार्रवाई; अधिकारियों की टीम ने किया औचक निरीक्षण, हड़कंप!", {
+                left: canvas.width/2, top: canvas.height * 0.81, originX: 'center', originY: 'center', width: canvas.width * 0.95,
+                fontSize: canvas.width * 0.065, fill: '#ffffff', fontWeight: 'bold', fontFamily: 'Mukta', textAlign: 'center',
+                shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.8)', blur: 2, offsetX: 1, offsetY: 1 })
+            });
+
+            const subHeadline = new fabric.Textbox("जनता की भारी शिकायतों के बाद अचानक पहुंचे आला अधिकारी, कई अनियमितताएं मिलने पर जांच के सख्त आदेश", {
+                left: canvas.width/2, top: canvas.height * 0.925, originX: 'center', originY: 'center', width: canvas.width * 0.95,
+                fontSize: canvas.width * 0.035, fill: '#ffffff', fontWeight: 'bold', fontFamily: 'Mukta', textAlign: 'center'
+            });
+
+            const locPin = new fabric.Textbox("📍 कानपुर देहात, यूपी", {
+                left: 10, top: canvas.height * 0.65, fontSize: canvas.width * 0.05, fill: '#000000', backgroundColor: '#ffffff', fontWeight: 'bold', fontFamily: 'Mukta'
+            });
+
+            canvas.add(logoBg, logoPNS, logoBharat, dateBg, dateText, liveBg, liveText, redBanner, blackBanner, footerBanner, footerSocial, footerVerified, mainHeadline, subHeadline, locPin);
+        }
+
+        function loadStandardTemplate() {
+            canvas.clear();
+            canvas.setBackgroundColor('#1f2937', canvas.renderAll.bind(canvas));
+            // Placeholder text for background
+            const bgHint = new fabric.Text("फोटो अपलोड करने के लिए\n'फोटो जोड़ें' पर क्लिक करें", { left: canvas.width/2, top: canvas.height/2.5, originX: 'center', originY: 'center', fontSize: 24, fill: '#4B5563', textAlign: 'center', selectable: false });
+            canvas.add(bgHint);
+            addBrandingElements();
+        }
+
+        function loadSplitTemplate() {
+            canvas.clear();
+            canvas.setBackgroundColor('#1f2937', canvas.renderAll.bind(canvas));
+            
+            // Split Background Hints
+            const leftHint = new fabric.Text("पंडाल/घटना स्थल\n(फोटो जोड़ें)", { left: canvas.width/4, top: canvas.height/2.5, originX: 'center', originY: 'center', fontSize: 20, fill: '#4B5563', textAlign: 'center', selectable: false });
+            const rightHint = new fabric.Text("हादसा/पुलिस\n(फोटो जोड़ें)", { left: canvas.width * 0.75, top: canvas.height/2.5, originX: 'center', originY: 'center', fontSize: 20, fill: '#4B5563', textAlign: 'center', selectable: false });
+            
+            // Center Divider Line
+            const divider = new fabric.Line([canvas.width/2, 0, canvas.width/2, canvas.height * 0.72], { stroke: '#ffffff', strokeWidth: 4, selectable: false });
+            
+            canvas.add(leftHint, rightHint, divider);
+            addBrandingElements();
+            
+            // Update Text for Split layout alert
+            const objs = canvas.getObjects();
+            objs.forEach(obj => {
+                if(obj.text && obj.text.includes("कानपुर देहात")) {
+                    obj.set('text', "कोलकाता के दुर्गा पंडाल में भगदड़, 19 की मौत; 25 घायल!");
+                    obj.set('fill', '#facc15'); // Yellow alert color
+                }
+                if(obj.text && obj.text.includes("जनता की भारी शिकायतों")) obj.set('text', "बारिश से बचने घुसी भीड़, एक-दूसरे पर गिरे लोग; 91 सालबागान पूजा पंडाल");
+                if(obj.text && obj.text.includes("📍")) obj.set('text', "📍 कोलकाता, पश्चिम बंगाल");
+            });
+            canvas.renderAll();
+        }
+
+        // ==========================================
+        // 5. HD EXPORT
+        // ==========================================
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            canvas.discardActiveObject(); canvas.renderAll();
+            const dataURL = canvas.toDataURL({ format: 'jpeg', quality: 1, multiplier: 2 });
+            const link = document.createElement('a');
+            link.download = `PNS_News_${Date.now()}.jpg`;
+            link.href = dataURL;
+            link.click();
+        });
+
+        // Initialize with standard template
+        window.onload = loadStandardTemplate;
+    </script>
 </body>
 </html>
