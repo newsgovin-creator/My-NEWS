@@ -3,39 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>PNS News Editor Pro | Fully Unlocked</title>
+    <title>News Editor Pro | Ultimate Control</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fabric.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;700;800&family=Yatra+One&display=swap" rel="stylesheet">
+    <!-- Premium Hindi Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Khand:wght@500;700&family=Mukta:wght@400;700;800&family=Rajdhani:wght@500;700&family=Yatra+One&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Mukta', sans-serif; touch-action: none; background-color: #111827; color: white; overscroll-behavior-y: none; }
+        body { font-family: 'Mukta', sans-serif; background-color: #111827; color: white; touch-action: none; overscroll-behavior-y: none; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        canvas { max-width: 100%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
-        .tool-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #374151; padding: 10px; border-radius: 10px; font-size: 12px; gap: 5px; min-width: 75px; transition: 0.2s; border: 1px solid #4B5563; }
-        .tool-btn:active { background: #4B5563; transform: scale(0.95); }
-        input[type="range"] { accent-color: #ef4444; }
-        select { background-color: #374151; color: white; border: 1px solid #4B5563; padding: 4px 8px; border-radius: 6px; font-size: 12px; outline: none; }
+        canvas { max-width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
+        .tool-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #374151; padding: 8px; border-radius: 8px; font-size: 11px; gap: 4px; min-width: 70px; border: 1px solid #4B5563; }
+        .tool-btn:active { transform: scale(0.95); }
+        input[type="range"] { accent-color: #ef4444; width: 100%; }
+        input[type="color"] { border: none; border-radius: 4px; width: 30px; height: 30px; cursor: pointer; }
+        select { background: #374151; color: white; padding: 4px; border-radius: 4px; outline: none; border: 1px solid #4B5563; }
     </style>
 </head>
 <body class="flex flex-col h-[100dvh] w-full overflow-hidden fixed inset-0">
 
-    <!-- Top Header with Canvas Size Selector -->
+    <!-- Header (Size, Clear, Export) -->
     <header class="flex-none flex justify-between items-center p-3 bg-gray-900 border-b border-gray-700 z-10 h-[60px]">
-        <div class="flex gap-2 items-center">
-            <select id="ratioSelect" onchange="updateCanvasRatio()">
-                <option value="1:1">Square (1:1)</option>
-                <option value="4:5">Portrait (4:5)</option>
-                <option value="16:9">TV/YT (16:9)</option>
-            </select>
-        </div>
-        <h1 class="font-extrabold text-lg text-red-500 tracking-wide">PNS<span class="text-white">News</span></h1>
+        <select id="canvasRatio" onchange="resizeCanvas()" class="text-sm">
+            <option value="9:16">Reels (9:16)</option>
+            <option value="1:1">Square (1:1)</option>
+            <option value="4:5">Portrait (4:5)</option>
+            <option value="16:9">YouTube (16:9)</option>
+        </select>
+        <h1 class="font-extrabold text-lg text-red-500 tracking-wider">PRO<span class="text-white">Editor</span></h1>
         <div class="flex gap-3 items-center">
-            <button onclick="clearCanvas()" class="text-red-400 hover:text-red-300 text-lg"><i class="fas fa-trash"></i></button>
-            <button id="exportBtn" class="bg-red-600 px-4 py-1.5 rounded-md font-bold text-sm hover:bg-red-500">
-                <i class="fas fa-download mr-1"></i> HD
+            <button onclick="clearCanvas()" class="text-gray-400 hover:text-red-400"><i class="fas fa-trash"></i></button>
+            <button onclick="exportHD()" class="bg-blue-600 px-4 py-1 rounded-md font-bold text-sm hover:bg-blue-500">
+                <i class="fas fa-download"></i> HD
             </button>
         </div>
     </header>
@@ -45,165 +49,187 @@
         <canvas id="newsCanvas"></canvas>
     </main>
 
-    <!-- Bottom Settings Sheet (For Selected Object) -->
-    <div id="bottomSheet" class="hidden absolute bottom-[85px] left-0 w-full bg-gray-800 rounded-t-2xl p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.8)] z-20 transition-transform">
-        <div class="flex justify-between items-center mb-3">
-            <h3 class="font-bold text-sm text-gray-300">लेयर सेटिंग्स</h3>
+    <!-- Layer Settings (Bottom Sheet) -->
+    <div id="bottomSheet" class="hidden absolute bottom-[85px] left-0 w-full bg-gray-800 rounded-t-2xl p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.8)] z-20 transition-transform overflow-y-auto max-h-[60vh] hide-scrollbar">
+        <div class="flex justify-between items-center mb-3 border-b border-gray-700 pb-2">
+            <h3 class="font-bold text-sm text-yellow-400"><i class="fas fa-sliders-h mr-2"></i>लेयर कंट्रोल (Full Control)</h3>
             <button onclick="hideBottomSheet()" class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
         </div>
         
-        <div class="mb-4 flex flex-col gap-3 text-sm">
-            <div class="flex justify-between items-center">
-                <span>Opacity</span>
-                <input type="range" id="opacitySlider" min="0" max="1" step="0.1" value="1" class="w-2/3">
+        <!-- Text Colors (Word-by-word support) -->
+        <div class="flex items-center justify-between mb-3 bg-gray-700 p-2 rounded-lg">
+            <span class="text-xs">टेक्स्ट कलर (Text Color)</span>
+            <div class="flex gap-2 items-center">
+                <input type="color" id="textColor" value="#ffffff" onchange="applyTextColor()">
+                <button onclick="applyTextColor()" class="bg-green-600 text-xs px-2 py-1 rounded">Apply</button>
             </div>
+            <p class="text-[10px] text-gray-400 w-full absolute mt-10">Tip: डबल क्लिक करके किसी एक शब्द को सेलेक्ट करें और कलर बदलें!</p>
         </div>
 
-        <div class="grid grid-cols-5 gap-2 text-xs">
-            <button class="tool-btn bg-gray-700" onclick="bringFront()"><i class="fas fa-arrow-up text-blue-400"></i>Front</button>
-            <button class="tool-btn bg-gray-700" onclick="sendBack()"><i class="fas fa-arrow-down text-blue-400"></i>Back</button>
-            <button class="tool-btn bg-gray-700" onclick="cloneObj()"><i class="fas fa-copy text-green-400"></i>Clone</button>
-            <button class="tool-btn bg-gray-700" onclick="toggleLock()"><i class="fas fa-lock text-yellow-400"></i>Lock</button>
-            <button class="tool-btn bg-gray-700" onclick="deleteObj()"><i class="fas fa-trash text-red-400"></i>Delete</button>
+        <!-- Fonts -->
+        <div class="flex justify-between items-center mb-3 bg-gray-700 p-2 rounded-lg mt-4">
+            <span class="text-xs">फॉन्ट बदलें</span>
+            <select id="fontFamily" onchange="changeFont()" class="text-xs">
+                <option value="Mukta">Mukta (Standard)</option>
+                <option value="Khand">Khand (Bold/News)</option>
+                <option value="Yatra One">Yatra One (Stylized)</option>
+                <option value="Rajdhani">Rajdhani (Tech/Modern)</option>
+                <option value="Anton">Anton (Heavy)</option>
+            </select>
+        </div>
+
+        <!-- Border / Outline (Stroke) -->
+        <div class="mb-3 bg-gray-700 p-2 rounded-lg">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs">बॉर्डर / आउटलाइन (Stroke)</span>
+                <input type="color" id="strokeColor" value="#ff0000" onchange="updateStroke()">
+            </div>
+            <input type="range" id="strokeWidth" min="0" max="20" value="0" oninput="updateStroke()">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-4 gap-2 text-xs mt-3">
+            <button class="tool-btn bg-gray-900" onclick="bringFront()"><i class="fas fa-layer-group text-blue-400"></i>Front</button>
+            <button class="tool-btn bg-gray-900" onclick="sendBack()"><i class="fas fa-layer-group text-blue-400 opacity-50"></i>Back</button>
+            <button class="tool-btn bg-gray-900" onclick="toggleLock()"><i class="fas fa-lock text-yellow-400"></i>Lock/Unlock</button>
+            <button class="tool-btn bg-gray-900" onclick="cloneObj()"><i class="fas fa-copy text-green-400"></i>Clone</button>
         </div>
     </div>
 
-    <!-- Bottom Scroll Menu -->
+    <!-- Main Toolbar -->
     <footer class="flex-none bg-gray-900 border-t border-gray-800 p-2 z-10 w-full h-[85px]">
         <div class="flex overflow-x-auto hide-scrollbar gap-2 items-center px-1 h-full">
-            <button class="tool-btn" onclick="loadStandardTemplate()">
-                <i class="fas fa-tv text-red-500 text-lg"></i><span>फुल स्क्रीन</span>
-            </button>
-            <button class="tool-btn" onclick="loadSplitTemplate()">
-                <i class="fas fa-columns text-blue-400 text-lg"></i><span>स्प्लिट स्क्रीन</span>
-            </button>
+            
             <button class="tool-btn" onclick="document.getElementById('imageUpload').click()">
-                <i class="fas fa-image text-green-400 text-lg"></i><span>फोटो जोड़ें</span>
+                <i class="fas fa-image text-blue-400 text-lg"></i><span>फोटो लाएं</span>
                 <input type="file" id="imageUpload" accept="image/*" class="hidden">
             </button>
-            <!-- Logo Upload System -->
-            <button class="tool-btn" onclick="document.getElementById('logoUpload').click()">
-                <i class="fas fa-shield-cat text-yellow-400 text-lg"></i><span>लोगो सेट करें</span>
-                <input type="file" id="logoUpload" accept="image/*" class="hidden">
+
+            <!-- Circle Crop Button -->
+            <button class="tool-btn" onclick="makeCircleCrop()">
+                <i class="fas fa-circle text-pink-400 text-lg"></i><span>गोल काटें</span>
             </button>
-            <button class="tool-btn" onclick="addTextLayer()">
-                <i class="fas fa-font text-white text-lg"></i><span>टेक्स्ट</span>
+
+            <button class="tool-btn" onclick="addHeadline()">
+                <i class="fas fa-font text-white text-lg"></i><span>हेडलाइन</span>
             </button>
-            <button class="tool-btn" onclick="addLiveLocation()">
-                <i class="fas fa-map-marker-alt text-pink-500 text-lg"></i><span>लोकेशन</span>
+
+            <!-- 3D Location -->
+            <button class="tool-btn" onclick="add3DLocation()">
+                <i class="fas fa-map-marker-alt text-red-500 text-lg"></i><span>3D लोकेशन</span>
             </button>
+
+            <!-- Premium Date -->
+            <button class="tool-btn" onclick="addPremiumDate()">
+                <i class="fas fa-calendar-alt text-yellow-400 text-lg"></i><span>तारीख (Date)</span>
+            </button>
+
+            <!-- Custom Logo -->
+            <button class="tool-btn" onclick="addMyLogo()">
+                <i class="fas fa-stamp text-green-400 text-lg"></i><span>मेरा लोगो</span>
+            </button>
+            <button class="hidden" onclick="document.getElementById('logoUpload').click()" id="uploadLogoBtn"></button>
+            <input type="file" id="logoUpload" accept="image/*" class="hidden">
+
+            <!-- Post Frame -->
+            <button class="tool-btn" onclick="addPostBorder()">
+                <i class="fas fa-border-style text-purple-400 text-lg"></i><span>पोस्ट बॉर्डर</span>
+            </button>
+
         </div>
     </footer>
 
     <script>
         // ==========================================
-        // 1. CANVAS SETUP & DYNAMIC RESIZING
+        // 1. CANVAS SETUP & RATIO
         // ==========================================
-        const canvas = new fabric.Canvas('newsCanvas', { preserveObjectStacking: true, backgroundColor: '#111827' });
-        let currentRatio = 1; // Default 1:1
-
-        function updateCanvasRatio() {
-            const val = document.getElementById('ratioSelect').value;
-            if (val === '1:1') currentRatio = 1;
-            if (val === '4:5') currentRatio = 4/5;
-            if (val === '16:9') currentRatio = 16/9;
-            resizeCanvas();
-        }
-
+        const canvas = new fabric.Canvas('newsCanvas', { preserveObjectStacking: true, backgroundColor: '#1f2937' });
+        
         function resizeCanvas() {
             const workspace = document.getElementById('workspace');
-            const maxWidth = workspace.clientWidth - 10;
-            const maxHeight = workspace.clientHeight - 10;
-            
-            let width = maxWidth;
-            let height = width / currentRatio;
+            const ratioVal = document.getElementById('canvasRatio').value;
+            let ratio = 9/16; // default Reels size
+            if(ratioVal === '1:1') ratio = 1;
+            if(ratioVal === '4:5') ratio = 4/5;
+            if(ratioVal === '16:9') ratio = 16/9;
 
-            if (height > maxHeight) {
-                height = maxHeight;
-                width = height * currentRatio;
-            }
+            const maxW = workspace.clientWidth - 10;
+            const maxH = workspace.clientHeight - 10;
             
-            canvas.setWidth(width);
-            canvas.setHeight(height);
+            let w = maxW;
+            let h = w / ratio;
+            if (h > maxH) { h = maxH; w = h * ratio; }
+            
+            canvas.setWidth(w);
+            canvas.setHeight(h);
             canvas.renderAll();
         }
         window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        setTimeout(resizeCanvas, 100);
 
         // ==========================================
-        // 2. LOGO UPLOAD & LOCAL STORAGE SYSTEM
+        // 2. TEXT & WORD-BY-WORD COLOR SYSTEM
         // ==========================================
-        document.getElementById('logoUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (f) => {
-                const dataUrl = f.target.result;
-                localStorage.setItem('userCustomLogo', dataUrl); // Save to browser memory
-                alert("लोगो सेव हो गया है! अब जब भी आप टेम्पलेट लोड करेंगे, यही लोगो आएगा।");
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // ==========================================
-        // 3. LAYER CONTROLS (Manual Lock/Unlock)
-        // ==========================================
-        canvas.on('selection:created', showBottomSheet);
-        canvas.on('selection:updated', showBottomSheet);
-        canvas.on('selection:cleared', hideBottomSheet);
-
-        function showBottomSheet() {
-            const obj = canvas.getActiveObject();
-            if(obj) {
-                document.getElementById('bottomSheet').classList.remove('hidden');
-                document.getElementById('opacitySlider').value = obj.opacity || 1;
-            }
+        function addHeadline() {
+            const text = new fabric.Textbox("यहाँ अपनी ब्रेकिंग न्यूज़ लिखें", {
+                left: canvas.width/2, top: canvas.height/2, originX: 'center', originY: 'center',
+                fontFamily: 'Khand', fontSize: canvas.width * 0.08, fill: '#ffffff', fontWeight: 'bold',
+                textAlign: 'center', width: canvas.width * 0.9,
+                shadow: new fabric.Shadow({ color: '#000000', blur: 5, offsetX: 2, offsetY: 2 })
+            });
+            canvas.add(text); canvas.setActiveObject(text);
         }
-        function hideBottomSheet() { document.getElementById('bottomSheet').classList.add('hidden'); }
-        
-        document.getElementById('opacitySlider').addEventListener('input', (e) => {
-            const obj = canvas.getActiveObject();
-            if(obj) { obj.set('opacity', parseFloat(e.target.value)); canvas.renderAll(); }
-        });
 
-        function bringFront() { const obj = canvas.getActiveObject(); if(obj) canvas.bringToFront(obj); }
-        function sendBack() { const obj = canvas.getActiveObject(); if(obj) canvas.sendToBack(obj); }
-        function deleteObj() { const obj = canvas.getActiveObject(); if(obj) { canvas.remove(obj); hideBottomSheet(); } }
-        function cloneObj() {
+        // Feature: Ek shabd ka color badalna
+        function applyTextColor() {
             const obj = canvas.getActiveObject();
-            if(obj) {
-                obj.clone((cloned) => {
-                    cloned.set({ left: obj.left + 20, top: obj.top + 20, evented: true });
-                    canvas.add(cloned);
-                    canvas.setActiveObject(cloned);
-                });
+            const color = document.getElementById('textColor').value;
+            if(!obj) return;
+
+            // Agar user ne double click karke text select kiya hai (Word-by-word)
+            if (obj.isEditing && obj.selectionStart !== obj.selectionEnd) {
+                const style = { fill: color };
+                obj.setSelectionStyles(style, obj.selectionStart, obj.selectionEnd);
+            } else {
+                // Pura text color
+                obj.set('fill', color);
             }
+            canvas.renderAll();
         }
-        
-        // Manual Lock/Unlock Tool
-        function toggleLock() {
+
+        function changeFont() {
             const obj = canvas.getActiveObject();
-            if(obj) {
-                const isLocked = obj.lockMovementX;
-                obj.set({ 
-                    lockMovementX: !isLocked, lockMovementY: !isLocked, 
-                    lockRotation: !isLocked, lockScalingX: !isLocked, 
-                    lockScalingY: !isLocked, selectable: true 
-                });
-                alert(isLocked ? "Layer Unlocked (अनलॉक हो गई)" : "Layer Locked (लॉक हो गई)");
+            if(obj && obj.text) {
+                obj.set('fontFamily', document.getElementById('fontFamily').value);
                 canvas.renderAll();
             }
         }
 
-        function clearCanvas() {
-            if(confirm("क्या आप पूरा कैनवास डिलीट करना चाहते हैं?")) {
-                canvas.clear();
-                canvas.setBackgroundColor('#1f2937', canvas.renderAll.bind(canvas));
-            }
+        // ==========================================
+        // 3. 3D LOCATION & PREMIUM DATE
+        // ==========================================
+        function add3DLocation() {
+            const locText = new fabric.Textbox("📍 आपकी लोकेशन", {
+                left: 20, top: canvas.height/2, fontFamily: 'Rajdhani', fontSize: canvas.width * 0.06,
+                fill: '#ffffff', fontWeight: 'bold', stroke: '#000000', strokeWidth: 1,
+                // Tagda 3D Effect
+                shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.9)', blur: 2, offsetX: 3, offsetY: 3 })
+            });
+            canvas.add(locText); canvas.setActiveObject(locText);
+        }
+
+        function addPremiumDate() {
+            const today = new Date().toLocaleDateString('hi-IN', { day:'numeric', month:'long', year:'numeric' });
+            
+            // Ribbon Back
+            const bg = new fabric.Rect({ left: 0, top: 0, width: 220, height: 40, fill: '#facc15', rx: 5, ry: 5 });
+            const txt = new fabric.Text(today, { left: 15, top: 7, fontSize: 20, fill: '#000000', fontWeight: 'bold', fontFamily: 'Khand' });
+            const group = new fabric.Group([bg, txt], { left: canvas.width - 230, top: 20 });
+            canvas.add(group); canvas.setActiveObject(group);
         }
 
         // ==========================================
-        // 4. ADD IMAGES & TEXT
+        // 4. IMAGE CROP (CIRCLE) & BORDER SYSTEM
         // ==========================================
         document.getElementById('imageUpload').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -211,128 +237,135 @@
             const reader = new FileReader();
             reader.onload = (f) => {
                 fabric.Image.fromURL(f.target.result, (img) => {
-                    img.scaleToWidth(canvas.width);
+                    img.scaleToWidth(canvas.width * 0.8);
                     img.set({ left: canvas.width/2, top: canvas.height/2, originX: 'center', originY: 'center' });
-                    canvas.add(img);
-                    canvas.sendToBack(img);
+                    canvas.add(img); canvas.setActiveObject(img);
                 });
             };
             reader.readAsDataURL(file);
         });
 
-        function addTextLayer(textStr = "यहाँ अपनी खबर लिखें") {
-            const text = new fabric.Textbox(textStr, {
-                left: canvas.width / 2, top: canvas.height / 2, originX: 'center', originY: 'center',
-                fontFamily: 'Mukta', fontSize: canvas.width * 0.06, fill: '#ffffff', fontWeight: 'bold', textAlign: 'center', width: canvas.width * 0.9
+        // Gol (Circle) Crop Function
+        function makeCircleCrop() {
+            const obj = canvas.getActiveObject();
+            if(!obj || obj.type !== 'image') { alert("पहले कोई फोटो सेलेक्ट करें!"); return; }
+            
+            // Math to make perfect circle clip
+            const radius = Math.min(obj.width, obj.height) / 2;
+            const circle = new fabric.Circle({
+                radius: radius, originX: 'center', originY: 'center',
+                left: 0, top: 0
             });
-            canvas.add(text);
-            canvas.setActiveObject(text);
+            obj.set({ clipPath: circle });
+            canvas.renderAll();
         }
 
-        async function addLiveLocation() {
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
-                const text = new fabric.Textbox(`📍 ${data.city || 'शहर'}, यूपी`, {
-                    left: 20, top: canvas.height * 0.65, fontSize: canvas.width * 0.04, fill: '#ffffff', backgroundColor: '#000000', fontWeight: 'bold', fontFamily: 'Mukta'
-                });
-                canvas.add(text);
-            } catch(e) { addTextLayer("📍 कानपुर देहात, यूपी"); }
+        // Outline / Border for Image & Text
+        function updateStroke() {
+            const obj = canvas.getActiveObject();
+            if(!obj) return;
+            const width = parseInt(document.getElementById('strokeWidth').value);
+            const color = document.getElementById('strokeColor').value;
+            obj.set({ stroke: color, strokeWidth: width });
+            canvas.renderAll();
+        }
+
+        // Final Post Border
+        function addPostBorder() {
+            const frame = new fabric.Rect({
+                left: 0, top: 0, width: canvas.width, height: canvas.height,
+                fill: 'transparent', stroke: '#ef4444', strokeWidth: 15, // Red Border
+                selectable: true
+            });
+            canvas.add(frame);
         }
 
         // ==========================================
-        // 5. UNLOCKED TEMPLATES & AUTO DATE
+        // 5. LOGO SYSTEM (LOCAL STORAGE)
         // ==========================================
-        function getAutoDate() {
-            const today = new Date();
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            return today.toLocaleDateString('hi-IN', options);
-        }
-
-        function addBrandingElements() {
-            // Load Custom Logo from LocalStorage (if exists)
-            const savedLogo = localStorage.getItem('userCustomLogo');
+        function addMyLogo() {
+            const savedLogo = localStorage.getItem('userCustomLogoPro');
             if (savedLogo) {
                 fabric.Image.fromURL(savedLogo, (img) => {
-                    img.scaleToHeight(50);
-                    img.set({ left: 10, top: 10, selectable: true });
-                    canvas.add(img);
+                    img.scaleToHeight(60);
+                    img.set({ left: 10, top: 10 });
+                    canvas.add(img); canvas.setActiveObject(img);
                 });
             } else {
-                // Default Text Logo if no image uploaded
-                const logoBg = new fabric.Rect({ left: 10, top: 10, width: 120, height: 50, fill: '#ffffff', rx: 5, ry: 5, selectable: true });
-                const logoPNS = new fabric.Text("PNS", { left: 20, top: 15, fontSize: 24, fill: '#cc0000', fontWeight: 'bold', fontFamily: 'Arial', selectable: true });
-                const logoBharat = new fabric.Text("भारत न्यूज़", { left: 20, top: 40, fontSize: 14, fill: '#000000', fontWeight: 'bold', fontFamily: 'Mukta', selectable: true });
-                const logoGroup = new fabric.Group([logoBg, logoPNS, logoBharat], { left: 10, top: 10, selectable: true });
-                canvas.add(logoGroup);
+                if(confirm("आपने अभी तक कोई लोगो सेट नहीं किया है। क्या आप गैलरी से लोगो अपलोड करना चाहते हैं?")) {
+                    document.getElementById('uploadLogoBtn').click();
+                }
             }
-            
-            // Auto Date & Live Button (Unlocked)
-            const autoDateString = getAutoDate();
-            const dateBg = new fabric.Rect({ left: 0, top: 0, width: 150, height: 30, fill: '#facc15' });
-            const dateText = new fabric.Text(autoDateString, { left: 10, top: 5, fontSize: 16, fill: '#000000', fontWeight: 'bold', fontFamily: 'Mukta' });
-            const dateGroup = new fabric.Group([dateBg, dateText], { left: canvas.width - 240, top: 10, selectable: true });
-            
-            const liveBg = new fabric.Rect({ left: 0, top: 0, width: 70, height: 30, fill: '#cc0000' });
-            const liveText = new fabric.Text("LIVE", { left: 15, top: 5, fontSize: 16, fill: '#ffffff', fontWeight: 'bold', fontFamily: 'Arial' });
-            const liveGroup = new fabric.Group([liveBg, liveText], { left: canvas.width - 80, top: 10, selectable: true }); // User can select and delete this now
-
-            // Bottom Red & Black Banners (Unlocked)
-            const redBanner = new fabric.Rect({ left: 0, top: canvas.height * 0.72, width: canvas.width, height: canvas.height * 0.18, fill: '#b91c1c', selectable: true });
-            const blackBanner = new fabric.Rect({ left: 0, top: canvas.height * 0.90, width: canvas.width, height: canvas.height * 0.05, fill: '#000000', selectable: true });
-            const footerBanner = new fabric.Rect({ left: 0, top: canvas.height * 0.95, width: canvas.width, height: canvas.height * 0.05, fill: '#ffffff', selectable: true });
-
-            // Footer Texts (Unlocked)
-            const footerSocial = new fabric.Textbox("@YourNewsHandle", { left: 10, top: canvas.height * 0.96, fontSize: canvas.width * 0.03, fill: '#000000', fontFamily: 'Arial', selectable: true, width: 200 });
-            const footerVerified = new fabric.Textbox("Verified by पवन कुमार ✅", { left: canvas.width - 160, top: canvas.height * 0.96, fontSize: canvas.width * 0.03, fill: '#000000', fontFamily: 'Mukta', selectable: true, width: 150 });
-
-            // Headlines (Unlocked)
-            const mainHeadline = new fabric.Textbox("यहाँ अपनी मुख्य ब्रेकिंग न्यूज़ लिखें", {
-                left: canvas.width/2, top: canvas.height * 0.81, originX: 'center', originY: 'center', width: canvas.width * 0.95,
-                fontSize: canvas.width * 0.065, fill: '#ffffff', fontWeight: 'bold', fontFamily: 'Mukta', textAlign: 'center',
-                shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.8)', blur: 2, offsetX: 1, offsetY: 1 }), selectable: true
-            });
-
-            const subHeadline = new fabric.Textbox("विस्तार से जानकारी यहाँ लिखें", {
-                left: canvas.width/2, top: canvas.height * 0.925, originX: 'center', originY: 'center', width: canvas.width * 0.95,
-                fontSize: canvas.width * 0.035, fill: '#ffffff', fontWeight: 'bold', fontFamily: 'Mukta', textAlign: 'center', selectable: true
-            });
-
-            canvas.add(redBanner, blackBanner, footerBanner, dateGroup, liveGroup, footerSocial, footerVerified, mainHeadline, subHeadline);
         }
-
-        function loadStandardTemplate() {
-            canvas.clear();
-            canvas.setBackgroundColor('#1f2937', canvas.renderAll.bind(canvas));
-            const bgHint = new fabric.Text("फोटो अपलोड करने के लिए\n'फोटो जोड़ें' पर क्लिक करें", { left: canvas.width/2, top: canvas.height/2.5, originX: 'center', originY: 'center', fontSize: 24, fill: '#4B5563', textAlign: 'center', selectable: true });
-            canvas.add(bgHint);
-            addBrandingElements();
-        }
-
-        function loadSplitTemplate() {
-            canvas.clear();
-            canvas.setBackgroundColor('#1f2937', canvas.renderAll.bind(canvas));
-            const divider = new fabric.Line([canvas.width/2, 0, canvas.width/2, canvas.height * 0.72], { stroke: '#ffffff', strokeWidth: 4, selectable: true });
-            canvas.add(divider);
-            addBrandingElements();
-        }
-
-        // ==========================================
-        // 6. HD EXPORT
-        // ==========================================
-        document.getElementById('exportBtn').addEventListener('click', () => {
-            canvas.discardActiveObject(); canvas.renderAll();
-            const dataURL = canvas.toDataURL({ format: 'jpeg', quality: 1, multiplier: 2 });
-            const link = document.createElement('a');
-            link.download = `News_Export_${Date.now()}.jpg`;
-            link.href = dataURL;
-            link.click();
+        
+        document.getElementById('logoUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (f) => {
+                localStorage.setItem('userCustomLogoPro', f.target.result);
+                alert("आपका लोगो सेव हो गया है! अब 'मेरा लोगो' बटन दबाएं।");
+                addMyLogo();
+            };
+            reader.readAsDataURL(file);
         });
 
-        // Initialize empty workspace (No template auto-loaded so user can choose ratio first)
-        window.onload = () => {
-            canvas.setBackgroundColor('#1f2937', canvas.renderAll.bind(canvas));
-        };
+        // ==========================================
+        // 6. BOTTOM SHEET CONTROLS & MANUAL LOCK
+        // ==========================================
+        canvas.on('selection:created', showSheet);
+        canvas.on('selection:updated', showSheet);
+        canvas.on('selection:cleared', hideBottomSheet);
+
+        function showSheet() {
+            const obj = canvas.getActiveObject();
+            if(obj) {
+                document.getElementById('bottomSheet').classList.remove('hidden');
+                document.getElementById('strokeWidth').value = obj.strokeWidth || 0;
+            }
+        }
+        function hideBottomSheet() { document.getElementById('bottomSheet').classList.add('hidden'); }
+        
+        function bringFront() { const obj = canvas.getActiveObject(); if(obj) canvas.bringToFront(obj); }
+        function sendBack() { const obj = canvas.getActiveObject(); if(obj) canvas.sendToBack(obj); }
+        function cloneObj() {
+            const obj = canvas.getActiveObject();
+            if(obj) {
+                obj.clone((cloned) => {
+                    cloned.set({ left: obj.left + 20, top: obj.top + 20 });
+                    canvas.add(cloned); canvas.setActiveObject(cloned);
+                });
+            }
+        }
+        
+        // Manual Lock System (No Auto Lock)
+        function toggleLock() {
+            const obj = canvas.getActiveObject();
+            if(obj) {
+                const locked = obj.lockMovementX;
+                obj.set({ 
+                    lockMovementX: !locked, lockMovementY: !locked, 
+                    lockRotation: !locked, lockScalingX: !locked, lockScalingY: !locked,
+                    hasControls: locked // lock hone par border controls chhip jayenge
+                });
+                canvas.discardActiveObject(); canvas.renderAll();
+                alert(locked ? "अनलॉक हो गया। अब आप इसे खिसका सकते हैं।" : "लॉक हो गया! (अनलॉक करने के लिए दोबारा सेलेक्ट करके बटन दबाएं)");
+            }
+        }
+
+        function clearCanvas() {
+            if(confirm("पूरा डिज़ाइन डिलीट हो जाएगा!")) {
+                canvas.clear(); canvas.setBackgroundColor('#1f2937', canvas.renderAll.bind(canvas));
+            }
+        }
+
+        function exportHD() {
+            canvas.discardActiveObject(); canvas.renderAll();
+            const dataURL = canvas.toDataURL({ format: 'jpeg', quality: 1, multiplier: 2 }); // HD 1080p Export
+            const link = document.createElement('a');
+            link.download = `News_Pro_${Date.now()}.jpg`;
+            link.href = dataURL; link.click();
+        }
     </script>
 </body>
 </html>
