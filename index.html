@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#fffaf3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>इंडियन न्यूज़</title>
+<link rel="preconnect" href="https://blogger.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com">
 <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f6f1e9;--card:#fffdf9;--ink:#1c1917;--mute:#78716c;--line:#e7e0d4;--accent:#c2410c;--accent2:#9a3412;--fs:16px;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
@@ -78,6 +80,31 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .toast.show{opacity:1}
 .off{background:#b45309;color:#fff;text-align:center;font-size:12.5px;padding:4px;display:none}
 .form input,.form textarea,.form select{width:100%;margin-bottom:10px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.img{position:relative}.play{position:absolute;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center}
+.dur{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.85);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+.tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;font-weight:800;margin-right:5px;vertical-align:middle}
+.trend{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:8px 12px;background:var(--card)}.trend::-webkit-scrollbar{display:none}.trend .pill{white-space:nowrap}
+.atabs{display:flex;gap:6px;padding:8px;background:var(--card);border-bottom:1px solid var(--line)}
+.atabs button{flex:1;border:1px solid var(--line);background:none;border-radius:8px;padding:8px 4px;font-weight:700;font-size:13px;min-height:44px}
+.atabs button[aria-pressed=true]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.crow{display:flex;align-items:center;gap:2px;padding:8px 0;border-bottom:1px solid var(--line)}.crow .act{min-width:34px}
+.cg{display:flex;gap:6px;margin-bottom:10px}.cg input{margin:0!important;min-width:0}.cg input[type=color]{width:46px;padding:2px;flex-shrink:0}
+.vchip{border:0;border-radius:12px;padding:3px 9px;font-size:11.5px;font-weight:800;min-height:28px}
+.vchip.v{background:#dcfce7;color:#166534}.vchip.u,.vwarn{background:#fef3c7;color:#92400e}
+:root[data-theme=dark] .vchip.v{background:#14532d;color:#bbf7d0}:root[data-theme=dark] .vchip.u,:root[data-theme=dark] .vwarn{background:#78350f;color:#fde68a}
+.vwarn{border-radius:8px;padding:8px 10px;font-size:13px;font-weight:600;margin:8px 0}
+.vb{position:absolute;inset:0;z-index:70;display:none;align-items:flex-end}.vb.open{display:flex}
+.vbk{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.vcard{position:relative;background:var(--card);width:100%;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + var(--sab));max-height:80%;overflow:auto}
+.vcard h3{margin:0 0 8px;font-size:19px}.vcard p{line-height:1.7;margin:6px 0}.vcard ul{padding-left:18px;line-height:1.8;margin:6px 0}
+.vl{display:block;padding:10px 12px;border:1px solid var(--line);border-radius:8px;margin:6px 0;color:var(--accent);font-weight:700;text-decoration:none;word-break:break-all}
+.fcb{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:10px 12px;margin:10px 0;background:var(--bg)}.fcl{font-weight:800;font-size:13px}.fcb p{margin:4px 0 10px!important}
+.kick{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.hl{height:3px;width:56px;background:var(--accent);border-radius:2px;margin:10px 0}.hl2{height:1px;background:var(--line);margin:18px 0 10px}
+.rel{padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer;line-height:1.5;font-weight:700}
+.pim{width:100%;border-radius:8px;margin:8px 0;background:var(--line);display:block}
+.yt{position:relative;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:8px 0;cursor:pointer}.yt img{width:100%;height:100%;object-fit:cover}
+.more{background:none;border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:6px 12px;font-weight:800;font-size:13px;margin-top:10px;min-height:36px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -93,6 +120,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     </div>
     <div class="ticker" id="ticker" hidden><span id="tickTxt"></span></div>
     <div class="cats" id="cats" role="tablist"></div>
+    <div class="trend" id="trend"></div>
   </div>
   <div class="off" id="off">इंटरनेट नहीं है — पुरानी सेव की हुई खबरें दिख रही हैं</div>
   <div class="feed" id="feed"><div class="ptr" id="ptr">↓ रिफ्रेश के लिए खींचें</div><div id="list"></div></div>
@@ -107,17 +135,55 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 
   <div class="sheet" id="searchS"><div class="sh-head"><button class="ib" data-a="close" aria-label="वापस">←</button><input class="search" id="q" type="search" placeholder="खबर खोजें…" enterkeyhint="search"></div><div class="feed" id="sRes"><div class="chips" id="recent"></div></div></div>
 
-  <div class="sheet" id="admin"><div class="sh-head"><button class="ib" data-a="close" aria-label="बंद करें">✕</button><b>एडमिन पैनल</b></div><div class="body form">
-    <p class="meta">नोट: यहाँ की खबरें सिर्फ इसी फोन में रहती हैं। सबको दिखाने के लिए Blogger पर पोस्ट करें (नीचे कोड कॉपी करें)।</p>
-    <input id="aBlog" placeholder="Blogger URL (वैकल्पिक)">
-    <input id="aTitle" placeholder="हेडलाइन (: या | से शुरुआती रंगीन लाइन अलग करें)">
+  <div class="sheet" id="admin"><div class="sh-head"><button class="ib" data-a="close" aria-label="बंद करें">✕</button><b>एडमिन पैनल</b></div>
+  <div class="atabs"><button data-a="atab" data-v="aPost">✍️ खबर</button><button data-a="atab" data-v="aCats">📂 कैटेगरी</button><button data-a="atab" data-v="aSet">⚙️ सेटिंग</button></div>
+  <div class="body form">
+   <div id="aPost">
+    <select id="aType"><option value="compact">📰 छोटा कार्ड (साइड-बाय-साइड)</option><option value="hero">🔥 बड़ा कार्ड (पूरी चौड़ाई)</option><option value="fc">🔍 फैक्ट चेक कार्ड</option></select>
+    <select id="aCat"></select>
+    <span class="meta">बैज + पृष्ठभूमि रंग + अक्षर रंग</span>
+    <div class="cg"><input id="aBadge" placeholder="बैज (जैसे: एक्सक्लूसिव)"><input type="color" id="aBg" value="#dc2626"><input type="color" id="aBt" value="#ffffff"></div>
+    <span class="meta">रंगीन शुरुआती लाइन + रंग</span>
+    <div class="cg"><input id="aKick" placeholder="शुरुआती लाइन"><input type="color" id="aKc" value="#c2410c"></div>
+    <span class="meta">मुख्य हेडलाइन + रंग</span>
+    <div class="cg"><input id="aTitle" placeholder="हेडलाइन"><input type="color" id="aHc" value="#111827"></div>
     <input id="aLoc" placeholder="ज़िला / इलाका" value="कानपुर देहात">
     <input id="aImg" placeholder="फोटो लिंक (https://…)">
+    <div class="cg"><input id="aVid" placeholder="YouTube लिंक (वैकल्पिक)" style="flex:2"><input id="aDur" placeholder="3:20" style="flex:1"></div>
+    <select id="aVer"><option value="u">⚠️ असत्यापित (अभी पुष्टि बाकी)</option><option value="v">✓ सत्यापित (कई जगह उपलब्ध)</option></select>
+    <input id="aSrc" placeholder="सत्यापन स्रोत लिंक — सत्यापित के लिए ज़रूरी (कई हों तो कॉमा से)">
+    <input id="aVnote" placeholder="असत्यापित का कारण (जैसे: सिर्फ़ फोटो के आधार पर)">
+    <div id="fcBox" style="display:none"><span class="meta">🔍 फैक्ट चेक: सबूत का लिंक ऊपर वाले "स्रोत लिंक" खाने में डालें (ज़रूरी)</span>
+    <textarea id="aClaim" rows="2" placeholder="दावा: जो बात फैल रही है (जैसे: वायरल मैसेज में लिखी बात)"></textarea>
+    <select id="aVerdict"><option value="">— नतीजा चुनें —</option><option value="s">✓ सही</option><option value="g">✗ गलत</option><option value="b">⚠ भ्रामक</option><option value="a">◐ अधूरा सच</option><option value="n">? पुष्टि नहीं हो सकी</option></select>
+    <textarea id="aHow" rows="3" placeholder="कैसे जाँचा: किस अधिकारी, दस्तावेज़ या स्रोत से पुष्टि की"></textarea></div>
     <textarea id="aFull" rows="5" placeholder="पूरी खबर…"></textarea>
-    <button class="btn" data-a="pub" style="width:100%">🚀 पब्लिश करें</button>
+    <button class="btn" id="aPubBtn" data-a="pub" style="width:100%">🚀 पब्लिश करें</button>
     <button class="btn" data-a="cpy" style="width:100%;background:#2563eb">📋 Blogger कोड कॉपी करें</button>
-    <button class="btn" data-a="saveblog" style="width:100%;background:#16a34a">💾 Blogger URL सेव करें</button>
+    <button class="btn" data-a="pcancel" style="width:100%;background:#78716c">फ़ॉर्म खाली करें</button>
+    <p class="meta">नोट: यहाँ की खबरें सिर्फ़ इसी फ़ोन में रहती हैं। सबको दिखाने के लिए Blogger कोड से पोस्ट करें और कैटेगरी का लेबल लगाएँ।</p>
+    <h4>मेरी खबरें</h4><div id="myPosts"></div>
+   </div>
+   <div id="aCats" style="display:none">
+    <h4>कैटेगरी जोड़ें / बदलें</h4>
+    <input id="cName" placeholder="नाम (इमोजी भी लगा सकते हैं)">
+    <input id="cQ" placeholder="खोज शब्द, जैसे: कानपुर देहात रसूलाबाद अकबरपुर">
+    <input id="cLab" placeholder="Blogger लेबल (वैकल्पिक)">
+    <select id="cMode"><option value="both">लाइव + मेरी खबर</option><option value="live">सिर्फ़ लाइव खबर</option><option value="own">सिर्फ़ मेरी खबर</option></select>
+    <button class="btn" id="cBtn" data-a="cadd" style="width:100%">➕ कैटेगरी जोड़ें</button>
+    <h4>सभी कैटेगरी</h4><div id="acList"></div>
+    <button class="btn" data-a="creset" style="width:100%;background:#78716c">डिफ़ॉल्ट कैटेगरी लौटाएँ</button>
+   </div>
+   <div id="aSet" style="display:none">
+    <input id="aBlog" placeholder="Blogger URL (जैसे https://apka-blog.blogspot.com)">
+    <select id="aMode"><option value="blog">📝 सिर्फ़ मेरा Blogger (AdSense के लिए सुरक्षित)</option><option value="mix">🌐 Blogger + Google News लाइव</option></select>
+    <input id="aTrend" placeholder="ट्रेंडिंग टॉपिक (कॉमा से अलग)">
+    <input id="aTick" placeholder="ब्रेकिंग पट्टी का अपना टेक्स्ट (खाली = अपने आप)">
+    <input id="aPin" placeholder="नया पिन (बदलना हो तो)" inputmode="numeric">
+    <button class="btn" data-a="saveset" style="width:100%;background:#16a34a">💾 सेटिंग सेव करें</button>
+   </div>
   </div></div>
+  <div class="vb" id="verBox"><div class="vbk" data-a="vclose"></div><div class="vcard" id="verCard"></div></div>
   <div class="toast" id="toast"></div>
 </div>
 
@@ -131,17 +197,17 @@ const S={
 // Text ko safe banata hai (XSS se bachav)
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeUrl=u=>/^https?:\/\//i.test(u||'')?u:'';
+const col=(c,d)=>/^#[0-9a-f]{6}$/i.test(c||'')?c:d;
+const FV={s:['✓ सही','#16a34a'],g:['✗ गलत','#dc2626'],b:['⚠ भ्रामक','#d97706'],a:['◐ अधूरा सच','#7c3aed'],n:['? पुष्टि नहीं','#57534e']};
 const hash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return 'n'+(h>>>0).toString(36)};
 
-const CATS=[
- {n:'टॉप न्यूज़',q:'उत्तर प्रदेश भारत बड़ी खबरें'},{n:'कानपुर देहात',q:'कानपुर देहात समाचार'},
- {n:'उत्तरप्रदेश',q:'उत्तर प्रदेश समाचार'},{n:'देश',q:'भारत देश समाचार'},
- {n:'क्रिकेट',q:'क्रिकेट समाचार'},{n:'मनोरंजन',q:'मनोरंजन बॉलीवुड समाचार'},
- {n:'बिजनेस',q:'बिजनेस समाचार भारत'},{n:'रोजगार',q:'रोजगार सरकारी नौकरी समाचार'}
-];
+const DEFCATS=[['टॉप न्यूज़','उत्तर प्रदेश भारत बड़ी खबरें'],['कानपुर देहात','कानपुर देहात समाचार'],['उत्तरप्रदेश','उत्तर प्रदेश समाचार'],['देश','भारत देश समाचार'],['क्रिकेट','क्रिकेट समाचार'],['मनोरंजन','मनोरंजन बॉलीवुड समाचार'],['बिजनेस','बिजनेस समाचार भारत'],['रोजगार','रोजगार सरकारी नौकरी समाचार']].map((a,i)=>({id:'c'+i,n:a[0],q:a[1],mode:'both',label:''}));
 const st={tab:'home',cat:0,items:[],byId:{},bm:S.get('bm',{}),local:S.get('local',[]),
   cfg:S.get('cfg',{blog:'',pin:''}),prefs:S.get('prefs',{fs:16,theme:'auto'}),recent:S.get('recent',[]),
   cur:null,speakId:null,reqId:0};
+const FCCAT={id:'cfc',n:'🔍 फैक्ट चेक',q:'फैक्ट चेक',mode:'own',label:'FactCheck'};
+st.cats=S.get('cats',DEFCATS);if(!S.get('fcAdded',0)){if(!st.cats.some(c=>c.id==='cfc'))st.cats.splice(2,0,FCCAT);S.set('cats',st.cats);S.set('fcAdded',1)}st.trend=S.get('trend',['यूपी बड़ी खबरें','कानपुर समाचार','टीम इंडिया','मौसम अपडेट','रोजगार समाचार']);
+let CATS=[];function syncCats(){CATS=st.cats.filter(c=>!c.hide);if(!CATS.length)CATS=[st.cats[0]||DEFCATS[0]];if(st.cat>=CATS.length)st.cat=0}syncCats();
 
 // ---------- Theme / font ----------
 function applyPrefs(){
@@ -153,12 +219,11 @@ function applyPrefs(){
 applyPrefs();
 
 // ---------- Fetch ----------
-function parseTitle(t){
-  let kick='',head=t;
+function parseTitle(t){let kick='',head=t;
   if(t.includes('|')){const p=t.split('|').map(x=>x.trim());kick=p[0];head=p.slice(1).join(' ')}
   else if(t.includes(':')){const i=t.indexOf(':');kick=t.slice(0,i+1);head=t.slice(i+1).trim()}
-  return {kick,head};
-}
+  else if(t.length>45){const w=t.split(' ');kick=w.slice(0,4).join(' ')+' -';head=w.slice(4).join(' ')}
+  return {kick,head}}
 function mk(o){o.id=o.id||hash(o.link||o.head+o.date);st.byId[o.id]=o;return o}
 
 async function fetchLive(q){
@@ -166,46 +231,76 @@ async function fetchLive(q){
   const r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+rss);
   if(!r.ok)throw new Error('http');
   const d=await r.json();
-  return (d.items||[]).map(it=>{
+  return (d.items||[]).map((it,ix)=>{
     const parts=it.title.split(' - ');const src=parts.length>1?parts.pop():'समाचार';
     const {kick,head}=parseTitle(parts.join(' - '));
     const tmp=document.createElement('div');tmp.innerHTML=it.description||'';
     const img=it.thumbnail||it.enclosure&&it.enclosure.link||'';
-    return mk({kick,head,src,loc:src,img:safeUrl(img),link:safeUrl(it.link),date:it.pubDate,
+    return mk({kick,head,src,loc:src,badge:ix%3===0?src:'',ver:'v',vsrc:[safeUrl(it.link)].filter(Boolean),img:safeUrl(img),link:safeUrl(it.link),date:it.pubDate,
       full:(tmp.textContent||'').trim()});
   });
 }
+function norm(o){const s=(x,n)=>String(x==null?'':x).slice(0,n);
+  return {type:o.type==='hero'||o.type==='fc'?o.type:'compact',cat:s(o.cat,20),badge:s(o.badge,20),bg:col(o.bg,'#dc2626'),bt:col(o.bt,'#ffffff'),kick:s(o.kick,80),kc:col(o.kc,''),head:s(o.head,300),hc:col(o.hc,''),loc:s(o.loc,40)||'उत्तरप्रदेश',img:safeUrl(o.img),vid:safeUrl(o.vid),dur:s(o.dur,8),full:s(o.full,20000),ver:o.ver==='v'&&Array.isArray(o.vsrc)&&o.vsrc.some(safeUrl)?'v':'u',vsrc:(Array.isArray(o.vsrc)?o.vsrc:[]).map(safeUrl).filter(Boolean).slice(0,5),vnote:s(o.vnote,120),claim:s(o.claim,400),verdict:FV[o.verdict]?o.verdict:'',how:s(o.how,2000),src:'हमारी खबर',own:1}}
+const onlyBlog=()=>st.cfg.only!==false&&!!st.cfg.blog;
+const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
+const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
+const yt=id=>'<div class="yt" data-a="yt" data-v="'+id+'" role="button" aria-label="वीडियो चलाएँ"><img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" loading="lazy" alt=""><span class="play">▶</span></div>';
+const INL=/^(B|I|U|STRONG|EM|A|SPAN|FONT|SMALL|MARK)$/;
+function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/\s+/g,' ').trim();if(t)out.push({t:'p',x:t});buf=''};
+  const walk=n=>{for(const c of n.childNodes){
+    if(c.nodeType===3){buf+=c.textContent;continue}
+    if(c.nodeType!==1)continue;const tg=c.tagName;
+    if(tg==='BR'){fl();continue}
+    if(tg==='IMG'){fl();const u=safeUrl(c.getAttribute('src'));if(u)out.push({t:'i',u});continue}
+    if(tg==='IFRAME'){fl();const id=ytid(c.getAttribute('src'));if(id)out.push({t:'v',id});continue}
+    if(tg==='SCRIPT'||tg==='STYLE')continue;
+    if(INL.test(tg)&&!c.querySelector('img,iframe')){buf+=c.textContent;continue}
+    fl();walk(c);fl()}};
+  walk(doc.body);fl();return out.slice(0,60)}
+function renderBlocks(bl){return bl.map(b=>b.t==='p'?'<p>'+esc(b.x)+'</p>':b.t==='i'?'<img class="pim" src="'+esc(bimg(b.u,720))+'" loading="lazy" decoding="async" alt="" referrerpolicy="no-referrer" onerror="this.remove()">':yt(b.id)).join('')}
+function bodyHTML(it){return it.blocks&&it.blocks.length?renderBlocks(it.blocks):'<p>'+esc(it.full||it.head)+'</p>'}
+function relHTML(it){
+  const w=x=>new Set((x||'').split(/[\s,.:;|\-–()'"!?।]+/).filter(y=>y.length>3)),tw=w(it.kick+' '+it.head),tl=new Set(it.labels||[]);
+  const sc=Object.values(st.byId).filter(o=>o.id!==it.id&&(!onlyBlog()||o.own)).map(o=>{let n=0;(o.labels||[]).forEach(l=>{if(tl.has(l))n+=3});if(o.loc&&o.loc===it.loc)n+=2;w(o.kick+' '+o.head).forEach(x=>{if(tw.has(x))n++});return [n,o]})
+   .filter(a=>a[0]>=3).sort((a,b)=>b[0]-a[0]||new Date(b[1].date)-new Date(a[1].date)).slice(0,4);
+  return sc.length?'<div class="hl2"></div><h4 style="margin:6px 0">📌 यह भी पढ़ें</h4>'+sc.map(a=>'<div class="rel" data-a="open" data-id="'+esc(a[1].id)+'" tabindex="0">'+titleHTML(a[1])+'<div class="src">'+esc(a[1].src)+(a[1].date?' • '+ago(a[1].date):'')+'</div></div>').join(''):''}
+function searchPool(q){const ws=q.toLowerCase().split(/\s+/).filter(Boolean);return Object.values(st.byId).filter(o=>o.own).filter(o=>{const t=(o.kick+' '+o.head+' '+o.full+' '+(o.labels||[]).join(' ')+' '+o.loc).toLowerCase();return ws.every(x=>t.includes(x))})}
+function getBlog(){const c=st.bc;if(c&&Date.now()-c.t<6e4)return Promise.resolve(c.items);return fetchBlog(st.cfg.blog).then(i=>{if(i.length)st.bc={t:Date.now(),items:i};return i})}
 function fetchBlog(url){
   return new Promise(res=>{
     let u=url.replace(/\/$/,'');if(!/^https?:/.test(u))u='https://'+u;
-    const cb='bcb'+Date.now();
-    const sc=document.createElement('script');
+    const cb='bcb'+Date.now(),sc=document.createElement('script');
     const done=v=>{delete window[cb];sc.remove();res(v)};
-    window[cb]=j=>{
-      const out=((j.feed&&j.feed.entry)||[]).map(e=>{
-        const t=e.title?e.title.$t:'';const tmp=document.createElement('div');tmp.innerHTML=e.content?e.content.$t:'';
-        const im=tmp.querySelector('img');const {kick,head}=parseTitle(t);
-        return mk({kick,head,src:'हमारी खबर',loc:(e.category&&e.category[0]&&e.category[0].term)||'उत्तरप्रदेश',
-          img:safeUrl(im?im.src:''),link:'',date:e.published?e.published.$t:'',full:(tmp.textContent||'').trim(),own:1});
-      });done(out);
-    };
-    sc.src=u+'/feeds/posts/default?alt=json-in-script&max-results=15&callback='+cb;
-    sc.onerror=()=>done([]);document.body.appendChild(sc);
-    setTimeout(()=>done([]),8000);
+    window[cb]=j=>done(((j.feed&&j.feed.entry)||[]).map(e=>{
+      const t=e.title?e.title.$t:'',doc=new DOMParser().parseFromString(e.content?e.content.$t:'','text/html');
+      const labels=(e.category||[]).map(x=>x.term),bl=blocks(doc);
+      const txt=bl.filter(b=>b.t==='p').map(b=>b.x).join('\n\n'),im=bl.find(b=>b.t==='i'),vd=bl.find(b=>b.t==='v');
+      let o=null;const m=doc.querySelector('#indian-news-custom-meta');
+      if(m)try{o=norm(JSON.parse(decodeURIComponent(m.getAttribute('data-config'))));o.cat=''}catch(x){o=null}
+      if(!o){const p=parseTitle(t);o={kick:p.kick,head:p.head,loc:labels[1]||labels[0]||'उत्तरप्रदेश',src:'हमारी खबर',own:1,ver:'u'}}
+      if(!o.img)o.img=im?safeUrl(im.u):'';if(!o.vid&&vd)o.vid='https://youtu.be/'+vd.id;if(!o.full)o.full=txt;
+      o.blocks=bl;{const lk=(e.link||[]).find(x=>x.rel==='alternate');o.link=lk?safeUrl(lk.href):''}o.labels=labels;o.date=e.published?e.published.$t:'';o.id=hash('b'+(e.id?e.id.$t:t));return mk(o)}));
+    sc.src=u+'/feeds/posts/default?alt=json-in-script&max-results=40&callback='+cb;
+    sc.onerror=()=>done([]);document.body.appendChild(sc);setTimeout(()=>done([]),8000);
   });
 }
+const lbl=c=>c.label||c.n.replace(/^[^\u0900-\u097F\w]+/,'');
+function inCat(i,c){if(i.cat&&st.cats.some(x=>x.id===i.cat))return i.cat===c.id;if(i.labels&&i.labels.length){if(i.labels.includes(lbl(c)))return true;return !st.cats.some(x=>i.labels.includes(lbl(x)))&&c===CATS[0]}return c===CATS[0]}
 
 async function load(q,force){
-  const my=++st.reqId;
+  const my=++st.reqId;if(force)st.bc=null;
   const key='cache_'+hash(q);
   const cached=S.get(key,null);
   if(cached&&!force){show(cached.items)}else showSkel();
   let items=[],failed=false;
   try{
-    const [own,live]=await Promise.all([st.cfg.blog?fetchBlog(st.cfg.blog):[],fetchLive(q)]);
-    items=[...st.local.map(mk),...own,...live];
+    const c=st.tab==='home'?CATS[st.cat]:null,mode=c?(onlyBlog()&&c.mode==='live'?'both':c.mode):'both';
+    const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?getBlog():[],mode==='own'||onlyBlog()?[]:fetchLive(q)]);
+    items=[...[...st.local,...own].filter(i=>!c||inCat(i,c)).map(mk),...live];
+    if(st.tab==='video'&&onlyBlog())items=items.filter(i=>i.vid);
     $('#off').style.display='none';
-    S.set(key,{t:Date.now(),items:items.slice(0,40)});
+    S.set(key,{t:Date.now(),items:items.slice(0,25)});
   }catch(e){failed=true;}
   if(my!==st.reqId)return;
   if(failed){
@@ -221,31 +316,55 @@ function showSkel(){
   let h='';for(let i=0;i<5;i++)h+='<div class="sk"><div style="flex:1"><div class="sh" style="height:16px;margin-bottom:8px"></div><div class="sh" style="height:16px;width:70%"></div></div><div class="sh" style="width:112px;height:80px"></div></div>';
   $('#list').innerHTML=h;
 }
-function imgBox(it,cls){
-  return '<div class="img '+cls+'">'+(it.img?'<img src="'+esc(it.img)+'" loading="lazy" alt="" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+'</div>';
+function imgBox(it,cls){const id=ytid(it.vid),im=it.img||(id?'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg':'');
+  return '<div class="img '+cls+'">'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+(it.vid?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
 }
+function titleHTML(it){
+  const fv=it.type==='fc'&&FV[it.verdict];
+  return (fv?'<span class="tag" style="background:'+fv[1]+';color:#fff">'+fv[0]+'</span>':it.badge?'<span class="tag" style="background:'+col(it.bg,'#dc2626')+';color:'+col(it.bt,'#ffffff')+'">'+esc(it.badge)+'</span>':'')
+   +(it.kick?'<span class="kick"'+(it.kc?' style="color:'+col(it.kc,'#c2410c')+'"':'')+'>'+esc(it.kick)+'</span> ':'')
+   +'<span'+(it.hc?' style="color:'+col(it.hc,'#111827')+'"':'')+'>'+esc(it.head)+'</span>';
+}
+function media(it){const id=ytid(it.vid);
+  if(it.blocks&&it.blocks.length&&!(id&&!it.blocks.some(b=>b.t==='v')))return '';
+  return id?yt(id):imgBox(it,'big')}
 function card(it,hero){
-  const saved=st.bm[it.id]?' on':'';
-  const title='<span class="kick">'+esc(it.kick)+'</span> '+esc(it.head);
+  const saved=st.bm[it.id]?' on':'',title=titleHTML(it),more='<button class="more" data-a="open" data-id="'+it.id+'">पूरी खबर पढ़ें ›</button>';
   const foot='<div class="foot"><button class="pill" data-a="loc" data-v="'+esc(it.loc)+'">'+esc(it.loc)+' ›</button><div class="acts">'
    +'<button class="act" data-a="speakc" data-id="'+it.id+'" aria-label="सुनें">🔊</button>'
    +'<button class="act'+saved+'" data-a="bm" data-id="'+it.id+'" aria-label="सेव करें">🔖</button>'
    +'<button class="act" data-a="share" data-id="'+it.id+'" aria-label="शेयर">📤</button></div></div>';
-  const meta='<div class="src">'+esc(it.src)+(it.date?' • '+ago(it.date):'')+'</div>';
-  if(hero)return '<article class="card hero"><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+imgBox(it,'big')+meta+foot+'</article>';
-  return '<article class="card"><div class="row"><div><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+meta+'</div>'+imgBox(it,'thumb')+'</div>'+foot+'</article>';
+  const meta='<div class="src">'+vchip(it)+' '+esc(it.src)+(it.date?' • '+ago(it.date):'')+'</div>';
+  if(hero)return '<article class="card hero"><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+imgBox(it,'big')+meta+more+foot+'</article>';
+  return '<article class="card"><div class="row"><div><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+meta+'</div>'+imgBox(it,'thumb')+'</div>'+more+foot+'</article>';
 }
 function show(items,into){
   const box=into||$('#list');
   if(!items.length){box.innerHTML='<div class="empty"><b>कुछ नहीं मिला</b>कोई दूसरी कैटेगरी या शब्द आज़माएँ।</div>';return}
   st.items=into?st.items:items;
-  box.innerHTML=items.map((it,i)=>card(it,i===0&&!into)).join('');
+  box.innerHTML=items.map((it,i)=>card(it,it.type==='hero'||(i===0&&!it.type&&!into))).join('');
   if(!into){
-    const tk=items.slice(0,6).map(i=>i.head).join('  ◆  ');
-    $('#ticker').hidden=false;$('#tickTxt').textContent=tk;
-    if(!into)$('#feed').scrollTop=0;
+    $('#ticker').hidden=false;$('#tickTxt').textContent=st.cfg.tick||items.slice(0,6).map(i=>i.head).join('  ◆  ');
+    $('#feed').scrollTop=0;const f0=box.querySelector('img');if(f0){f0.loading='eager';f0.fetchPriority='high'}
   }
 }
+function fcHTML(it){if(it.type!=='fc'||!FV[it.verdict])return '';const f=FV[it.verdict];
+  return '<div class="fcb" style="border-left-color:'+f[1]+'"><div class="fcl">❝ दावा</div><p>'+esc(it.claim)+'</p><div class="fcl" style="color:'+f[1]+'">नतीजा: '+f[0]+'</div><p>'+esc(it.how||'')+'</p>'+(it.vsrc||[]).map((u,i)=>'<a class="vl" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">🔗 सबूत '+(i+1)+': '+esc(host(u))+'</a>').join('')+'</div>'}
+const verOf=it=>it.ver==='v'?'v':'u';
+const host=u=>{try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return u}};
+function vchip(it){return '<button class="vchip '+verOf(it)+'" data-a="ver" data-id="'+esc(it.id)+'">'+(verOf(it)==='v'?'✓ सत्यापित':'⚠ असत्यापित')+' ⓘ</button>'}
+function showVer(id){
+  const it=st.byId[id]||st.bm[id];if(!it)return;const v=verOf(it)==='v';
+  const q=encodeURIComponent((it.kick+' '+it.head).trim());
+  const links=(it.vsrc||[]).map((u,i)=>'<a class="vl" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">🔗 स्रोत '+(i+1)+': '+esc(host(u))+'</a>').join('');
+  const find='<a class="vl" href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener noreferrer">🔎 Google पर खुद जाँचें</a><a class="vl" href="https://news.google.com/search?q='+q+'&hl=hi&gl=IN&ceid=IN:hi" target="_blank" rel="noopener noreferrer">🗞️ Google News पर देखें</a>';
+  $('#verCard').innerHTML=v
+   ?'<h3>✓ सत्यापित खबर</h3><p>यह खबर सार्वजनिक रूप से कई जगह उपलब्ध है। आप इसकी जानकारी स्वतंत्र रूप से खुद भी जाँच सकते हैं।</p>'+links+find+(it.vnote?'<p class="meta">'+esc(it.vnote)+'</p>':'')+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>'
+   :'<h3>⚠ असत्यापित खबर</h3><p>यह खबर अभी किसी भरोसेमंद सार्वजनिक स्रोत से पुष्ट नहीं हुई है। यह मिली हुई कुछ तस्वीरों और सूचना के आधार पर है, इसलिए इसमें गलती हो सकती है।</p>'
+    +(it.vnote?'<p><b>कारण:</b> '+esc(it.vnote)+'</p>':'')+'<ul><li>इसे पक्का सच मानकर आगे शेयर न करें।</li><li>नीचे दिए लिंक से खुद जाँच करें।</li><li>पुष्टि होने पर खबर को सत्यापित किया जाएगा।</li></ul>'+links+find+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>';
+  $('#verBox').classList.add('open');
+}
+function renderTrend(){$('#trend').innerHTML=st.trend.map(t=>'<button class="pill" data-a="rq" data-v="'+esc(t)+'">'+esc(t)+' ›</button>').join('')}
 function ago(d){
   const m=(Date.now()-new Date(d))/6e4;if(isNaN(m))return '';
   if(m<60)return Math.max(1,Math.round(m))+' मिनट पहले';
@@ -257,11 +376,11 @@ function ago(d){
 function openArticle(id){
   const it=st.byId[id];if(!it)return;st.cur=it;
   const words=(it.full||'').split(/\s+/).length;
-  $('#rBody').innerHTML='<span class="pill">'+esc(it.loc)+'</span><h1><span class="kick">'+esc(it.kick)+'</span> '+esc(it.head)+'</h1>'
+  $('#rBody').innerHTML='<span class="pill">'+esc(it.loc)+'</span> '+vchip(it)+'<h1>'+titleHTML(it)+'</h1><div class="hl"></div>'
    +'<div class="meta">'+esc(it.src)+(it.date?' • '+ago(it.date):'')+' • पढ़ने में '+Math.max(1,Math.round(words/120))+' मिनट</div>'
-   +'<div style="margin:12px 0">'+imgBox(it,'big')+'</div>'
-   +'<p>'+esc(it.full||it.head)+'</p>'
-   +(it.link?'<a class="btn" style="display:inline-block;text-decoration:none" href="'+esc(it.link)+'" target="_blank" rel="noopener noreferrer">पूरी खबर '+esc(it.src)+' पर पढ़ें</a>':'');
+   +fcHTML(it)+(verOf(it)==='u'?'<div class="vwarn">⚠ यह खबर असत्यापित है। आगे शेयर करने से पहले खुद जाँच लें।</div>':'')+'<div style="margin:12px 0">'+media(it)+'</div>'
+   +bodyHTML(it)
+   +(it.link?'<a class="btn" style="display:inline-block;text-decoration:none" href="'+esc(it.link)+'" target="_blank" rel="noopener noreferrer">'+(it.own?'🌐 ब्लॉग पर पूरी खबर खोलें':'पूरी खबर '+esc(it.src)+' पर पढ़ें')+'</a>':'')+relHTML(it);
   $('#rBm').style.color=st.bm[id]?'var(--accent)':'';
   $('#rBody').scrollTop=0;$('#prog').style.width='0';
   $('#reader').classList.add('open');history.pushState({r:1},'');
@@ -300,14 +419,14 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');cl
 // ---------- Tabs ----------
 function setTab(t){
   st.tab=t;$$('.nt').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
-  const catsOn=t==='home';$('#cats').style.display=catsOn?'flex':'none';$('#ticker').style.display=catsOn?'':'none';
+  const catsOn=t==='home';$('#cats').style.display=catsOn?'flex':'none';$('#ticker').style.display=catsOn?'':'none';$('#trend').style.display=catsOn?'flex':'none';
   if(t==='home')load(CATS[st.cat].q);
   else if(t==='video')load('वीडियो समाचार इंडिया');
   else if(t==='saved')showSaved();
   else showSettings();
 }
 function showSaved(){
-  const l=Object.values(st.bm);
+  const l=Object.values(st.bm);l.forEach(i=>st.byId[i.id]=i);
   if(!l.length){$('#list').innerHTML='<div class="empty"><b>अभी कुछ सेव नहीं है</b>किसी खबर पर 🔖 दबाएँ, वो यहाँ मिलेगी।</div>';return}
   show(l,$('#list'));
 }
@@ -333,36 +452,78 @@ async function runSearch(q){
   q=q.trim();if(!q)return;
   st.recent=[q,...st.recent.filter(x=>x!==q)].slice(0,8);S.set('recent',st.recent);
   $('#sRes').innerHTML='<div class="sk"><div class="sh" style="height:16px;flex:1"></div></div>';
-  try{const r=await fetchLive(q);$('#sRes').innerHTML=r.length?r.map(i=>card(i)).join(''):'<div class="empty"><b>कुछ नहीं मिला</b>दूसरा शब्द आज़माएँ।</div>'}
+  try{const r=onlyBlog()?searchPool(q):await fetchLive(q);$('#sRes').innerHTML=r.length?r.map(i=>card(i)).join(''):'<div class="empty"><b>कुछ नहीं मिला</b>दूसरा शब्द आज़माएँ।</div>'}
   catch(e){$('#sRes').innerHTML='<div class="empty"><b>खोज नहीं हो पाई</b>इंटरनेट जाँचें।</div>'}
 }
 
 // ---------- Admin (local only) ----------
 let taps=0,tapT;
+const V=id=>$('#'+id).value.trim(),dv=(v,d)=>v.toLowerCase()===d?'':v;
+const cbtn=(a,i,v,t)=>'<button class="act" data-a="'+a+'" data-i="'+i+'" data-v="'+v+'">'+t+'</button>';
 function adminGate(){
   const p=prompt(st.cfg.pin?'एडमिन पिन डालें:':'पहली बार: नया पिन बनाएँ (4+ अंक):');
   if(!p)return;
   hashPin(p).then(h=>{
     if(!st.cfg.pin){if(p.length<4){toast('पिन छोटा है');return}st.cfg.pin=h;S.set('cfg',st.cfg)}
     else if(st.cfg.pin!==h){toast('गलत पिन');return}
-    $('#aBlog').value=st.cfg.blog||'';$('#admin').classList.add('open');history.pushState({a:1},'');
+    openAdmin();
   });
 }
 async function hashPin(p){
   try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('inp:'+p));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
   catch(e){return hash(p)}
 }
-function adminPost(){
-  const t=$('#aTitle').value.trim();if(!t){toast('हेडलाइन लिखें');return}
-  const {kick,head}=parseTitle(t);
-  const o={id:'l'+Date.now(),kick,head,src:'हमारी खबर',loc:$('#aLoc').value.trim()||'उत्तरप्रदेश',img:safeUrl($('#aImg').value.trim()),link:'',date:new Date().toISOString(),full:$('#aFull').value.trim(),own:1};
-  st.local.unshift(o);S.set('local',st.local);closeSheet();toast('पब्लिश हुआ');setTab('home');
+function openAdmin(){
+  $('#aBlog').value=st.cfg.blog||'';$('#aMode').value=st.cfg.only===false?'mix':'blog';$('#aTrend').value=st.trend.join(', ');$('#aTick').value=st.cfg.tick||'';$('#aPin').value='';
+  fillCatSel();renderAC();renderMine();atab('aPost');
+  $('#admin').classList.add('open');history.pushState({a:1},'');
 }
+function atab(v){['aPost','aCats','aSet'].forEach(x=>$('#'+x).style.display=x===v?'block':'none');$$('.atabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v))}
+function fillCatSel(){$('#aCat').innerHTML=st.cats.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.n)+'</option>').join('')}
+// ---- खबर ----
+function readPost(){return {type:V('aType'),cat:V('aCat'),badge:V('aBadge'),bg:V('aBg'),bt:V('aBt'),kick:V('aKick'),kc:dv(V('aKc'),'#c2410c'),head:V('aTitle'),hc:dv(V('aHc'),'#111827'),loc:V('aLoc')||'उत्तरप्रदेश',img:safeUrl(V('aImg')),vid:safeUrl(V('aVid')),dur:V('aDur'),full:V('aFull'),ver:V('aVer'),vsrc:V('aSrc').split(',').map(x=>safeUrl(x.trim())).filter(Boolean),vnote:V('aVnote'),claim:V('aClaim'),verdict:V('aVerdict'),how:V('aHow'),src:'हमारी खबर',own:1}}
+function clearForm(){st.editId=null;['aBadge','aKick','aTitle','aImg','aVid','aDur','aFull','aSrc','aVnote','aClaim','aHow'].forEach(i=>$('#'+i).value='');
+  $('#aVer').value='u';$('#aVerdict').value='';fcToggle();$('#aBg').value='#dc2626';$('#aBt').value='#ffffff';$('#aKc').value='#c2410c';$('#aHc').value='#111827';$('#aPubBtn').textContent='🚀 पब्लिश करें'}
+function adminPost(){
+  const o=readPost();if(!o.head){toast('हेडलाइन लिखें');return}
+  if(o.type==='fc'){if(!o.claim||!o.verdict){toast('दावा और नतीजा चुनें');return}if(!o.vsrc.length){toast('फैक्ट चेक के लिए सबूत का लिंक ज़रूरी है');return}o.ver='v'}
+  if(o.ver==='v'&&!o.vsrc.length){toast('सत्यापित के लिए स्रोत लिंक ज़रूरी है');return}
+  if(!o.kick){const p=parseTitle(o.head);if(o.head.includes(':')||o.head.includes('|')){o.kick=p.kick;o.head=p.head}}
+  const i=st.editId?st.local.findIndex(x=>x.id===st.editId):-1;
+  if(i>=0){o.id=st.editId;o.date=st.local[i].date;st.local[i]=o}else{o.id='l'+Date.now();o.date=new Date().toISOString();st.local.unshift(o)}
+  S.set('local',st.local);clearForm();closeSheet();toast('पब्लिश हुआ');setTab('home');
+}
+function renderMine(){$('#myPosts').innerHTML=st.local.length?st.local.map(o=>'<div class="crow"><span style="flex:1">'+esc(o.head).slice(0,60)+'</span>'+'<button class="act" data-a="pedit" data-id="'+o.id+'">✏️</button><button class="act" data-a="pdel" data-id="'+o.id+'">🗑</button></div>').join(''):'<p class="meta">अभी कोई खबर नहीं।</p>'}
+function editPost(id){const o=st.local.find(x=>x.id===id);if(!o)return;st.editId=id;
+  const m={aType:o.type,aCat:o.cat,aBadge:o.badge,aBg:col(o.bg,'#dc2626'),aBt:col(o.bt,'#ffffff'),aKick:o.kick,aKc:col(o.kc,'#c2410c'),aTitle:o.head,aHc:col(o.hc,'#111827'),aLoc:o.loc,aImg:o.img,aVid:o.vid,aDur:o.dur,aFull:o.full,aVer:o.ver==='v'?'v':'u',aSrc:(o.vsrc||[]).join(', '),aVnote:o.vnote,aClaim:o.claim,aVerdict:o.verdict,aHow:o.how};
+  for(const k in m)$('#'+k).value=m[k]||'';fcToggle();$('#aPubBtn').textContent='💾 बदलाव सेव करें';$('.body.form').scrollTop=0}
+function delPost(id){if(!confirm('यह खबर हटाएँ?'))return;st.local=st.local.filter(x=>x.id!==id);S.set('local',st.local);renderMine();dirty()}
+function dirty(){st.dirty=1}
+function fcToggle(){const f=$('#aType').value==='fc';$('#fcBox').style.display=f?'block':'none';if(f&&st.cats.some(c=>c.id==='cfc')&&!st.editId)$('#aCat').value='cfc'}
 function adminCopy(){
-  const t=$('#aTitle').value.trim();if(!t){toast('हेडलाइन लिखें');return}
-  const im=safeUrl($('#aImg').value.trim());
-  const code='<!-- पोस्ट का टाइटल: '+t+' -->\n'+(im?'<img src="'+im+'">\n':'')+'<p>'+$('#aFull').value.replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</p>';
-  navigator.clipboard.writeText(code).then(()=>toast('कोड कॉपी हो गया'),()=>toast('कॉपी नहीं हो पाया'));
+  const o=readPost();if(!o.head){toast('हेडलाइन लिखें');return}delete o.cat;
+  const code='<div id="indian-news-custom-meta" data-config="'+encodeURIComponent(JSON.stringify(o))+'" style="display:none"></div>'+(o.img?'<img src="'+esc(o.img)+'">':'')+'<p>'+esc(o.full).replace(/\n/g,'<br>')+'</p>';
+  navigator.clipboard.writeText(code).then(()=>toast('कोड कॉपी हुआ: Blogger के HTML व्यू में चिपकाएँ'),()=>toast('कॉपी नहीं हो पाया'));
+}
+// ---- कैटेगरी ----
+function saveCats(){S.set('cats',st.cats);syncCats();renderCats();fillCatSel();renderAC();dirty()}
+function renderAC(){$('#acList').innerHTML=st.cats.map((c,i)=>'<div class="crow"><span style="flex:1;'+(c.hide?'opacity:.45':'')+'"><b>'+esc(c.n)+'</b><br><small class="meta">'+esc(c.q)+(c.label?' • लेबल: '+esc(c.label):'')+' • '+({both:'दोनों',live:'लाइव',own:'मेरी'}[c.mode]||'दोनों')+'</small></span>'
+  +cbtn('cmv',i,-1,'↑')+cbtn('cmv',i,1,'↓')+cbtn('chide',i,0,c.hide?'🙈':'👁')+cbtn('cedit',i,0,'✏️')+cbtn('cdel',i,0,'🗑')+'</div>').join('')}
+function catSave(){
+  const n=V('cName');if(!n){toast('नाम लिखें');return}
+  const o={n,q:V('cQ')||n+' समाचार',label:V('cLab'),mode:V('cMode')};
+  if(st.ec!=null){Object.assign(st.cats[st.ec],o);st.ec=null}else st.cats.push(Object.assign({id:'c'+Date.now().toString(36)},o));
+  ['cName','cQ','cLab'].forEach(i=>$('#'+i).value='');$('#cBtn').textContent='➕ कैटेगरी जोड़ें';saveCats();toast('कैटेगरी सेव हुई');
+}
+function catMove(i,d){const j=i+d;if(j<0||j>=st.cats.length)return;[st.cats[i],st.cats[j]]=[st.cats[j],st.cats[i]];saveCats()}
+function catHide(i){const c=st.cats[i];if(!c.hide&&st.cats.filter(x=>!x.hide).length<2){toast('कम से कम एक कैटेगरी दिखनी चाहिए');return}c.hide=!c.hide;saveCats()}
+function catEdit(i){const c=st.cats[i];st.ec=i;$('#cName').value=c.n;$('#cQ').value=c.q;$('#cLab').value=c.label||'';$('#cMode').value=c.mode||'both';$('#cBtn').textContent='💾 बदलाव सेव करें';$('.body.form').scrollTop=0}
+function catDel(i){if(st.cats.length<2){toast('आख़िरी कैटेगरी नहीं हटा सकते');return}if(!confirm('"'+st.cats[i].n+'" हटाएँ?'))return;st.cats.splice(i,1);st.ec=null;saveCats()}
+function saveSet(){
+  st.cfg.blog=V('aBlog');st.cfg.only=V('aMode')!=='mix';st.cfg.tick=V('aTick');st.trend=V('aTrend').split(',').map(x=>x.trim()).filter(Boolean);
+  const np=V('aPin');S.set('trend',st.trend);
+  const fin=()=>{S.set('cfg',st.cfg);closeSheet();renderTrend();toast('सेव हुआ');setTab('home')};
+  if(np){if(np.length<4){toast('पिन कम से कम 4 अंक का हो');return}hashPin(np).then(h=>{st.cfg.pin=h;fin()})}else fin();
 }
 
 // ---------- Events (ek hi jagah, delegation) ----------
@@ -379,7 +540,7 @@ document.addEventListener('click',e=>{
     case 'speak':if(st.cur)speak(st.cur.id,el);break;
     case 'rbm':if(st.cur)toggleBm(st.cur.id);break;
     case 'rshare':if(st.cur)share(st.cur.id);break;
-    case 'close':closeSheet();break;
+    case 'close':closeSheet();if(st.dirty){st.dirty=0;setTab(st.tab)}break;
     case 'search':openSearch();break;
     case 'theme':st.prefs.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';S.set('prefs',st.prefs);applyPrefs();break;
     case 'loc':case 'rq':openSearch();$('#q').value=v;runSearch(v);break;
@@ -387,15 +548,15 @@ document.addEventListener('click',e=>{
     case 'fs':st.prefs.fs=+v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
     case 'th':st.prefs.theme=v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
     case 'admin':adminGate();break;
-    case 'pub':adminPost();break;
+    case 'ver':showVer(id);break;case 'vclose':$('#verBox').classList.remove('open');break;case 'yt':el.outerHTML='<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:8px" src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>';break;case 'pub':adminPost();break;case 'atab':atab(v);break;case 'cadd':catSave();break;case 'cmv':catMove(+el.dataset.i,+v);break;case 'chide':catHide(+el.dataset.i);break;case 'cedit':catEdit(+el.dataset.i);break;case 'cdel':catDel(+el.dataset.i);break;case 'creset':if(confirm('डिफ़ॉल्ट कैटेगरी लौटाएँ?')){st.cats=JSON.parse(JSON.stringify(DEFCATS));saveCats()}break;case 'pedit':editPost(id);break;case 'pdel':delPost(id);break;case 'pcancel':clearForm();break;
     case 'cpy':adminCopy();break;
-    case 'saveblog':st.cfg.blog=$('#aBlog').value.trim();S.set('cfg',st.cfg);closeSheet();toast('सेव हुआ');setTab('home');break;
+    case 'saveset':saveSet();break;
   }
 });
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.a==='open')openArticle(e.target.dataset.id)});
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch(e.target.value)});
 $('#rBody').addEventListener('scroll',e=>{const b=e.target;$('#prog').style.width=(b.scrollTop/Math.max(1,b.scrollHeight-b.clientHeight)*100)+'%'});
-window.addEventListener('popstate',closeSheet);
+window.addEventListener('popstate',closeSheet);$('#aType').addEventListener('change',fcToggle);
 window.addEventListener('online',()=>{$('#off').style.display='none';load(CATS[st.cat].q,true)});
 window.addEventListener('offline',()=>{$('#off').style.display='block'});
 // Logo par 5 baar tap = admin
@@ -418,7 +579,9 @@ setInterval(()=>{if(st.tab==='home'&&!document.hidden&&!$('.sheet.open'))load(CA
 try{const m={name:'इंडियन न्यूज़',short_name:'न्यूज़',display:'standalone',start_url:location.href,background_color:'#f6f1e9',theme_color:'#c2410c'};
  const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l)}catch(e){}
 
-renderCats();setTab('home');
+try{if(st.cfg.blog){const l=document.createElement('link');l.rel='preconnect';l.href=new URL(/^https?:/.test(st.cfg.blog)?st.cfg.blog:'https://'+st.cfg.blog).origin;document.head.appendChild(l)}}catch(e){}
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+renderCats();renderTrend();setTab('home');
 </script>
 </body>
 </html>
