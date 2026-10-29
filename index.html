@@ -36,14 +36,17 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:130px;}
 .ptr{height:0;overflow:hidden;text-align:center;font-size:13px;color:var(--mute);transition:height .2s}
 
+/* Thumbnail, Image & Premium Play Button CSS */
 .card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px;}
 .card h3{margin:0;font-size:calc(var(--fs) + 1px);line-height:1.45;font-weight:800;cursor:pointer}
 .card.hero h3{font-size:calc(var(--fs) + 4px);margin-bottom:10px}
 .kick{color:var(--accent)}
 .row{display:flex;gap:12px;align-items:flex-start}
 .row>div:first-child{flex:1}
+/* Image Box styling */
 .img{background:linear-gradient(135deg,var(--line),var(--bg));border-radius:8px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:26px;position:relative;cursor:pointer;}
 .img img{width:100%;height:100%;object-fit:cover;object-position:center top;} 
+/* Pro Video Play Button */
 .play { position: absolute; background: rgba(0,0,0,0.5); color: #fff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; backdrop-filter: blur(4px); border: 2px solid rgba(255,255,255,0.7); z-index: 2; pointer-events: none; padding-left: 4px; }
 .dur { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.8); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; z-index: 2; pointer-events: none; }
 .thumb{width:120px;aspect-ratio:4/3;height:auto;} 
@@ -62,15 +65,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .empty{text-align:center;padding:50px 24px;color:var(--mute)}
 .empty b{display:block;font-size:17px;color:var(--ink);margin-bottom:6px}
 .btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 20px;font-weight:800;margin-top:14px;min-height:44px}
-
-/* REELS / FULL SCREEN VIDEO STYLING (PRO LEVEL) */
-.reels-container { position: absolute; inset: 0; background: #000; z-index: 40; display: none; flex-direction: column; overflow: hidden; }
-.reels-container.open { display: flex; }
-.reel-item { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
-.reel-video-wrap { width: 100%; height: 100%; position: relative; }
-.reel-video-wrap iframe { width: 100%; height: 100%; border: 0; object-fit: cover; }
-/* Click Blocking Masking Layer - Taaki timeline ya YouTube click na ho sake */
-.reel-blocker { position: absolute; inset: 0; z-index: 5; background: transparent; }
 
 .nav {
   position: absolute;
@@ -230,19 +224,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   
   <div class="feed" id="feed"><div class="ptr" id="ptr">↓ रिफ्रेश के लिए खींचें</div><div id="list"></div></div>
   
-  <!-- REELS FULL SCREEN PLAYER OVERLAY -->
-  <div class="reels-container" id="reelsViewer">
-    <div class="sh-head" style="position:absolute; top:0; left:0; right:0; z-index:60; background:rgba(0,0,0,0.7); border:0;">
-      <button class="ib" data-a="closereels" aria-label="वापस" style="color:#fff;">←</button>
-      <span class="sp"></span>
-      <b style="color:#fff;">वीडियो रील्स</b>
-      <span class="sp"></span>
-    </div>
-    <div class="reel-item" id="reelScreen">
-      <!-- Video yahan auto load hogi -->
-    </div>
-  </div>
-
+  <!-- Nav bar id="mainNav" diya hai taaki baad mein isko hide/show kar sakein -->
   <nav class="nav" id="mainNav" role="tablist">
     <button class="nt" role="tab" aria-selected="true" data-tab="home">
       <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -296,7 +278,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
      <input id="aVnote" placeholder="पाठकों को दिखने वाला नोट (वैकल्पिक, जैसे: सिर्फ़ फोटो के आधार पर)">
      <div id="fcBox" style="display:none"><textarea id="aClaim" rows="2" placeholder="दावा: जो बात फैल रही है"></textarea>
       <select id="aVerdict"><option value="">— नतीजा चुनें —</option><option value="s">✓ सही</option><option value="g">✗ गलत</option><option value="b">⚠ भ्रामक</option><option value="a">◐ अधूरा सच</option><option value="n">? पुष्टि नहीं हो सकी</option></select>
-      <textarea id="aHow" rows="3" placeholder=" कैसे जाँचा"></textarea></div>
+      <textarea id="aHow" rows="3" placeholder="कैसे जाँचा"></textarea></div>
      <textarea id="aFull" rows="6" placeholder="पूरी खबर…"></textarea>
      <button class="btn" id="aPubBtn" data-a="pub" style="width:100%">🚀 पब्लिश करें (सबके ऐप में)</button>
      <button class="btn" data-a="pcancel" style="width:100%;background:#78716c">फ़ॉर्म खाली करें</button>
@@ -381,13 +363,12 @@ function norm(o){const s=(x,n)=>String(x==null?'':x).slice(0,n);
 const T=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r([]),ms))]);
 const onlyBlog=()=>st.cfg.only!==false&&!!st.cfg.blog;
 
+/* ULTRA PRO MAX - Shorts Link Support Added Here */
 const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
 const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
-
-// ULTRA PRO MAX: Thumbnail image par click karte hi direct Full Screen Reels Player khulega (No Feed Inline Error)
-const yt=id=>'<div class="yt" data-a="openreel" data-v="'+id+'" role="button" aria-label="वीडियो चलाएँ"><img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" loading="lazy" alt=""><span class="play">▶</span></div>';
-
+const yt=id=>'<div class="yt" data-a="yt" data-v="'+id+'" role="button" aria-label="वीडियो चलाएँ"><img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" loading="lazy" alt=""><span class="play">▶</span></div>';
 const INL=/^(B|I|U|STRONG|EM|A|SPAN|FONT|SMALL|MARK)$/;
+
 function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/\s+/g,' ').trim();if(t)out.push({t:'p',x:t});buf=''};
   const walk=n=>{for(const c of n.childNodes){
     if(c.nodeType===3){buf+=c.textContent;continue}
@@ -462,10 +443,11 @@ function showSkel(){
   $('#list').innerHTML=h;
 }
 
-// ULTRA PRO MAX: Image Box click action - Agar video hai toh direct Reel khulegi, warna normal article
+/* ULTRA PRO MAX - Smart Image Box (Inline Play Logic) */
 function imgBox(it,cls){
   const id=ytid(it.vid),im=it.img||(id?'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg':'');
-  const action = id ? ' data-a="openreelvid" data-v="'+id+'" role="button"' : ' data-a="open" data-id="'+it.id+'"';
+  // Logic: Badi photo par click = Wahi par video chalegi. Chhoti photo par click = Poora article khulega.
+  const action = (id && cls === 'big') ? ' data-a="yt" data-v="'+id+'" role="button"' : (cls === 'thumb' ? ' data-a="open" data-id="'+it.id+'"' : '');
   return '<div class="img '+cls+'"'+action+'>'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="'+esc(it.head)+'" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+(it.vid?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
 }
 
@@ -537,6 +519,7 @@ function openArticle(id){
   $('#rBody').scrollTop=0;$('#prog').style.width='0';
   if(!$('#reader').classList.contains('open')){
     $('#reader').classList.add('open');
+    // Article khulte hi Nav Bar chhupa do (UX Fix)
     $('#mainNav').style.opacity='0'; $('#mainNav').style.pointerEvents='none';
     pushS();
   }
@@ -546,6 +529,7 @@ function closeSheet(){
   if(t)t.classList.remove('open');
   if(!$('#reader.open')){
       stopSpeak();
+      // Wapas aane par Nav bar dikha do
       $('#mainNav').style.opacity='1'; $('#mainNav').style.pointerEvents='auto';
   }
   if(st.dirty&&!$('.sheet.open')){st.dirty=0;setTab(st.tab)}
@@ -580,42 +564,11 @@ function speak(id,btn){
 }
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2200)}
 
-// ULTRA PRO MAX: Video button click handler - Direct latest video full screen khulegi
-function openLatestVideo(){
-  const allVids = Object.values(st.byId).filter(o => o.vid);
-  let targetId = '';
-  if(allVids.length > 0) {
-    targetId = ytid(allVids[0].vid);
-  } else {
-    targetId = 'dQw4w9WgXcQ'; // Default backup id
-  }
-  openReelsViewer(targetId);
-}
-
-function openReelsViewer(videoId){
-  const viewer = $('#reelsViewer');
-  const screen = $('#reelScreen');
-  // Click-blocking overlay layer ke sath iframe jisse timeline/logo disable rahega
-  screen.innerHTML = '<div class="reel-video-wrap"><div class="reel-blocker"></div><iframe src="https://www.youtube.com/embed/'+encodeURIComponent(videoId)+'?autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3" allow="autoplay;encrypted-media" allowfullscreen></iframe></div>';
-  viewer.classList.add('open');
-  $('#mainNav').style.opacity='0'; $('#mainNav').style.pointerEvents='none';
-  pushS();
-}
-
-function closeReelsViewer(){
-  $('#reelsViewer').classList.remove('open');
-  $('#reelScreen').innerHTML = '';
-  $('#mainNav').style.opacity='1'; $('#mainNav').style.pointerEvents='auto';
-}
-
 function setTab(t){
-  if(t === 'video'){
-    openLatestVideo();
-    return;
-  }
   st.tab=t;$$('.nt').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
   const catsOn=t==='home';$('#cats').style.display=catsOn?'flex':'none';$('#ticker').style.display=catsOn?'':'none';$('#trend').style.display=catsOn?'flex':'none';
   if(t==='home')load(CATS[st.cat].q);
+  else if(t==='video')load('वीडियो समाचार इंडिया');
   else if(t==='saved')showSaved();
   else showSettings();
 }
@@ -627,9 +580,9 @@ function showSaved(){
 function showSettings(){
   const p=st.prefs;
   $('#list').innerHTML='<div class="set"><h4>अक्षरों का आकार</h4><div class="seg">'
-   +[[14,'छोटा'],[16,'सामान्य'],[19,'बड़ा'],[22,'बहुत बड़ा']].map(a=>'<button data-a="fs" data-v="'+a[0]+'" aria-pressed="'+(p.fs==a[0])+'">'+a[1].toString()+'</button>').join('')
+   +[[14,'छोटा'],[16,'सामान्य'],[19,'बड़ा'],[22,'बहुत बड़ा']].map(a=>'<button data-a="fs" data-v="'+a[0]+'" aria-pressed="'+(p.fs==a[0])+'">'+a[1]+'</button>').join('')
    +'</div></div><div class="set"><h4>थीम</h4><div class="seg">'
-   +[['auto','ऑटो'],['light','दिन'],['dark','रात']].map(a=>'<button data-a="th" data-v="'+a[0]+'" aria-pressed="'+(p.theme===a[0])+'">'+a[1].toString()+'</button>').join('')
+   +[['auto','ऑटो'],['light','दिन'],['dark','रात']].map(a=>'<button data-a="th" data-v="'+a[0]+'" aria-pressed="'+(p.theme===a[0])+'">'+a[1]+'</button>').join('')
    +'</div></div><div class="set"><h4>ऐप के बारे में</h4><p class="meta" style="margin:0">इंडियन न्यूज़ • आपके ज़िले और देश-दुनिया की हर खबर, सबसे पहले आपके फ़ोन पर।</p></div>'
    ;
 }
@@ -723,7 +676,7 @@ function clearForm(){st.editId=st.editOv=null;['aBadge','aKick','aTitle','aImg',
   $('#aVer').value='u';$('#aVerdict').value='';$('#aBg').value='#dc2626';$('#aBt').value='#ffffff';$('#aKc').value='#c2410c';$('#aHc').value='#111827';
   $('#aPubBtn').textContent='🚀 पब्लिश करें (सबके ऐप में)';$('#aNote').style.display='none';fcToggle()}
 async function adminPost(){
-  const o=readPost();if(!o.head){toast('हेडलाइन लिखें');return}
+  const o=readPost();if(!o.head){toast('हेheadline लिखें');return}
   if(o.type==='fc'){if(!o.claim||!o.verdict){toast('दावा और नतीजा चुनें');return}o.ver='v'}
   if(!o.kick&&(o.head.includes(':')||o.head.includes('|'))){const p=parseTitle(o.head);o.kick=p.kick;o.head=p.head}
   try{
@@ -733,7 +686,8 @@ async function adminPost(){
       const id=st.editOv;clearForm();atab('aList');if(Object.keys(p).length)await ovSet(id,p);else toast('कुछ बदला नहीं');return}
     const id=st.editId||'p'+Date.now().toString(36),old=st.rem.custom[id];o.date=(old&&old.date)||new Date().toISOString();
     await fbWrite('/pub/custom/'+id,o);st.rem.custom[id]=o;S.set('rem',st.rem);st.bc=null;clearForm();toast('पब्लिश हुआ ✓');dirty();atab('aList');renderList();
-  }catch(e){toast('नहीं हो पाया: '+e.message)}}
+  }catch(e){toast('नहीं हो पाया: '+e.message)}
+}
 function editPost(id){const o=st.byId[id];if(!o)return;const cu=!!st.rem.custom[id];st.editId=cu?id:null;st.editOv=cu?null:id;
   const m={aType:o.type||'compact',aCat:o.cat||'',aBadge:o.badge,aBg:col(o.bg,'#dc2626'),aBt:col(o.bt,'#ffffff'),aKick:o.kick,aKc:col(o.kc,'#c2410c'),aTitle:o.head,aHc:col(o.hc,'#111827'),aLoc:o.loc,aImg:o.img,aVid:o.vid,aDur:o.dur,aFull:o.full,aVer:verOf(o),aVnote:o.vnote,aClaim:o.claim,aVerdict:o.verdict,aHow:o.how};
   atab('aPost');for(const k in m)$('#'+k).value=m[k]||'';fcToggle();
@@ -755,7 +709,7 @@ function saveSet(){const b=V('aBlog');st.cfg.blog=/^https?:\/\//.test(b)?b.repla
   st.trend=V('aTrend').split(',').map(x=>x.trim()).filter(Boolean);S.set('trend',st.trend);renderTrend();st.bc=null;dirty();pushConfig()}
 async function showMore(){const c=CATS[st.cat],label=c&&c!==CATS[0]?lbl(c):'',raw=await getBlog(label,st.pg*40+1);st.pg++;
   const r=raw.filter(i=>(!c||inCat(i,c))&&!i.hide),mb=$('#list .morebox');if(mb)mb.remove();
-  $('#list'].insertAdjacentHTML('beforeend',r.map(i=>card(i)).join('')+(raw.length>=40?MORE:''))}
+  $('#list').insertAdjacentHTML('beforeend',r.map(i=>card(i)).join('')+(raw.length>=40?MORE:''))}
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a],[data-tab],.cat');if(!el)return;
@@ -779,10 +733,8 @@ document.addEventListener('click',e=>{
     case 'th':st.prefs.theme=v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
     case 'admin':adminGate();break;
     case 'ver':showVer(id);break;case 'vclose':$('#verBox').classList.remove('open');break;
-    /* ULTRA PRO MAX: Direct Full Screen Reels Player Trigger */
-    case 'openreel': openReelsViewer(v); break;
-    case 'openreelvid': openReelsViewer(v); break;
-    case 'closereels': closeReelsViewer(); break;
+    /* ULTRA PRO MAX - Inline Iframe Swap Code (Feed me video chalane ke liye) */
+    case 'yt':el.outerHTML='<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:8px" src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>';break;
     case 'login':doLogin();break;case 'logout':st.auth=null;S.set('rt',null);showA(false);break;case 'rlist':renderList();break;case 'atog':ovSet(id,{ver:verOf(st.byId[id])==='v'?'u':'v'});break;case 'ahide':ovSet(id,{hide:!st.byId[id].hide});break;case 'apin':ovSet(id,{pin:!st.byId[id].pin});break;case 'adel':delPost(id);break;case 'aedit':editPost(id);break;case 'more':showMore();break;case 'top':$('#feed').scrollTo({top:0,behavior:'smooth'});break;case 'pub':adminPost();break;case 'atab':atab(v);break;case 'cadd':catSave();break;case 'cmv':catMove(+el.dataset.i,+v);break;case 'chide':catHide(+el.dataset.i);break;case 'cedit':catEdit(+el.dataset.i);break;case 'cdel':catDel(+el.dataset.i);break;case 'creset':if(confirm('डिफ़ॉल्ट कैटेगरी लौटाएँ?')){st.cats=JSON.parse(JSON.stringify(DEFCATS));saveCats()}break;case 'pedit':editPost(id);break;case 'pdel':delPost(id);break;case 'pcancel':clearForm();break;
     case 'saveset':saveSet();break;
   }
@@ -790,7 +742,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.a==='open')openArticle(e.target.dataset.id)});
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch(e.target.value)});
 $('#rBody').addEventListener('scroll',e=>{const b=e.target;$('#prog').style.width=(b.scrollTop/Math.max(1,b.scrollHeight-b.clientHeight)*100)+'%'});
-window.addEventListener('popstate',()=>{st.hs=Math.max(0,(st.hs||0)-1);closeSheet();closeReelsViewer();});$('#aType').addEventListener('change',fcToggle);
+window.addEventListener('popstate',()=>{st.hs=Math.max(0,(st.hs||0)-1);closeSheet()});$('#aType').addEventListener('change',fcToggle);
 window.addEventListener('online',()=>{$('#off').style.display='none';load(CATS[st.cat].q,true)});
 window.addEventListener('offline',()=>{$('#off').style.display='block'});
 // Logo par 5 baar tap = admin
