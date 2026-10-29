@@ -15,10 +15,39 @@
 :root{--bg:#f6f1e9;--card:#fffdf9;--ink:#1c1917;--mute:#78716c;--line:#e7e0d4;--accent:#c2410c;--accent2:#9a3412;--fs:16px;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
 :root[data-theme=dark]{--bg:#141210;--card:#1e1b18;--ink:#f5efe6;--mute:#a8a095;--line:#34302b;--accent:#fb923c;--accent2:#fdba74}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:Mukta,'Noto Sans Devanagari',system-ui,sans-serif;color:var(--ink)}
+
+/* डेस्कटॉप मोड और मोबाइल दोनों के लिए परफेक्ट फ्रेम सेटिंग */
+html,body{
+  margin:0;
+  height:100%;
+  height:100dvh;
+  overflow:hidden;
+  background:#111; /* डेस्कटॉप पर बाहर का हिस्सा काला दिखेगा */
+  font-family:Mukta,'Noto Sans Devanagari',system-ui,sans-serif;
+  color:var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* यह शेल अब एक फिक्स्ड मोबाइल डिब्बे की तरह काम करेगा */
+.shell{
+  width:100%;
+  height:100%;
+  max-width:480px; /* मोबाइल की चौड़ाई फिक्स */
+  margin:0 auto;
+  background:var(--bg);
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+  padding-top:var(--sat);
+  box-shadow: 0 0 30px rgba(0,0,0,0.8); /* डेस्कटॉप पर असली मोबाइल वाला लुक */
+}
+
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.shell{max-width:480px;height:100%;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;padding-top:var(--sat)}
+
 .top{background:var(--card);border-bottom:1px solid var(--line);flex-shrink:0}
 .bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
 .logo{font-weight:800;font-size:23px;letter-spacing:-.3px;color:var(--accent);line-height:1.25}
@@ -33,7 +62,19 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .cats::-webkit-scrollbar{display:none}
 .cat{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;font-weight:700;font-size:15px;color:var(--mute);white-space:nowrap;min-height:44px}
 .cat[aria-selected=true]{color:var(--ink);border-color:var(--accent)}
-.feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:90px;} /* Ultra Pro Max: Bottom space for floating nav */
+
+/* फीड के नीचे फेड इफ़ेक्ट ताकि ट्रांसपेरेंट बटन पर टेक्स्ट मिक्स न हो */
+.feed{
+  flex:1;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  position:relative;
+  padding-bottom:90px;
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
 .ptr{height:0;overflow:hidden;text-align:center;font-size:13px;color:var(--mute);transition:height .2s}
 .card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px}
 .card h3{margin:0;font-size:calc(var(--fs) + 1px);line-height:1.45;font-weight:800;cursor:pointer}
@@ -59,27 +100,16 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .empty b{display:block;font-size:17px;color:var(--ink);margin-bottom:6px}
 .btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 20px;font-weight:800;margin-top:14px;min-height:44px}
 
-/* ULTRA PRO MAX BOTTOM NAV */
+/* ULTRA PRO MAX BOTTOM NAV - पारदर्शी और हवा में तैरता हुआ */
 .nav {
   position: absolute;
   bottom: calc(15px + var(--sab));
   left: 15px;
   right: 15px;
   display: flex;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 24px;
-  padding: 8px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0,0,0,0.05);
+  background: transparent; /* सफेद पट्टी हटा दी गई है */
   z-index: 50;
-  gap: 4px;
-}
-:root[data-theme=dark] .nav {
-  background: rgba(30, 27, 24, 0.85);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+  gap: 8px;
 }
 .nt {
   flex: 1;
@@ -90,7 +120,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   align-items: center;
   justify-content: center;
   padding: 10px 4px;
-  border-radius: 18px;
+  border-radius: 20px; /* पिल शेप */
   font-size: 11px;
   font-weight: 700;
   color: var(--mute);
@@ -98,25 +128,28 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   position: relative;
 }
 .nt svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   margin-bottom: 4px;
   stroke: currentColor;
   fill: none;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .nt:active { transform: scale(0.92); }
+
+/* एक्टिव होने पर लाल बैकग्राउंड वाला पिल इफ़ेक्ट */
 .nt[aria-selected=true] {
   color: var(--accent);
-  background: rgba(194, 65, 12, 0.12);
+  background: rgba(194, 65, 12, 0.15); /* लाल बैकग्राउंड जो रहेगा */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 :root[data-theme=dark] .nt[aria-selected=true] {
-  background: rgba(251, 146, 60, 0.15);
+  background: rgba(251, 146, 60, 0.2);
 }
 .nt[aria-selected=true] svg {
-  transform: translateY(-2px) scale(1.15);
+  transform: translateY(-2px) scale(1.1);
   stroke-width: 2.2;
-  filter: drop-shadow(0 4px 6px rgba(194, 65, 12, 0.3));
 }
 .nt span {
   transition: all 0.3s ease;
@@ -195,7 +228,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   
   <div class="feed" id="feed"><div class="ptr" id="ptr">↓ रिफ्रेश के लिए खींचें</div><div id="list"></div></div>
   
-  <!-- ULTRA PRO MAX BOTTOM NAVIGATION -->
+  <!-- ULTRA PRO MAX BOTTOM NAVIGATION - पारदर्शी -->
   <nav class="nav" role="tablist">
     <button class="nt" role="tab" aria-selected="true" data-tab="home">
       <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -467,7 +500,7 @@ function ago(d){
   const m=(Date.now()-new Date(d))/6e4;if(isNaN(m))return '';
   if(m<60)return Math.max(1,Math.round(m))+' मिनट पहले';
   if(m<1440)return Math.round(m/60)+' घंटे पहले';
-  return Math.round(m/1440)+' दिन पहले';
+  return Math.round(m/1440)+' दिन પહેલા';
 }
 
 function openArticle(id){
@@ -713,3 +746,5 @@ applyRemote(S.get('rem',null));renderCats();renderTrend();setTab('home');loadRem
 </script>
 </body>
 </html>
+
+Yah Mera code aur is code mein yah sare badlav karke mujhe wapas kar do pura code
