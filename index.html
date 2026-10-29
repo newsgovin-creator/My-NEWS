@@ -33,7 +33,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .cats::-webkit-scrollbar{display:none}
 .cat{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;font-weight:700;font-size:15px;color:var(--mute);white-space:nowrap;min-height:44px}
 .cat[aria-selected=true]{color:var(--ink);border-color:var(--accent)}
-/* Padding badha di gayi hai taaki text na chhupe */
 .feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:130px;}
 .ptr{height:0;overflow:hidden;text-align:center;font-size:13px;color:var(--mute);transition:height .2s}
 .card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px}
@@ -66,8 +65,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   left: 15px;
   right: 15px;
   display: flex;
-  /* Yahan opacity 0.85 se 0.4 kar di gayi hai (Light mode) */
-  background: rgba(255, 255, 255, 0.4);
+  /* Opacity aur kam kar di gayi hai (Bahut zyada transparent) */
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -78,8 +77,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   gap: 4px;
 }
 :root[data-theme=dark] .nav {
-  /* Yahan opacity 0.85 se 0.4 kar di gayi hai (Dark mode) */
-  background: rgba(30, 27, 24, 0.4);
+  /* Dark mode mein bhi aur zyada transparent */
+  background: rgba(30, 27, 24, 0.15);
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
 }
@@ -132,7 +131,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .sh-head{display:flex;align-items:center;gap:4px;padding:6px 8px;background:var(--card);border-bottom:1px solid var(--line);padding-top:calc(6px + var(--sat))}
 .sh-head .sp{flex:1}
 .prog{height:3px;background:var(--accent);width:0;flex-shrink:0}
-.body{flex:1;overflow-y:auto;padding:16px;background:var(--card)}
+/* Yahan article reader ki body mein bottom padding 120px jodi gayi hai taaki text na chhupe */
+.body{flex:1;overflow-y:auto;padding:16px 16px 120px;background:var(--card)}
 .body h1{font-size:calc(var(--fs) + 5px);line-height:1.4;margin:8px 0}
 .body p{font-size:var(--fs);line-height:1.85;white-space:pre-line}
 .meta{font-size:12.5px;color:var(--mute)}
@@ -458,7 +458,7 @@ function showVer(id){
   const find='<a class="vl" href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener noreferrer">🔎 Google पर खुद जाँचें</a><a class="vl" href="https://news.google.com/search?q='+q+'&hl=hi&gl=IN&ceid=IN:hi" target="_blank" rel="noopener noreferrer">🗞️ Google News पर देखें</a>';
   $('#verCard').innerHTML=v
    ?'<h3>✓ सत्यापित खबर</h3><p>इस खबर को हमारी संपादकीय टीम ने जाँचकर सत्यापित किया है। यह जानकारी सार्वजनिक रूप से भी उपलब्ध है, आप चाहें तो खुद भी जाँच सकते हैं।</p>'+links+find+(it.vnote?'<p class="meta">'+esc(it.vnote)+'</p>':'')+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>'
-   :'<h3>⚠ असत्यापित खबर</h3><p>यह खबर अभी किसी भरोसेमंद सार्वजनिक स्रोत से पुष्ट नहीं हुई है। यह मिली हुई कुछ तस्वीरों और सूचना के आधार पर है, इसलिए इसमें गलती हो सकती है।</p>'
+   :'<h3>⚠ असत्यापित खबर</h3><p>यह खबर अभी किसी भरोसेमंद सार्वजनिक स्रोत से पुष्ट মোহना नहीं हुई है। यह मिली हुई कुछ तस्वीरों और सूचना के आधार पर है, इसलिए इसमें गलती हो सकती है।</p>'
     +(it.vnote?'<p><b>कारण:</b> '+esc(it.vnote)+'</p>':'')+'<ul><li>इसे पक्का सच मानकर आगे शेयर न करें।</li><li>नीचे दिए लिंक से खुद जाँच करें।</li><li>पुष्टि होने पर खबर को सत्यापित किया जाएगा।</li></ul>'+links+find+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>';
   $('#verBox').classList.add('open');
 }
