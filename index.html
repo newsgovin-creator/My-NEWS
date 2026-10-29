@@ -1,1044 +1,424 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Indian News App</title>
-    <style>
-        :root {
-            --bhaskar-red: #d32f2f;
-            --bhaskar-orange: #ea580c;
-            --bg-gray: #f1f2f6;
-            --card-white: #ffffff;
-            --text-dark: #111827;
-            --border-light: #e5e7eb;
-        }
-
-        /* NATIVE APP LOCK RULES (NO WEBSITE FEEL) */
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Lock outer body like an Android App */
-            background-color: #000;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        /* MOBILE APP FRAME */
-        .app-shell {
-            width: 100%;
-            max-width: 480px;
-            height: 100%;
-            margin: 0 auto;
-            background-color: var(--bg-gray);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 25px rgba(0,0,0,0.5);
-        }
-
-        /* 1. TOP FIXED APP HEADER */
-        .app-top-bars {
-            background: var(--card-white);
-            z-index: 50;
-            flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-        }
-
-        header {
-            padding: 10px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .brand-logo img {
-            height: 32px;
-            width: auto;
-            object-fit: contain;
-            display: block;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .epaper-btn {
-            border: 1.5px solid #222;
-            border-radius: 5px;
-            padding: 3px 8px;
-            font-size: 11px;
-            font-weight: 800;
-            color: #222;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            active: scale(0.95);
-        }
-
-        .epaper-btn:active, .icon-btn:active, .loc-pill:active, .audio-btn:active {
-            transform: scale(0.94);
-        }
-
-        .icon-btn {
-            position: relative;
-            font-size: 19px;
-            color: #222;
-            cursor: pointer;
-        }
-
-        .notif-badge {
-            position: absolute;
-            top: -5px;
-            right: -6px;
-            background: var(--bhaskar-red);
-            color: #fff;
-            font-size: 9px;
-            font-weight: 800;
-            padding: 1px 4px;
-            border-radius: 10px;
-        }
-
-        /* 2. CATEGORY BAR */
-        .category-bar {
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 0 8px;
-            border-bottom: 1px solid var(--border-light);
-            scrollbar-width: none;
-        }
-        .category-bar::-webkit-scrollbar { display: none; }
-
-        .cat-item {
-            padding: 9px 11px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #6b7280;
-            border-bottom: 3px solid transparent;
-            transition: all 0.15s ease;
-        }
-
-        .cat-item.active {
-            color: #111827;
-            border-bottom: 3px solid #111827;
-        }
-
-        /* 3. TRENDING PILLS BAR */
-        .trending-bar {
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: none;
-            background: #fff;
-        }
-        .trending-bar::-webkit-scrollbar { display: none; }
-
-        .trending-label {
-            color: var(--bhaskar-orange);
-            font-weight: 800;
-            font-size: 12px;
-        }
-
-        .trend-pill {
-            border: 1px solid #d1d5db;
-            border-radius: 18px;
-            padding: 3px 11px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
-            background: #fff;
-        }
-
-        /* SCROLLABLE NATIVE FEED VIEWPORT */
-        .app-feed-viewport {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 20px;
-        }
-        .app-feed-viewport::-webkit-scrollbar { display: none; }
-
-        /* SHIMMER SKELETON LOADER (REAL APP LOADING EFFECT) */
-        .skeleton-card {
-            background: #fff;
-            padding: 14px;
-            margin-bottom: 6px;
-        }
-        .shimmer {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: shimmerAnim 1.2s infinite;
-            border-radius: 6px;
-        }
-        @keyframes shimmerAnim {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* 4. HERO BREAKING CARD */
-        .hero-card {
-            background: var(--card-white);
-            padding: 14px;
-            margin-bottom: 6px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .hero-headline {
-            font-size: 18px;
-            line-height: 1.42;
-            font-weight: 800;
-            margin: 0 0 10px 0;
-        }
-
-        .hero-media-box {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #111;
-        }
-
-        .hero-media-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .play-btn-center {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 44px; height: 44px;
-            background: rgba(0,0,0,0.65);
-            color: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .duration-badge {
-            position: absolute;
-            bottom: 8px; right: 8px;
-            background: rgba(0,0,0,0.85);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* 5. COMPACT HORIZONTAL CARD */
-        .compact-card {
-            background: var(--card-white);
-            padding: 14px;
-            margin-bottom: 6px;
-            border-bottom: 1px solid var(--border-light);
-            transition: background 0.1s;
-        }
-        .compact-card:active {
-            background: #f9fafb;
-        }
-
-        .compact-body {
-            display: flex;
-            gap: 12px;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .compact-text { flex: 1; }
-
-        .compact-headline {
-            font-size: 15.5px;
-            line-height: 1.42;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .tag-badge {
-            display: inline-block;
-            padding: 1px 6px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: 800;
-            margin-right: 5px;
-            vertical-align: middle;
-        }
-
-        .compact-thumb {
-            position: relative;
-            width: 112px;
-            height: 80px;
-            border-radius: 6px;
-            overflow: hidden;
-            flex-shrink: 0;
-            background: #222;
-        }
-
-        .compact-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* CARD FOOTER */
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 11px;
-        }
-
-        .loc-pill {
-            border: 1px solid #d1d5db;
-            border-radius: 16px;
-            padding: 2px 10px;
-            font-size: 11.5px;
-            font-weight: 700;
-            color: #1f2937;
-            background: #fff;
-        }
-
-        .footer-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .audio-btn {
-            background: #fef2f2;
-            color: var(--bhaskar-red);
-            border: 1px solid #fecaca;
-            padding: 3px 9px;
-            border-radius: 14px;
-            font-size: 11.5px;
-            font-weight: 700;
-        }
-        .audio-btn.playing {
-            background: var(--bhaskar-red);
-            color: #fff;
-        }
-
-        .share-btn {
-            background: none;
-            border: none;
-            color: #4b5563;
-            font-size: 12.5px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* 6. FIXED NATIVE BOTTOM BAR */
-        .bottom-nav {
-            background: var(--card-white);
-            border-top: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-around;
-            padding: 6px 0 8px 0;
-            flex-shrink: 0;
-            z-index: 50;
-        }
-
-        .nav-tab {
-            text-align: center;
-            color: #6b7280;
-            font-size: 11px;
-            font-weight: 600;
-            flex: 1;
-        }
-        .nav-tab .icon {
-            display: block;
-            font-size: 19px;
-            margin-bottom: 1px;
-        }
-        .nav-tab.active {
-            color: #111827;
-            font-weight: 800;
-        }
-
-        /* SLIDE-UP NATIVE APP DRAWERS (ARTICLE & ADMIN) */
-        .app-drawer-overlay {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.65);
-            z-index: 200;
-            align-items: flex-end;
-        }
-
-        .app-drawer-sheet {
-            background: #fff;
-            width: 100%;
-            height: 92%;
-            border-radius: 18px 18px 0 0;
-            padding: 16px;
-            overflow-y: auto;
-            animation: slideUp 0.22s ease-out;
-            -webkit-user-select: text;
-            user-select: text;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .drawer-bar {
-            width: 40px;
-            height: 4px;
-            background: #d1d5db;
-            border-radius: 4px;
-            margin: 0 auto 12px auto;
-        }
-
-        .close-drawer {
-            float: right;
-            background: #f3f4f6;
-            border: none;
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        /* ADMIN PANEL FORM STYLES */
-        .admin-tabs { display: flex; gap: 6px; margin: 12px 0; }
-        .adm-tab-btn {
-            flex: 1; padding: 8px 4px; border: 1px solid #d1d5db; background: #f9fafb;
-            font-weight: 700; font-size: 11px; border-radius: 6px;
-        }
-        .adm-tab-btn.active { background: var(--bhaskar-red); color: #fff; border-color: var(--bhaskar-red); }
-        .form-row { margin-bottom: 11px; }
-        .form-row label { display: block; font-size: 11.5px; font-weight: 700; margin-bottom: 4px; color: #374151; }
-        .form-row input[type="text"], .form-row textarea, .form-row select {
-            width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;
-            -webkit-user-select: text; user-select: text;
-        }
-        .color-group {
-            display: flex; gap: 8px; align-items: center; background: #f8fafc;
-            padding: 6px; border-radius: 6px; border: 1px solid #e2e8f0;
-        }
-        .color-group input[type="color"] { width: 38px; height: 30px; border: none; background: none; }
-        .btn-main {
-            width: 100%; background: #16a34a; color: #fff; border: none; padding: 11px;
-            font-size: 13.5px; font-weight: 800; border-radius: 8px; margin-top: 6px;
-        }
-        .info-note {
-            background: #eff6ff; border-left: 3px solid #2563eb; padding: 8px;
-            font-size: 11.5px; color: #1e3a8a; margin-bottom: 10px; border-radius: 4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fffaf3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>इंडियन न्यूज़</title>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f1e9;--card:#fffdf9;--ink:#1c1917;--mute:#78716c;--line:#e7e0d4;--accent:#c2410c;--accent2:#9a3412;--fs:16px;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+:root[data-theme=dark]{--bg:#141210;--card:#1e1b18;--ink:#f5efe6;--mute:#a8a095;--line:#34302b;--accent:#fb923c;--accent2:#fdba74}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:Mukta,'Noto Sans Devanagari',system-ui,sans-serif;color:var(--ink)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.shell{max-width:480px;height:100%;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;padding-top:var(--sat)}
+.top{background:var(--card);border-bottom:1px solid var(--line);flex-shrink:0}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+.logo{font-weight:800;font-size:23px;letter-spacing:-.3px;color:var(--accent)}
+.logo small{display:block;font-size:10.5px;font-weight:600;color:var(--mute);letter-spacing:0;margin-top:-4px}
+.ibtns{display:flex;gap:4px}
+.ib{background:none;border:0;width:44px;height:44px;border-radius:50%;font-size:19px}
+.ib:active{background:var(--line)}
+.ticker{background:var(--accent);color:#fff;font-size:13px;font-weight:600;overflow:hidden;white-space:nowrap;padding:5px 0}
+.ticker span{display:inline-block;padding-left:100%;animation:tk 40s linear infinite}
+@keyframes tk{to{transform:translateX(-100%)}}
+.cats{display:flex;overflow-x:auto;scrollbar-width:none;padding:0 6px}
+.cats::-webkit-scrollbar{display:none}
+.cat{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;font-weight:700;font-size:15px;color:var(--mute);white-space:nowrap;min-height:44px}
+.cat[aria-selected=true]{color:var(--ink);border-color:var(--accent)}
+.feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative}
+.ptr{height:0;overflow:hidden;text-align:center;font-size:13px;color:var(--mute);transition:height .2s}
+.card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px}
+.card h3{margin:0;font-size:calc(var(--fs) + 1px);line-height:1.45;font-weight:800;cursor:pointer}
+.card.hero h3{font-size:calc(var(--fs) + 4px);margin-bottom:10px}
+.kick{color:var(--accent)}
+.row{display:flex;gap:12px;align-items:flex-start}
+.row>div:first-child{flex:1}
+.img{background:linear-gradient(135deg,var(--line),var(--bg));border-radius:8px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:26px}
+.img img{width:100%;height:100%;object-fit:cover}
+.thumb{width:112px;height:80px}
+.big{width:100%;aspect-ratio:16/9}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:6px}
+.pill{border:1px solid var(--line);background:none;border-radius:16px;padding:4px 11px;font-size:12px;font-weight:700;color:var(--mute);min-height:30px}
+.acts{display:flex;gap:2px}
+.act{background:none;border:0;min-width:44px;min-height:44px;font-size:16px;border-radius:50%}
+.act:active{background:var(--line)}
+.act.on{color:var(--accent)}
+.src{font-size:11.5px;color:var(--mute);margin-top:6px}
+.sk{padding:14px;background:var(--card);margin-bottom:6px;display:flex;gap:12px}
+.sh{background:linear-gradient(90deg,var(--line) 25%,var(--bg) 50%,var(--line) 75%);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:6px}
+@keyframes sh{to{background-position:-200% 0}}
+.empty{text-align:center;padding:50px 24px;color:var(--mute)}
+.empty b{display:block;font-size:17px;color:var(--ink);margin-bottom:6px}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 20px;font-weight:800;margin-top:14px;min-height:44px}
+.nav{display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:var(--sab);flex-shrink:0}
+.nt{flex:1;background:none;border:0;padding:7px 0 6px;font-size:11.5px;font-weight:700;color:var(--mute);min-height:50px}
+.nt i{display:block;font-style:normal;font-size:20px}
+.nt[aria-selected=true]{color:var(--accent)}
+.sheet{position:absolute;inset:0;background:var(--bg);z-index:30;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s ease;visibility:hidden}
+.sheet.open{transform:none;visibility:visible}
+.sh-head{display:flex;align-items:center;gap:4px;padding:6px 8px;background:var(--card);border-bottom:1px solid var(--line);padding-top:calc(6px + var(--sat))}
+.sh-head .sp{flex:1}
+.prog{height:3px;background:var(--accent);width:0;flex-shrink:0}
+.body{flex:1;overflow-y:auto;padding:16px;background:var(--card)}
+.body h1{font-size:calc(var(--fs) + 5px);line-height:1.4;margin:8px 0}
+.body p{font-size:var(--fs);line-height:1.85;white-space:pre-line}
+.meta{font-size:12.5px;color:var(--mute)}
+.search{flex:1;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:22px;padding:10px 16px;font:inherit;font-size:15px;min-height:44px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px}
+.set{padding:14px;background:var(--card);margin-bottom:6px}
+.set h4{margin:0 0 10px}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:none;border-radius:8px;padding:8px 14px;font-weight:700;min-height:44px}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.toast{position:absolute;left:50%;bottom:calc(70px + var(--sab));transform:translateX(-50%);background:#292524;color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.off{background:#b45309;color:#fff;text-align:center;font-size:12.5px;padding:4px;display:none}
+.form input,.form textarea,.form select{width:100%;margin-bottom:10px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-
-<div class="app-shell">
-
-    <!-- FIXED TOP APP BARS -->
-    <div class="app-top-bars">
-        <header>
-            <div class="brand-logo">
-                <img src="https://files.catbox.moe/9wwlm5.png" alt="Indian News">
-            </div>
-            <div class="header-right">
-                <button class="epaper-btn" onclick="loadAllLiveNews()">📰 ई-पेपर</button>
-                <div class="icon-btn" onclick="loadAllLiveNews()">
-                    🔔<span class="notif-badge">Live</span>
-                </div>
-                <div class="icon-btn" onclick="searchLiveNews()">🔍</div>
-            </div>
-        </header>
-
-        <div class="category-bar" id="categoryBar"></div>
-        <div class="trending-bar" id="trendingBar"></div>
+<div class="shell" id="app">
+  <div class="top">
+    <div class="bar">
+      <div class="logo">इंडियन न्यूज़<small>आपके ज़िले की हर खबर</small></div>
+      <div class="ibtns">
+        <button class="ib" data-a="search" aria-label="खोजें">🔍</button>
+        <button class="ib" data-a="theme" aria-label="डार्क मोड बदलें">🌓</button>
+      </div>
     </div>
+    <div class="ticker" id="ticker" hidden><span id="tickTxt"></span></div>
+    <div class="cats" id="cats" role="tablist"></div>
+  </div>
+  <div class="off" id="off">इंटरनेट नहीं है — पुरानी सेव की हुई खबरें दिख रही हैं</div>
+  <div class="feed" id="feed"><div class="ptr" id="ptr">↓ रिफ्रेश के लिए खींचें</div><div id="list"></div></div>
+  <nav class="nav" role="tablist">
+    <button class="nt" role="tab" aria-selected="true" data-tab="home"><i>🏠</i>होम</button>
+    <button class="nt" role="tab" aria-selected="false" data-tab="video"><i>▶️</i>वीडियो</button>
+    <button class="nt" role="tab" aria-selected="false" data-tab="saved"><i>🔖</i>सेव</button>
+    <button class="nt" role="tab" aria-selected="false" data-tab="settings"><i>⚙️</i>सेटिंग</button>
+  </nav>
 
-    <!-- MAIN SCROLLABLE NEWS FEED (REAL APP VIEWPORT) -->
-    <div class="app-feed-viewport" id="newsFeedContainer"></div>
+  <div class="sheet" id="reader"><div class="sh-head"><button class="ib" data-a="close" aria-label="वापस">←</button><span class="sp"></span><button class="ib" data-a="speak" id="rSpeak" aria-label="सुनें">🔊</button><button class="ib" data-a="rbm" id="rBm" aria-label="सेव करें">🔖</button><button class="ib" data-a="rshare" aria-label="शेयर">📤</button></div><div class="prog" id="prog"></div><div class="body" id="rBody"></div></div>
 
-    <!-- FIXED NATIVE BOTTOM BAR -->
-    <div class="bottom-nav">
-        <div class="nav-tab active" onclick="switchMainTab('all', this)">
-            <span class="icon">🏠</span>होम
-        </div>
-        <div class="nav-tab" onclick="switchMainTab('video', this)">
-            <span class="icon">▶️</span>वीडियो
-        </div>
-        <!-- 5 Rapid Taps on Profile Opens Hidden Admin Panel -->
-        <div class="nav-tab" onclick="triggerHiddenAdmin()">
-            <span class="icon">👤</span>प्रोफाइल
-        </div>
-    </div>
+  <div class="sheet" id="searchS"><div class="sh-head"><button class="ib" data-a="close" aria-label="वापस">←</button><input class="search" id="q" type="search" placeholder="खबर खोजें…" enterkeyhint="search"></div><div class="feed" id="sRes"><div class="chips" id="recent"></div></div></div>
 
-    <!-- ARTICLE READER DRAWER -->
-    <div class="app-drawer-overlay" id="articleDrawer">
-        <div class="app-drawer-sheet">
-            <div class="drawer-bar"></div>
-            <button class="close-drawer" onclick="closeDrawer('articleDrawer')">✕</button>
-            <div id="articleDrawerContent"></div>
-        </div>
-    </div>
-
-    <!-- HIDDEN ADMIN PANEL DRAWER -->
-    <div class="app-drawer-overlay" id="adminDrawer">
-        <div class="app-drawer-sheet">
-            <div class="drawer-bar"></div>
-            <button class="close-drawer" onclick="closeDrawer('adminDrawer')">✕</button>
-            <h3 style="margin:0; color:var(--bhaskar-red);">⚙️ गुप्त एडमिन कंट्रोल पैनल</h3>
-
-            <div class="admin-tabs">
-                <button class="adm-tab-btn active" onclick="switchAdmTab('tabBlogger', this)">🌐 ब्लॉगर व लाइव सोर्स</button>
-                <button class="adm-tab-btn" onclick="switchAdmTab('tabDesigner', this)">🎨 कस्टम खबर पोस्ट</button>
-                <button class="adm-tab-btn" onclick="switchAdmTab('tabSettings', this)">📌 कैटेगरी व पिन</button>
-            </div>
-
-            <!-- TAB 1: BLOGGER & LIVE RSS -->
-            <div id="tabBlogger" class="adm-section">
-                <div class="info-note">
-                    यहाँ अपने <strong>Blogger</strong> का लिंक डालें। अगर आपका ब्लॉगर खाली है, तो यह ऐप अपने आप <strong>Live Hindi News (Google News UP/India)</strong> से असली खबरें खींचकर दिखाएगा (कोई डमी न्यूज़ नहीं)।
-                </div>
-                <div class="form-row">
-                    <label>🔗 आपका Blogger URL (अपने न्यूज़ ब्लॉग का लिंक डालें):</label>
-                    <input type="text" id="admBloggerUrl" placeholder="https://apka-news-blog.blogspot.com">
-                </div>
-                <div class="form-row">
-                    <label>📡 लाइव न्यूज़ फीड मोड:</label>
-                    <select id="admFeedMode">
-                        <option value="blogger_plus_live">🌐 मेरा ब्लॉगर + लाइव इंडिया न्यूज़ (Auto Live)</option>
-                        <option value="blogger_only">📝 सिर्फ मेरे ब्लॉगर की खबरें दिखाएं</option>
-                    </select>
-                </div>
-                <button class="btn-main" onclick="saveBloggerConfig()">🔄 सेव करें और लाइव खबरें लोड करें</button>
-            </div>
-
-            <!-- TAB 2: CUSTOM NEWS DESIGNER -->
-            <div id="tabDesigner" class="adm-section" style="display:none;">
-                <div class="form-row">
-                    <label>1. कार्ड का प्रकार:</label>
-                    <select id="postType">
-                        <option value="hero">🔥 पहली बड़ी खबर (Full-Width Hero Card)</option>
-                        <option value="compact" selected>📰 सामान्य छोटी खबर (Side-by-Side Card)</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label>2. टैग बैज (जैसे: एक्सक्लूसिव / ब्रेकिंग) + रंग:</label>
-                    <div class="color-group">
-                        <input type="text" id="postBadge" placeholder="बैज (Optional)">
-                        <input type="color" id="postBadgeBg" value="#dc2626">
-                        <input type="color" id="postBadgeTxt" value="#ffffff">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>3. रंगीन हाइलाइट लाइन (Kicker) + रंग:</label>
-                    <div class="color-group">
-                        <input type="text" id="postKicker" placeholder="शुरुआती रंगीन लाइन...">
-                        <input type="color" id="postKickerColor" value="#ea580c">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>4. मुख्य हेडलाइन + रंग:</label>
-                    <div class="color-group">
-                        <input type="text" id="postTitle" placeholder="मुख्य खबर की हेडलाइन...">
-                        <input type="color" id="postTitleColor" value="#111827">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>5. राज्य/जिला (Location) व फोटो लिंक (URL):</label>
-                    <div style="display:flex; gap:6px;">
-                        <input type="text" id="postLoc" value="कानपुर देहात" style="flex:1;">
-                        <input type="text" id="postImg" placeholder="Image URL (Catbox/Blogger)" style="flex:2;">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>6. यूट्यूब वीडियो लिंक (Optional) व समय (जैसे 3:20):</label>
-                    <div style="display:flex; gap:6px;">
-                        <input type="text" id="postVid" placeholder="YouTube Link" style="flex:2;">
-                        <input type="text" id="postDur" placeholder="3:20" style="flex:1;">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <label>7. पूरी खबर (Audio सुनने और पढ़ने के लिए):</label>
-                    <textarea id="postFull" rows="3" placeholder="यहाँ पूरी खबर लिखें..."></textarea>
-                </div>
-                <button class="btn-main" onclick="publishCustomPost()">🚀 अभी ऐप में पब्लिश करें</button>
-                <button class="btn-main" style="background:#2563eb;" onclick="copyBloggerHTML()">📋 ब्लॉगर पोस्ट के लिए कोड कॉपी करें</button>
-            </div>
-
-            <!-- TAB 3: SETTINGS -->
-            <div id="tabSettings" class="adm-section" style="display:none;">
-                <div class="form-row">
-                    <label>कैटेगरी बार (कॉमा `,` लगाकर):</label>
-                    <input type="text" id="admCats">
-                </div>
-                <div class="form-row">
-                    <label>ट्रेंडिंग टॉपिक्स (कॉमा `,` लगाकर):</label>
-                    <input type="text" id="admTrends">
-                </div>
-                <div class="form-row">
-                    <label>🔒 गुप्त एडमिन पिन (PIN):</label>
-                    <input type="text" id="admPin" value="1234">
-                </div>
-                <button class="btn-main" onclick="saveGeneralSettings()">✔️ सेटिंग्स सेव करें</button>
-            </div>
-        </div>
-    </div>
-
+  <div class="sheet" id="admin"><div class="sh-head"><button class="ib" data-a="close" aria-label="बंद करें">✕</button><b>एडमिन पैनल</b></div><div class="body form">
+    <p class="meta">नोट: यहाँ की खबरें सिर्फ इसी फोन में रहती हैं। सबको दिखाने के लिए Blogger पर पोस्ट करें (नीचे कोड कॉपी करें)।</p>
+    <input id="aBlog" placeholder="Blogger URL (वैकल्पिक)">
+    <input id="aTitle" placeholder="हेडलाइन (: या | से शुरुआती रंगीन लाइन अलग करें)">
+    <input id="aLoc" placeholder="ज़िला / इलाका" value="कानपुर देहात">
+    <input id="aImg" placeholder="फोटो लिंक (https://…)">
+    <textarea id="aFull" rows="5" placeholder="पूरी खबर…"></textarea>
+    <button class="btn" data-a="pub" style="width:100%">🚀 पब्लिश करें</button>
+    <button class="btn" data-a="cpy" style="width:100%;background:#2563eb">📋 Blogger कोड कॉपी करें</button>
+    <button class="btn" data-a="saveblog" style="width:100%;background:#16a34a">💾 Blogger URL सेव करें</button>
+  </div></div>
+  <div class="toast" id="toast"></div>
 </div>
 
 <script>
-    // ZERO DUMMY NEWS - 100% LIVE CONFIGURATION
-    let appConfig = JSON.parse(localStorage.getItem('indian_news_native_cfg')) || {
-        bloggerUrl: "", // Jab aap apna Blogger URL dalenge toh wo sabse upar aayega
-        feedMode: "blogger_plus_live",
-        categories: ["🔥 टॉप न्यूज़", "📍 कानपुर देहात", "उत्तरप्रदेश", "देश", "क्रिकेट", "मनोरंजन", "बिजनेस"],
-        trending: ["यूपी बड़ी खबरें", "कानपुर समाचार", "टीम इंडिया", "मौसम अपडेट", "रोजगार समाचार"],
-        pin: "1234"
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const S={
+  get(k,d){try{const v=localStorage.getItem('inp_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('inp_'+k,JSON.stringify(v))}catch(e){}}
+};
+// Text ko safe banata hai (XSS se bachav)
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl=u=>/^https?:\/\//i.test(u||'')?u:'';
+const hash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return 'n'+(h>>>0).toString(36)};
+
+const CATS=[
+ {n:'टॉप न्यूज़',q:'उत्तर प्रदेश भारत बड़ी खबरें'},{n:'कानपुर देहात',q:'कानपुर देहात समाचार'},
+ {n:'उत्तरप्रदेश',q:'उत्तर प्रदेश समाचार'},{n:'देश',q:'भारत देश समाचार'},
+ {n:'क्रिकेट',q:'क्रिकेट समाचार'},{n:'मनोरंजन',q:'मनोरंजन बॉलीवुड समाचार'},
+ {n:'बिजनेस',q:'बिजनेस समाचार भारत'},{n:'रोजगार',q:'रोजगार सरकारी नौकरी समाचार'}
+];
+const st={tab:'home',cat:0,items:[],byId:{},bm:S.get('bm',{}),local:S.get('local',[]),
+  cfg:S.get('cfg',{blog:'',pin:''}),prefs:S.get('prefs',{fs:16,theme:'auto'}),recent:S.get('recent',[]),
+  cur:null,speakId:null,reqId:0};
+
+// ---------- Theme / font ----------
+function applyPrefs(){
+  const dark=st.prefs.theme==='dark'||(st.prefs.theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.dataset.theme=dark?'dark':'light';
+  document.documentElement.style.setProperty('--fs',st.prefs.fs+'px');
+  document.querySelector('meta[name=theme-color]').content=dark?'#1e1b18':'#fffdf9';
+}
+applyPrefs();
+
+// ---------- Fetch ----------
+function parseTitle(t){
+  let kick='',head=t;
+  if(t.includes('|')){const p=t.split('|').map(x=>x.trim());kick=p[0];head=p.slice(1).join(' ')}
+  else if(t.includes(':')){const i=t.indexOf(':');kick=t.slice(0,i+1);head=t.slice(i+1).trim()}
+  return {kick,head};
+}
+function mk(o){o.id=o.id||hash(o.link||o.head+o.date);st.byId[o.id]=o;return o}
+
+async function fetchLive(q){
+  const rss=encodeURIComponent('https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=hi&gl=IN&ceid=IN:hi');
+  const r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+rss);
+  if(!r.ok)throw new Error('http');
+  const d=await r.json();
+  return (d.items||[]).map(it=>{
+    const parts=it.title.split(' - ');const src=parts.length>1?parts.pop():'समाचार';
+    const {kick,head}=parseTitle(parts.join(' - '));
+    const tmp=document.createElement('div');tmp.innerHTML=it.description||'';
+    const img=it.thumbnail||it.enclosure&&it.enclosure.link||'';
+    return mk({kick,head,src,loc:src,img:safeUrl(img),link:safeUrl(it.link),date:it.pubDate,
+      full:(tmp.textContent||'').trim()});
+  });
+}
+function fetchBlog(url){
+  return new Promise(res=>{
+    let u=url.replace(/\/$/,'');if(!/^https?:/.test(u))u='https://'+u;
+    const cb='bcb'+Date.now();
+    const sc=document.createElement('script');
+    const done=v=>{delete window[cb];sc.remove();res(v)};
+    window[cb]=j=>{
+      const out=((j.feed&&j.feed.entry)||[]).map(e=>{
+        const t=e.title?e.title.$t:'';const tmp=document.createElement('div');tmp.innerHTML=e.content?e.content.$t:'';
+        const im=tmp.querySelector('img');const {kick,head}=parseTitle(t);
+        return mk({kick,head,src:'हमारी खबर',loc:(e.category&&e.category[0]&&e.category[0].term)||'उत्तरप्रदेश',
+          img:safeUrl(im?im.src:''),link:'',date:e.published?e.published.$t:'',full:(tmp.textContent||'').trim(),own:1});
+      });done(out);
     };
+    sc.src=u+'/feeds/posts/default?alt=json-in-script&max-results=15&callback='+cb;
+    sc.onerror=()=>done([]);document.body.appendChild(sc);
+    setTimeout(()=>done([]),8000);
+  });
+}
 
-    let customLocalPosts = JSON.parse(localStorage.getItem('indian_news_custom_posts')) || [];
-    let liveMasterFeed = [];
+async function load(q,force){
+  const my=++st.reqId;
+  const key='cache_'+hash(q);
+  const cached=S.get(key,null);
+  if(cached&&!force){show(cached.items)}else showSkel();
+  let items=[],failed=false;
+  try{
+    const [own,live]=await Promise.all([st.cfg.blog?fetchBlog(st.cfg.blog):[],fetchLive(q)]);
+    items=[...st.local.map(mk),...own,...live];
+    $('#off').style.display='none';
+    S.set(key,{t:Date.now(),items:items.slice(0,40)});
+  }catch(e){failed=true;}
+  if(my!==st.reqId)return;
+  if(failed){
+    $('#off').style.display=navigator.onLine?'none':'block';
+    if(cached){cached.items.forEach(i=>st.byId[i.id]=i);show(cached.items);toast('ताज़ा खबरें नहीं मिलीं, सेव की हुई दिखा रहे हैं');return}
+    $('#list').innerHTML='<div class="empty"><b>खबरें नहीं आ पाईं</b>इंटरनेट जाँचें और फिर कोशिश करें।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return;
+  }
+  show(items);
+}
 
-    // RENDER SHIMMER SKELETON (APP LOADING UI)
-    function showAppSkeleton() {
-        const container = document.getElementById('newsFeedContainer');
-        let skelHTML = `
-            <div class="skeleton-card">
-                <div class="shimmer" style="height:22px; width:90%; margin-bottom:8px;"></div>
-                <div class="shimmer" style="height:22px; width:65%; margin-bottom:12px;"></div>
-                <div class="shimmer" style="height:190px; width:100%;"></div>
-            </div>
-        `;
-        for (let i = 0; i < 4; i++) {
-            skelHTML += `
-                <div class="skeleton-card" style="display:flex; gap:12px;">
-                    <div style="flex:1;">
-                        <div class="shimmer" style="height:16px; width:95%; margin-bottom:8px;"></div>
-                        <div class="shimmer" style="height:16px; width:80%; margin-bottom:8px;"></div>
-                        <div class="shimmer" style="height:16px; width:50%;"></div>
-                    </div>
-                    <div class="shimmer" style="width:110px; height:80px; flex-shrink:0;"></div>
-                </div>
-            `;
-        }
-        container.innerHTML = skelHTML;
-    }
+// ---------- Render ----------
+function showSkel(){
+  let h='';for(let i=0;i<5;i++)h+='<div class="sk"><div style="flex:1"><div class="sh" style="height:16px;margin-bottom:8px"></div><div class="sh" style="height:16px;width:70%"></div></div><div class="sh" style="width:112px;height:80px"></div></div>';
+  $('#list').innerHTML=h;
+}
+function imgBox(it,cls){
+  return '<div class="img '+cls+'">'+(it.img?'<img src="'+esc(it.img)+'" loading="lazy" alt="" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+'</div>';
+}
+function card(it,hero){
+  const saved=st.bm[it.id]?' on':'';
+  const title='<span class="kick">'+esc(it.kick)+'</span> '+esc(it.head);
+  const foot='<div class="foot"><button class="pill" data-a="loc" data-v="'+esc(it.loc)+'">'+esc(it.loc)+' ›</button><div class="acts">'
+   +'<button class="act" data-a="speakc" data-id="'+it.id+'" aria-label="सुनें">🔊</button>'
+   +'<button class="act'+saved+'" data-a="bm" data-id="'+it.id+'" aria-label="सेव करें">🔖</button>'
+   +'<button class="act" data-a="share" data-id="'+it.id+'" aria-label="शेयर">📤</button></div></div>';
+  const meta='<div class="src">'+esc(it.src)+(it.date?' • '+ago(it.date):'')+'</div>';
+  if(hero)return '<article class="card hero"><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+imgBox(it,'big')+meta+foot+'</article>';
+  return '<article class="card"><div class="row"><div><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+meta+'</div>'+imgBox(it,'thumb')+'</div>'+foot+'</article>';
+}
+function show(items,into){
+  const box=into||$('#list');
+  if(!items.length){box.innerHTML='<div class="empty"><b>कुछ नहीं मिला</b>कोई दूसरी कैटेगरी या शब्द आज़माएँ।</div>';return}
+  st.items=into?st.items:items;
+  box.innerHTML=items.map((it,i)=>card(it,i===0&&!into)).join('');
+  if(!into){
+    const tk=items.slice(0,6).map(i=>i.head).join('  ◆  ');
+    $('#ticker').hidden=false;$('#tickTxt').textContent=tk;
+    if(!into)$('#feed').scrollTop=0;
+  }
+}
+function ago(d){
+  const m=(Date.now()-new Date(d))/6e4;if(isNaN(m))return '';
+  if(m<60)return Math.max(1,Math.round(m))+' मिनट पहले';
+  if(m<1440)return Math.round(m/60)+' घंटे पहले';
+  return Math.round(m/1440)+' दिन पहले';
+}
 
-    // RENDER TOP NAVIGATION BARS
-    function renderTopBars() {
-        document.getElementById('categoryBar').innerHTML = appConfig.categories.map((c, i) => `
-            <div class="cat-item ${i === 0 ? 'active' : ''}" onclick="fetchCategoryLive('${c}', this)">${c}</div>
-        `).join('');
+// ---------- Reader ----------
+function openArticle(id){
+  const it=st.byId[id];if(!it)return;st.cur=it;
+  const words=(it.full||'').split(/\s+/).length;
+  $('#rBody').innerHTML='<span class="pill">'+esc(it.loc)+'</span><h1><span class="kick">'+esc(it.kick)+'</span> '+esc(it.head)+'</h1>'
+   +'<div class="meta">'+esc(it.src)+(it.date?' • '+ago(it.date):'')+' • पढ़ने में '+Math.max(1,Math.round(words/120))+' मिनट</div>'
+   +'<div style="margin:12px 0">'+imgBox(it,'big')+'</div>'
+   +'<p>'+esc(it.full||it.head)+'</p>'
+   +(it.link?'<a class="btn" style="display:inline-block;text-decoration:none" href="'+esc(it.link)+'" target="_blank" rel="noopener noreferrer">पूरी खबर '+esc(it.src)+' पर पढ़ें</a>':'');
+  $('#rBm').style.color=st.bm[id]?'var(--accent)':'';
+  $('#rBody').scrollTop=0;$('#prog').style.width='0';
+  $('#reader').classList.add('open');history.pushState({r:1},'');
+}
+function closeSheet(){$$('.sheet.open').forEach(s=>s.classList.remove('open'));stopSpeak()}
 
-        document.getElementById('trendingBar').innerHTML = `<span class="trending-label">ट्रेंडिंग टॉपिक</span>` +
-            appConfig.trending.map(t => `<span class="trend-pill" onclick="fetchTopicLive('${t}')">${t} &gt;</span>`).join('');
-    }
+// ---------- Actions ----------
+function toggleBm(id){
+  const it=st.byId[id];if(!it)return;
+  if(st.bm[id]){delete st.bm[id];toast('सेव से हटाया')}else{st.bm[id]=it;toast('सेव हो गया');navigator.vibrate&&navigator.vibrate(15)}
+  S.set('bm',st.bm);
+  $$('[data-a=bm][data-id="'+id+'"]').forEach(b=>b.classList.toggle('on',!!st.bm[id]));
+  if(st.cur&&st.cur.id===id)$('#rBm').style.color=st.bm[id]?'var(--accent)':'';
+  if(st.tab==='saved')showSaved();
+}
+async function share(id){
+  const it=st.byId[id];if(!it)return;
+  const text=(it.kick+' '+it.head).trim(),url=it.link||location.href;
+  try{if(navigator.share)await navigator.share({title:'इंडियन न्यूज़',text,url});
+  else window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(text+' '+url),'_blank','noopener')}catch(e){}
+}
+// Hindi TTS - lambi khabar ko chhote tukdon me todta hai
+function chunks(t){return (t.match(/[^।.!?\n]+[।.!?\n]?/g)||[t]).reduce((a,s)=>{const l=a[a.length-1];if(l&&l.length+s.length<180)a[a.length-1]=l+s;else a.push(s);return a},[])}
+function stopSpeak(){if('speechSynthesis' in window)speechSynthesis.cancel();st.speakId=null;$$('[data-a=speakc]').forEach(b=>b.textContent='🔊');$('#rSpeak').textContent='🔊'}
+function speak(id,btn){
+  if(!('speechSynthesis' in window)){toast('इस फोन में आवाज़ उपलब्ध नहीं');return}
+  if(st.speakId===id){stopSpeak();return}
+  stopSpeak();const it=st.byId[id];if(!it)return;
+  const parts=chunks((it.kick+' '+it.head+'। '+(it.full||'')).trim());
+  st.speakId=id;btn.textContent='⏹️';
+  parts.forEach((p,i)=>{const u=new SpeechSynthesisUtterance(p);u.lang='hi-IN';
+    if(i===parts.length-1)u.onend=()=>{if(st.speakId===id)stopSpeak()};speechSynthesis.speak(u)});
+}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2200)}
 
-    // 1. FETCH BLOGGER + REAL-TIME HINDI NEWS (ZERO DUMMY DATA)
-    async function loadAllLiveNews(searchQuery = "उत्तर प्रदेश कानपुर भारत") {
-        showAppSkeleton();
-        liveMasterFeed = [...customLocalPosts];
+// ---------- Tabs ----------
+function setTab(t){
+  st.tab=t;$$('.nt').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
+  const catsOn=t==='home';$('#cats').style.display=catsOn?'flex':'none';$('#ticker').style.display=catsOn?'':'none';
+  if(t==='home')load(CATS[st.cat].q);
+  else if(t==='video')load('वीडियो समाचार इंडिया');
+  else if(t==='saved')showSaved();
+  else showSettings();
+}
+function showSaved(){
+  const l=Object.values(st.bm);
+  if(!l.length){$('#list').innerHTML='<div class="empty"><b>अभी कुछ सेव नहीं है</b>किसी खबर पर 🔖 दबाएँ, वो यहाँ मिलेगी।</div>';return}
+  show(l,$('#list'));
+}
+function showSettings(){
+  const p=st.prefs;
+  $('#list').innerHTML='<div class="set"><h4>अक्षरों का आकार</h4><div class="seg">'
+   +[[14,'छोटा'],[16,'सामान्य'],[19,'बड़ा'],[22,'बहुत बड़ा']].map(a=>'<button data-a="fs" data-v="'+a[0]+'" aria-pressed="'+(p.fs==a[0])+'">'+a[1]+'</button>').join('')
+   +'</div></div><div class="set"><h4>थीम</h4><div class="seg">'
+   +[['auto','ऑटो'],['light','दिन'],['dark','रात']].map(a=>'<button data-a="th" data-v="'+a[0]+'" aria-pressed="'+(p.theme===a[0])+'">'+a[1]+'</button>').join('')
+   +'</div></div><div class="set"><h4>ऐप के बारे में</h4><p class="meta" style="margin:0">इंडियन न्यूज़ • खबरें Google News और आपके Blogger से आती हैं। हर खबर पर असली स्रोत का लिंक दिया जाता है।</p></div>'
+   +'<div class="set"><button class="pill" data-a="admin">एडमिन</button></div>';
+}
 
-        // Step A: Fetch from User's Blogger if configured
-        if (appConfig.bloggerUrl && appConfig.bloggerUrl.trim() !== "") {
-            await fetchBloggerJSONP(appConfig.bloggerUrl.trim());
-        }
+// ---------- Search ----------
+function openSearch(){
+  $('#searchS').classList.add('open');history.pushState({s:1},'');
+  renderRecent();setTimeout(()=>$('#q').focus(),260);
+}
+function renderRecent(){
+  $('#sRes').innerHTML='<div class="chips" id="recent">'+(st.recent.length?st.recent.map(r=>'<button class="pill" data-a="rq" data-v="'+esc(r)+'">🕘 '+esc(r)+'</button>').join(''):'<span class="meta">कानपुर देहात, बिजली, क्रिकेट…</span>')+'</div>';
+}
+async function runSearch(q){
+  q=q.trim();if(!q)return;
+  st.recent=[q,...st.recent.filter(x=>x!==q)].slice(0,8);S.set('recent',st.recent);
+  $('#sRes').innerHTML='<div class="sk"><div class="sh" style="height:16px;flex:1"></div></div>';
+  try{const r=await fetchLive(q);$('#sRes').innerHTML=r.length?r.map(i=>card(i)).join(''):'<div class="empty"><b>कुछ नहीं मिला</b>दूसरा शब्द आज़माएँ।</div>'}
+  catch(e){$('#sRes').innerHTML='<div class="empty"><b>खोज नहीं हो पाई</b>इंटरनेट जाँचें।</div>'}
+}
 
-        // Step B: Fetch Real-Time Original Hindi News via Google News RSS-to-JSON API
-        if (appConfig.feedMode === "blogger_plus_live" || liveMasterFeed.length === 0) {
-            try {
-                const rssUrl = encodeURIComponent(`https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=hi&gl=IN&ceid=IN:hi`);
-                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
-                const data = await res.json();
+// ---------- Admin (local only) ----------
+let taps=0,tapT;
+function adminGate(){
+  const p=prompt(st.cfg.pin?'एडमिन पिन डालें:':'पहली बार: नया पिन बनाएँ (4+ अंक):');
+  if(!p)return;
+  hashPin(p).then(h=>{
+    if(!st.cfg.pin){if(p.length<4){toast('पिन छोटा है');return}st.cfg.pin=h;S.set('cfg',st.cfg)}
+    else if(st.cfg.pin!==h){toast('गलत पिन');return}
+    $('#aBlog').value=st.cfg.blog||'';$('#admin').classList.add('open');history.pushState({a:1},'');
+  });
+}
+async function hashPin(p){
+  try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('inp:'+p));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+  catch(e){return hash(p)}
+}
+function adminPost(){
+  const t=$('#aTitle').value.trim();if(!t){toast('हेडलाइन लिखें');return}
+  const {kick,head}=parseTitle(t);
+  const o={id:'l'+Date.now(),kick,head,src:'हमारी खबर',loc:$('#aLoc').value.trim()||'उत्तरप्रदेश',img:safeUrl($('#aImg').value.trim()),link:'',date:new Date().toISOString(),full:$('#aFull').value.trim(),own:1};
+  st.local.unshift(o);S.set('local',st.local);closeSheet();toast('पब्लिश हुआ');setTab('home');
+}
+function adminCopy(){
+  const t=$('#aTitle').value.trim();if(!t){toast('हेडलाइन लिखें');return}
+  const im=safeUrl($('#aImg').value.trim());
+  const code='<!-- पोस्ट का टाइटल: '+t+' -->\n'+(im?'<img src="'+im+'">\n':'')+'<p>'+$('#aFull').value.replace(/</g,'&lt;').replace(/\n/g,'<br>')+'</p>';
+  navigator.clipboard.writeText(code).then(()=>toast('कोड कॉपी हो गया'),()=>toast('कॉपी नहीं हो पाया'));
+}
 
-                if (data && data.items) {
-                    data.items.forEach((item, index) => {
-                        // Clean source name from Google News title
-                        let cleanTitle = item.title.split(" - ")[0];
-                        let sourceName = item.title.split(" - ")[1] || "ब्रेकिंग न्यूज़";
+// ---------- Events (ek hi jagah, delegation) ----------
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a],[data-tab],.cat');if(!el)return;
+  if(el.dataset.tab){setTab(el.dataset.tab);return}
+  if(el.classList.contains('cat')){st.cat=+el.dataset.i;renderCats();load(CATS[st.cat].q);return}
+  const a=el.dataset.a,id=el.dataset.id,v=el.dataset.v;
+  switch(a){
+    case 'open':openArticle(id);break;
+    case 'bm':toggleBm(id);break;
+    case 'share':share(id);break;
+    case 'speakc':speak(id,el);break;
+    case 'speak':if(st.cur)speak(st.cur.id,el);break;
+    case 'rbm':if(st.cur)toggleBm(st.cur.id);break;
+    case 'rshare':if(st.cur)share(st.cur.id);break;
+    case 'close':closeSheet();break;
+    case 'search':openSearch();break;
+    case 'theme':st.prefs.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';S.set('prefs',st.prefs);applyPrefs();break;
+    case 'loc':case 'rq':openSearch();$('#q').value=v;runSearch(v);break;
+    case 'retry':load(CATS[st.cat].q,true);break;
+    case 'fs':st.prefs.fs=+v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
+    case 'th':st.prefs.theme=v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
+    case 'admin':adminGate();break;
+    case 'pub':adminPost();break;
+    case 'cpy':adminCopy();break;
+    case 'saveblog':st.cfg.blog=$('#aBlog').value.trim();S.set('cfg',st.cfg);closeSheet();toast('सेव हुआ');setTab('home');break;
+  }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.a==='open')openArticle(e.target.dataset.id)});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch(e.target.value)});
+$('#rBody').addEventListener('scroll',e=>{const b=e.target;$('#prog').style.width=(b.scrollTop/Math.max(1,b.scrollHeight-b.clientHeight)*100)+'%'});
+window.addEventListener('popstate',closeSheet);
+window.addEventListener('online',()=>{$('#off').style.display='none';load(CATS[st.cat].q,true)});
+window.addEventListener('offline',()=>{$('#off').style.display='block'});
+// Logo par 5 baar tap = admin
+$('.logo').addEventListener('click',()=>{taps++;clearTimeout(tapT);tapT=setTimeout(()=>taps=0,1600);if(taps>=5){taps=0;adminGate()}});
 
-                        // Split title into Kicker (Colored) + Main Headline (Black) like Dainik Bhaskar
-                        let kicker = "";
-                        let mainHead = cleanTitle;
-                        if (cleanTitle.includes(":")) {
-                            let pts = cleanTitle.split(":");
-                            kicker = pts[0] + ":";
-                            mainHead = pts.slice(1).join(":").trim();
-                        } else if (cleanTitle.length > 45) {
-                            let words = cleanTitle.split(" ");
-                            kicker = words.slice(0, 4).join(" ") + " -";
-                            mainHead = words.slice(4).join(" ");
-                        }
+// Pull to refresh
+(()=>{const f=$('#feed'),p=$('#ptr');let y0=0,d=0,on=false;
+ f.addEventListener('touchstart',e=>{if(f.scrollTop===0){y0=e.touches[0].clientY;on=true}},{passive:true});
+ f.addEventListener('touchmove',e=>{if(!on)return;d=e.touches[0].clientY-y0;if(d>0)p.style.height=Math.min(d/2,56)+'px';p.textContent=d>110?'↻ छोड़ें':'↓ रिफ्रेश के लिए खींचें'},{passive:true});
+ f.addEventListener('touchend',()=>{if(on&&d>110&&st.tab==='home')load(CATS[st.cat].q,true);p.style.height='0';on=false;d=0});})();
 
-                        // Extract or assign relevant high-res news image
-                        let thumb = item.thumbnail || extractImgFromDesc(item.description) || `https://picsum.photos/seed/${ encodeURIComponent(cleanTitle.substring(0,10)) }/600/400`;
+function renderCats(){
+  $('#cats').innerHTML=CATS.map((c,i)=>'<button class="cat" role="tab" data-i="'+i+'" aria-selected="'+(i===st.cat)+'">'+esc(c.n)+'</button>').join('');
+  const a=$('.cat[aria-selected=true]');a&&a.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+}
+// Auto refresh har 5 minute (sirf home par)
+setInterval(()=>{if(st.tab==='home'&&!document.hidden&&!$('.sheet.open'))load(CATS[st.cat].q,true)},3e5);
 
-                        const cleanDesc = item.description ? item.description.replace(/<[^>]*>?/gm, '') : cleanTitle;
+// PWA: manifest (inline) taaki "Add to Home Screen" chale
+try{const m={name:'इंडियन न्यूज़',short_name:'न्यूज़',display:'standalone',start_url:location.href,background_color:'#f6f1e9',theme_color:'#c2410c'};
+ const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l)}catch(e){}
 
-                        liveMasterFeed.push({
-                            type: (liveMasterFeed.length === 0 && index === 0) ? "hero" : "compact",
-                            badgeText: index % 3 === 0 ? sourceName : "",
-                            badgeBg: "#dc2626",
-                            badgeColor: "#ffffff",
-                            kickerText: kicker,
-                            kickerColor: (index === 0) ? "#dc2626" : "#d97706",
-                            mainHeadline: mainHead,
-                            mainColor: "#111827",
-                            location: searchQuery.includes("कानपुर") ? "उत्तरप्रदेश" : sourceName,
-                            image: thumb,
-                            videoUrl: "",
-                            duration: "",
-                            fullText: `${cleanTitle}\n\nस्रोत: ${sourceName}\nप्रकाशित समय: ${new Date(item.pubDate).toLocaleString('hi-IN')}\n\nविस्तृत जानकारी: ${cleanDesc}`
-                        });
-                    });
-                }
-            } catch (e) {
-                console.error("Live RSS Fetch Error:", e);
-            }
-        }
-
-        renderCardsToViewport(liveMasterFeed);
-    }
-
-    function extractImgFromDesc(htmlStr) {
-        if (!htmlStr) return null;
-        const div = document.createElement('div');
-        div.innerHTML = htmlStr;
-        const img = div.querySelector('img');
-        return img ? img.src : null;
-    }
-
-    // BLOGGER JSONP FETCHER
-    function fetchBloggerJSONP(blogUrl) {
-        return new Promise((resolve) => {
-            let cleanUrl = blogUrl.replace(/\/$/, "");
-            if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
-
-            window.bloggerCallbackTemp = function(json) {
-                const entries = (json && json.feed && json.feed.entry) ? json.feed.entry : [];
-                entries.forEach((entry, idx) => {
-                    const rawTitle = entry.title ? entry.title.$t : "";
-                    const rawContent = entry.content ? entry.content.$t : "";
-                    const temp = document.createElement('div');
-                    temp.innerHTML = rawContent;
-
-                    const customMeta = temp.querySelector('#indian-news-custom-meta');
-                    if (customMeta) {
-                        try {
-                            liveMasterFeed.push(JSON.parse(decodeURIComponent(customMeta.getAttribute('data-config'))));
-                            return;
-                        } catch (err) {}
-                    }
-
-                    let badge = "", kicker = "", mainH = rawTitle;
-                    if (rawTitle.includes("|")) {
-                        const p = rawTitle.split("|").map(s => s.trim());
-                        if (p.length >= 3) { badge = p[0]; kicker = p[1]; mainH = p[2]; }
-                        else if (p.length === 2) { kicker = p[0]; mainH = p[1]; }
-                    } else if (rawTitle.includes(":")) {
-                        const p = rawTitle.split(":");
-                        kicker = p[0] + ":";
-                        mainH = p.slice(1).join(":").trim();
-                    }
-
-                    const imgEl = temp.querySelector('img');
-                    const imgSrc = imgEl ? imgEl.src : "https://picsum.photos/600/400";
-                    const loc = (entry.category && entry.category.length) ? entry.category[0].term : "उत्तरप्रदेश";
-
-                    liveMasterFeed.push({
-                        type: idx === 0 ? "hero" : "compact",
-                        badgeText: badge,
-                        badgeBg: "#dc2626",
-                        badgeColor: "#ffffff",
-                        kickerText: kicker,
-                        kickerColor: "#dc2626",
-                        mainHeadline: mainH,
-                        mainColor: "#111827",
-                        location: loc,
-                        image: imgSrc,
-                        videoUrl: "",
-                        duration: "",
-                        fullText: (temp.textContent || temp.innerText || "").trim()
-                    });
-                });
-                resolve();
-            };
-
-            const s = document.createElement('script');
-            s.src = `${cleanUrl}/feeds/posts/default?alt=json-in-script&max-results=15&callback=bloggerCallbackTemp`;
-            s.onerror = () => resolve();
-            document.body.appendChild(s);
-        });
-    }
-
-    // RENDER CARDS IN EXACT DAINIK BHASKAR APP STYLE
-    function renderCardsToViewport(list) {
-        const container = document.getElementById('newsFeedContainer');
-        if (!list || list.length === 0) {
-            container.innerHTML = `<p style="text-align:center; padding:40px 20px; color:#666;">अभी कोई लाइव खबर उपलब्ध नहीं है। ऊपर रिफ्रेश बटन दबाएं।</p>`;
-            return;
-        }
-
-        let html = "";
-        list.forEach((item, index) => {
-            const badgeHTML = item.badgeText
-                ? `<span class="tag-badge" style="background:${item.badgeBg}; color:${item.badgeColor};">${item.badgeText}</span>`
-                : "";
-            const kickerHTML = item.kickerText
-                ? `<span style="color:${item.kickerColor};">${item.kickerText} </span>`
-                : "";
-            const mainHTML = `<span style="color:${item.mainColor};">${item.mainHeadline}</span>`;
-            const hasDur = item.duration && item.duration.trim() !== "";
-
-            if (item.type === "hero") {
-                html += `
-                    <div class="hero-card">
-                        <h2 class="hero-headline" onclick="openArticleDrawer(${index})">
-                            ${badgeHTML}${kickerHTML}${mainHTML}
-                        </h2>
-                        <div class="hero-media-box" onclick="openArticleDrawer(${index})">
-                            <img src="${item.image}" loading="lazy" alt="News">
-                            ${hasDur || item.videoUrl ? `<div class="play-btn-center">▶</div>` : ''}
-                            ${hasDur ? `<span class="duration-badge">${item.duration}</span>` : ''}
-                        </div>
-                        <div class="card-footer">
-                            <span class="loc-pill" onclick="fetchTopicLive('${item.location}')">${item.location} &gt;</span>
-                            <div class="footer-actions">
-                                <button class="audio-btn" id="audBtn_${index}" onclick="speakNews(${index})">🔊 सुनें</button>
-                                <button class="share-btn" onclick="shareNewsItem(${index})">🟢 शेयर</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                html += `
-                    <div class="compact-card">
-                        <div class="compact-body" onclick="openArticleDrawer(${index})">
-                            <div class="compact-text">
-                                <h3 class="compact-headline">
-                                    ${badgeHTML}${kickerHTML}${mainHTML}
-                                </h3>
-                            </div>
-                            <div class="compact-thumb">
-                                <img src="${item.image}" loading="lazy" alt="Thumb">
-                                ${hasDur ? `<span class="duration-badge">${item.duration}</span>` : ''}
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <span class="loc-pill" onclick="fetchTopicLive('${item.location}')">${item.location} &gt;</span>
-                            <div class="footer-actions">
-                                <button class="audio-btn" id="audBtn_${index}" onclick="speakNews(${index})">🔊 सुनें</button>
-                                <button class="share-btn" onclick="shareNewsItem(${index})">🟢 शेयर</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        });
-
-        container.innerHTML = html;
-        container.scrollTop = 0;
-    }
-
-    // LIVE CATEGORY & TOPIC CLICK HANDLERS
-    function fetchCategoryLive(catName, el) {
-        document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        const clean = catName.replace(/[^\u0900-\u097F\w\s]/g, '').trim();
-        if (clean.includes("टॉप न्यूज़")) {
-            loadAllLiveNews("उत्तर प्रदेश भारत बड़ी खबरें");
-        } else {
-            loadAllLiveNews(clean + " समाचार");
-        }
-    }
-
-    function fetchTopicLive(topic) {
-        loadAllLiveNews(topic);
-    }
-
-    function searchLiveNews() {
-        const q = prompt("लाइव खबर खोजें (जैसे: कानपुर देहात, बिजली विभाग, क्रिकेट):");
-        if (q && q.trim() !== "") loadAllLiveNews(q.trim());
-    }
-
-    function switchMainTab(tab, el) {
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
-        if (tab === 'video') {
-            loadAllLiveNews("वीडियो समाचार इंडिया");
-        } else {
-            loadAllLiveNews();
-        }
-    }
-
-    // OPEN FULL ARTICLE DRAWER
-    function openArticleDrawer(index) {
-        const item = liveMasterFeed[index];
-        let mediaHTML = `<img src="${item.image}" style="width:100%; border-radius:10px; margin:12px 0;">`;
-
-        if (item.videoUrl && item.videoUrl.includes("watch?v=")) {
-            const vidId = item.videoUrl.split("v=")[1].split("&")[0];
-            mediaHTML = `<iframe width="100%" height="210" src="https://www.youtube.com/embed/${vidId}" frameborder="0" allowfullscreen style="border-radius:10px; margin:12px 0;"></iframe>`;
-        }
-
-        document.getElementById('articleDrawerContent').innerHTML = `
-            <span class="loc-pill">${item.location}</span>
-            <h2 style="font-size:19px; line-height:1.45; margin:10px 0;">
-                <span style="color:${item.kickerColor};">${item.kickerText}</span>
-                <span style="color:${item.mainColor};">${item.mainHeadline}</span>
-            </h2>
-            ${mediaHTML}
-            <button class="audio-btn" onclick="speakNews(${index})" style="margin-bottom:12px; padding:6px 14px; font-size:13px;">🔊 पूरी खबर ऑडियो में सुनें</button>
-            <div style="font-size:16px; line-height:1.75; color:#1f2937; white-space:pre-line;">${item.fullText}</div>
-        `;
-        document.getElementById('articleDrawer').style.display = 'flex';
-    }
-
-    function closeDrawer(id) {
-        document.getElementById(id).style.display = 'none';
-    }
-
-    // HINDI TEXT TO SPEECH
-    let activeSpeechIdx = -1;
-    function speakNews(index) {
-        if (!('speechSynthesis' in window)) {
-            alert("आपके फोन में हिंदी वॉइस इंजन उपलब्ध नहीं है।");
-            return;
-        }
-        if (activeSpeechIdx === index && window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-            activeSpeechIdx = -1;
-            renderCardsToViewport(liveMasterFeed);
-            return;
-        }
-        window.speechSynthesis.cancel();
-        const item = liveMasterFeed[index];
-        const utter = new SpeechSynthesisUtterance(`${item.kickerText} ${item.mainHeadline}. ${item.fullText}`);
-        utter.lang = 'hi-IN';
-        utter.onend = () => { activeSpeechIdx = -1; renderCardsToViewport(liveMasterFeed); };
-        activeSpeechIdx = index;
-        window.speechSynthesis.speak(utter);
-
-        const btn = document.getElementById(`audBtn_${index}`);
-        if (btn) { btn.classList.add('playing'); btn.innerText = "⏹️ रोकें"; }
-    }
-
-    function shareNewsItem(index) {
-        const item = liveMasterFeed[index];
-        const t = `${item.kickerText} ${item.mainHeadline}`;
-        if (navigator.share) {
-            navigator.share({ title: 'Indian News', text: t, url: window.location.href });
-        } else {
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(t)}`, '_blank');
-        }
-    }
-
-    // SECRET 5-TAP ADMIN PANEL
-    let taps = 0, tapClock = null;
-    function triggerHiddenAdmin() {
-        taps++;
-        clearTimeout(tapClock);
-        tapClock = setTimeout(() => { taps = 0; }, 1600);
-        if (taps >= 5) {
-            taps = 0;
-            const p = prompt("🔒 गुप्त एडमिन पिन डालें:");
-            if (p === appConfig.pin) {
-                document.getElementById('admBloggerUrl').value = appConfig.bloggerUrl;
-                document.getElementById('admFeedMode').value = appConfig.feedMode;
-                document.getElementById('admCats').value = appConfig.categories.join(', ');
-                document.getElementById('admTrends').value = appConfig.trending.join(', ');
-                document.getElementById('admPin').value = appConfig.pin;
-                document.getElementById('adminDrawer').style.display = 'flex';
-            }
-        }
-    }
-
-    function switchAdmTab(id, btn) {
-        document.querySelectorAll('.adm-section').forEach(s => s.style.display = 'none');
-        document.querySelectorAll('.adm-tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).style.display = 'block';
-        btn.classList.add('active');
-    }
-
-    function saveBloggerConfig() {
-        appConfig.bloggerUrl = document.getElementById('admBloggerUrl').value.trim();
-        appConfig.feedMode = document.getElementById('admFeedMode').value;
-        localStorage.setItem('indian_news_native_cfg', JSON.stringify(appConfig));
-        closeDrawer('adminDrawer');
-        loadAllLiveNews();
-    }
-
-    function buildCustomPostObj() {
-        return {
-            type: document.getElementById('postType').value,
-            badgeText: document.getElementById('postBadge').value.trim(),
-            badgeBg: document.getElementById('postBadgeBg').value,
-            badgeColor: document.getElementById('postBadgeTxt').value,
-            kickerText: document.getElementById('postKicker').value.trim(),
-            kickerColor: document.getElementById('postKickerColor').value,
-            mainHeadline: document.getElementById('postTitle').value.trim(),
-            mainColor: document.getElementById('postTitleColor').value,
-            location: document.getElementById('postLoc').value.trim() || "उत्तरप्रदेश",
-            image: document.getElementById('postImg').value.trim() || "https://picsum.photos/600/400",
-            videoUrl: document.getElementById('postVid').value.trim(),
-            duration: document.getElementById('postDur').value.trim(),
-            fullText: document.getElementById('postFull').value.trim()
-        };
-    }
-
-    function publishCustomPost() {
-        const obj = buildCustomPostObj();
-        if (!obj.mainHeadline) { alert("हेडलाइन लिखें!"); return; }
-        customLocalPosts.unshift(obj);
-        localStorage.setItem('indian_news_custom_posts', JSON.stringify(customLocalPosts));
-        closeDrawer('adminDrawer');
-        loadAllLiveNews();
-    }
-
-    function copyBloggerHTML() {
-        const obj = buildCustomPostObj();
-        if (!obj.mainHeadline) { alert("हेडलाइन लिखें!"); return; }
-        const code = `<div id="indian-news-custom-meta" data-config="${encodeURIComponent(JSON.stringify(obj))}" style="display:none;"></div><img src="${obj.image}"><p>${obj.fullText}</p>`;
-        navigator.clipboard.writeText(code).then(() => alert("📋 ब्लॉगर कोड कॉपी हो गया! इसे ब्लॉगर के HTML View में पेस्ट करके पब्लिश कर दें।"));
-    }
-
-    function saveGeneralSettings() {
-        appConfig.categories = document.getElementById('admCats').value.split(',').map(s => s.trim()).filter(Boolean);
-        appConfig.trending = document.getElementById('admTrends').value.split(',').map(s => s.trim()).filter(Boolean);
-        appConfig.pin = document.getElementById('admPin').value.trim() || "1234";
-        localStorage.setItem('indian_news_native_cfg', JSON.stringify(appConfig));
-        renderTopBars();
-        closeDrawer('adminDrawer');
-    }
-
-    // INIT NATIVE APP
-    renderTopBars();
-    loadAllLiveNews();
+renderCats();setTab('home');
 </script>
 </body>
 </html>
