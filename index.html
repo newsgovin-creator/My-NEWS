@@ -22,7 +22,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .top{background:var(--card);border-bottom:1px solid var(--line);flex-shrink:0}
 .bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
 .logo{font-weight:800;font-size:23px;letter-spacing:-.3px;color:var(--accent)}
-.logo small{display:block;font-size:10.5px;font-weight:600;color:var(--mute);letter-spacing:0;margin-top:-4px}
+.logo{line-height:1.25}.logo small{display:block;font-size:11px;font-weight:600;color:var(--mute);letter-spacing:0;margin-top:3px;line-height:1.2}
 .ibtns{display:flex;gap:4px}
 .ib{background:none;border:0;width:44px;height:44px;border-radius:50%;font-size:19px}
 .ib:active{background:var(--line)}
@@ -121,7 +121,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 <div class="shell" id="app">
   <div class="top">
     <div class="bar">
-      <div class="logo"><img src="logo.png" alt="इंडियन न्यूज़" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://files.catbox.moe/9wwlm5.png'}else{this.replaceWith(document.createTextNode('इंडियन न्यूज़'))}"></div>
+      <div class="logo">इंडियन न्यूज़<small>आपके ज़िले की हर खबर</small></div>
       <div class="ibtns">
         <button class="ib" data-a="search" aria-label="खोजें">🔍</button>
         <button class="ib" data-a="theme" aria-label="डार्क मोड बदलें">🌓</button>
@@ -259,6 +259,7 @@ async function fetchLive(q){
 }
 function norm(o){const s=(x,n)=>String(x==null?'':x).slice(0,n);
   return {type:o.type==='hero'||o.type==='fc'?o.type:'compact',cat:s(o.cat,20),badge:s(o.badge,20),bg:col(o.bg,'#dc2626'),bt:col(o.bt,'#ffffff'),kick:s(o.kick,80),kc:col(o.kc,''),head:s(o.head,300),hc:col(o.hc,''),loc:s(o.loc,40)||'उत्तरप्रदेश',img:safeUrl(o.img),vid:safeUrl(o.vid),dur:s(o.dur,8),full:s(o.full,20000),ver:o.ver==='v'?'v':'u',vsrc:(Array.isArray(o.vsrc)?o.vsrc:[]).map(safeUrl).filter(Boolean).slice(0,5),vnote:s(o.vnote,120),claim:s(o.claim,400),verdict:FV[o.verdict]?o.verdict:'',how:s(o.how,2000),src:'हमारी खबर',own:1}}
+const T=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r([]),ms))]);
 const onlyBlog=()=>st.cfg.only!==false&&!!st.cfg.blog;
 const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
 const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
@@ -303,9 +304,10 @@ function fetchBlog(url,label,start){
   });
 }
 const lbl=c=>c.label||c.n.replace(/^[^\u0900-\u097F\w]+/,'');
-function inCat(i,c){if(i.cat&&st.cats.some(x=>x.id===i.cat))return i.cat===c.id;if(i.labels&&i.labels.length){if(i.labels.includes(lbl(c)))return true;return !st.cats.some(x=>i.labels.includes(lbl(x)))&&c===CATS[0]}return c===CATS[0]}
+function inCat(i,c){if(c===CATS[0])return true;if(i.cat&&st.cats.some(x=>x.id===i.cat))return i.cat===c.id;if(i.labels&&i.labels.length){if(i.labels.includes(lbl(c)))return true;return !st.cats.some(x=>i.labels.includes(lbl(x)))&&c===CATS[0]}return c===CATS[0]}
 
-async function load(q,force){
+async function load(q,force){try{await load0(q,force)}catch(e){$('#list').innerHTML='<div class="empty"><b>कुछ गड़बड़ हुई</b><small class="meta">'+esc(String(e&&e.message||e))+'</small><br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>'}}
+async function load0(q,force){
   const my=++st.reqId;if(force)st.bc=null;
   const key='cache_'+hash(q);
   const cached=S.get(key,null);
@@ -313,7 +315,8 @@ async function load(q,force){
   let items=[],failed=false;
   try{
     const c=st.tab==='home'?CATS[st.cat]:null,mode=c?(onlyBlog()&&c.mode==='live'?'both':c.mode):'both';
-    const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?getBlog(c&&c!==CATS[0]?lbl(c):''):[],mode==='own'||onlyBlog()?[]:fetchLive(q)]);
+    const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?T(getBlog(c&&c!==CATS[0]?lbl(c):''),12000):[],mode==='own'||onlyBlog()?[]:T(fetchLive(q).catch(()=>[]),10000)]);
+    st.dbg=(st.cfg.blog||'-').replace(/^https?:\/\//,'')+' • मिली पोस्ट: '+own.length+(st.berr?' • फ़ीड नहीं खुली':'');
     items=[...[...st.local,...customList(),...own].filter(i=>!c||inCat(i,c)).map(mk),...live];
     if(st.tab==='video'&&onlyBlog())items=items.filter(i=>i.vid);
     items=items.filter(i=>!i.hide).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));st.more=onlyBlog()&&own.length>=40;st.pg=1;
@@ -326,7 +329,7 @@ async function load(q,force){
     if(cached){cached.items.forEach(i=>st.byId[i.id]=i);show(cached.items);toast('ताज़ा खबरें नहीं मिलीं, सेव की हुई दिखा रहे हैं');return}
     $('#list').innerHTML='<div class="empty"><b>खबरें नहीं आ पाईं</b>इंटरनेट जाँचें और फिर कोशिश करें।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return;
   }
-  if(onlyBlog()&&st.berr&&!items.length&&!cached){$('#list').innerHTML='<div class="empty"><b>Blogger से खबरें नहीं आ पाईं</b>इंटरनेट जाँचें। ब्लॉग सार्वजनिक होना चाहिए और फ़ीड "Full" होनी चाहिए।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return}
+  if(onlyBlog()&&st.berr&&!items.length&&!cached){$('#list').innerHTML='<div class="empty"><b>खबरें नहीं आ पाईं</b>इंटरनेट जाँचें और फिर कोशिश करें।<br><small class=\"meta\">'+esc(st.dbg||'')+'</small><br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return}
   show(items);
   if(st.deep){const d=st.deep;st.deep=null;if(st.byId[d])openArticle(d)}
 }
@@ -363,7 +366,7 @@ function card(it,hero){
 }
 function show(items,into){
   const box=into||$('#list');
-  if(!items.length){box.innerHTML='<div class="empty"><b>कुछ नहीं मिला</b>कोई दूसरी कैटेगरी या शब्द आज़माएँ।</div>';return}
+  if(!items.length){box.innerHTML='<div class="empty"><b>कुछ नहीं मिला</b>कोई दूसरी कैटेगरी या शब्द आज़माएँ।<br><small class="meta">'+esc(st.dbg||'')+'</small></div>';return}
   st.items=into?st.items:items;
   box.innerHTML=items.map((it,i)=>card(it,it.type==='hero'||(i===0&&!it.type&&!into))).join('')+(!into&&st.more?MORE:'');
   if(!into){
@@ -403,7 +406,7 @@ function openArticle(id){
    +'<div class="meta">'+esc(it.src)+(it.date?' • '+ago(it.date):'')+' • पढ़ने में '+Math.max(1,Math.round(words/120))+' मिनट</div>'
    +fcHTML(it)+(verOf(it)==='u'?'<div class="vwarn">⚠ यह खबर असत्यापित है। आगे शेयर करने से पहले खुद जाँच लें।</div>':'')+'<div style="margin:12px 0">'+media(it)+'</div>'
    +bodyHTML(it)
-   +(it.link?'<a class="btn" style="display:inline-block;text-decoration:none" href="'+esc(it.link)+'" target="_blank" rel="noopener noreferrer">'+(it.own?'🌐 ब्लॉग पर पूरी खबर खोलें':'पूरी खबर '+esc(it.src)+' पर पढ़ें')+'</a>':'')+relHTML(it);
+   +(it.link&&!it.own?'<a class="btn" style="display:inline-block;text-decoration:none" href="'+esc(it.link)+'" target="_blank" rel="noopener noreferrer">'+(it.own?'🌐 ब्लॉग पर पूरी खबर खोलें':'पूरी खबर '+esc(it.src)+' पर पढ़ें')+'</a>':'')+relHTML(it);
   $('#rBm').classList.toggle('on',!!st.bm[id]);
   $('#rBody').scrollTop=0;$('#prog').style.width='0';
   if(!$('#reader').classList.contains('open')){$('#reader').classList.add('open');pushS()}
@@ -423,7 +426,7 @@ function toggleBm(id){
 }
 async function share(id){
   const it=st.byId[id];if(!it)return;
-  const text=(it.kick+' '+it.head).trim(),url=it.link||location.origin+location.pathname+'#a='+id;
+  const text=(it.kick+' '+it.head).trim(),url=(it.link&&!it.own)?it.link:location.origin+location.pathname+'#a='+id;
   try{if(navigator.share)await navigator.share({title:'इंडियन न्यूज़',text,url});
   else window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(text+' '+url),'_blank','noopener')}catch(e){}
 }
@@ -461,7 +464,7 @@ function showSettings(){
    +[[14,'छोटा'],[16,'सामान्य'],[19,'बड़ा'],[22,'बहुत बड़ा']].map(a=>'<button data-a="fs" data-v="'+a[0]+'" aria-pressed="'+(p.fs==a[0])+'">'+a[1]+'</button>').join('')
    +'</div></div><div class="set"><h4>थीम</h4><div class="seg">'
    +[['auto','ऑटो'],['light','दिन'],['dark','रात']].map(a=>'<button data-a="th" data-v="'+a[0]+'" aria-pressed="'+(p.theme===a[0])+'">'+a[1]+'</button>').join('')
-   +'</div></div><div class="set"><h4>ऐप के बारे में</h4><p class="meta" style="margin:0">इंडियन न्यूज़ • खबरें Google News और आपके Blogger से आती हैं। हर खबर पर असली स्रोत का लिंक दिया जाता है।</p></div>'
+   +'</div></div><div class="set"><h4>ऐप के बारे में</h4><p class="meta" style="margin:0">इंडियन न्यूज़ • आपके ज़िले और देश-दुनिया की हर खबर, सबसे पहले आपके फ़ोन पर।</p></div>'
    ;
 }
 
