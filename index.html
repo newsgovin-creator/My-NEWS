@@ -2,848 +2,1043 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Indian News - Live Blogger Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Indian News App</title>
     <style>
         :root {
             --bhaskar-red: #d32f2f;
             --bhaskar-orange: #ea580c;
-            --bg-gray: #f2f3f5;
+            --bg-gray: #f1f2f6;
             --card-white: #ffffff;
             --text-dark: #111827;
             --border-light: #e5e7eb;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-gray);
-            margin: 0;
-            padding: 0 0 65px 0;
-            color: var(--text-dark);
+        /* NATIVE APP LOCK RULES (NO WEBSITE FEEL) */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
-        /* 1. TOP HEADER BAR */
-        header {
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Lock outer body like an Android App */
+            background-color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* MOBILE APP FRAME */
+        .app-shell {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            margin: 0 auto;
+            background-color: var(--bg-gray);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
+        }
+
+        /* 1. TOP FIXED APP HEADER */
+        .app-top-bars {
             background: var(--card-white);
+            z-index: 50;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+
+        header {
             padding: 10px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-light);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
         }
-        .brand-logo img { height: 34px; width: auto; object-fit: contain; }
-        .header-right { display: flex; align-items: center; gap: 14px; }
+
+        .brand-logo img {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
         .epaper-btn {
-            border: 1.5px solid #222; border-radius: 5px; padding: 3px 8px;
-            font-size: 12px; font-weight: 700; color: #222; background: #fff; cursor: pointer;
+            border: 1.5px solid #222;
+            border-radius: 5px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #222;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            active: scale(0.95);
         }
-        .notif-bell { position: relative; font-size: 20px; cursor: pointer; }
+
+        .epaper-btn:active, .icon-btn:active, .loc-pill:active, .audio-btn:active {
+            transform: scale(0.94);
+        }
+
+        .icon-btn {
+            position: relative;
+            font-size: 19px;
+            color: #222;
+            cursor: pointer;
+        }
+
         .notif-badge {
-            position: absolute; top: -5px; right: -7px; background: var(--bhaskar-red);
-            color: #fff; font-size: 10px; font-weight: bold; padding: 1px 4px; border-radius: 10px;
+            position: absolute;
+            top: -5px;
+            right: -6px;
+            background: var(--bhaskar-red);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 1px 4px;
+            border-radius: 10px;
         }
-        .search-icon { font-size: 20px; cursor: pointer; }
 
         /* 2. CATEGORY BAR */
         .category-bar {
-            background: var(--card-white); display: flex; overflow-x: auto;
-            white-space: nowrap; padding: 0 10px; border-bottom: 1px solid var(--border-light);
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0 8px;
+            border-bottom: 1px solid var(--border-light);
             scrollbar-width: none;
         }
         .category-bar::-webkit-scrollbar { display: none; }
-        .cat-item {
-            padding: 10px 12px; font-size: 15px; font-weight: 700; color: #4b5563;
-            cursor: pointer; border-bottom: 3px solid transparent;
-        }
-        .cat-item.active { color: #111827; border-bottom: 3px solid #111827; }
 
-        /* 3. TRENDING BAR */
+        .cat-item {
+            padding: 9px 11px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .cat-item.active {
+            color: #111827;
+            border-bottom: 3px solid #111827;
+        }
+
+        /* 3. TRENDING PILLS BAR */
         .trending-bar {
-            background: var(--card-white); padding: 10px 12px; display: flex;
-            align-items: center; gap: 8px; overflow-x: auto; white-space: nowrap;
-            border-bottom: 1px solid var(--border-light); margin-bottom: 6px; scrollbar-width: none;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+            background: #fff;
         }
         .trending-bar::-webkit-scrollbar { display: none; }
-        .trending-label { color: var(--bhaskar-orange); font-weight: 800; font-size: 13px; }
+
+        .trending-label {
+            color: var(--bhaskar-orange);
+            font-weight: 800;
+            font-size: 12px;
+        }
+
         .trend-pill {
-            border: 1px solid #d1d5db; border-radius: 20px; padding: 4px 12px;
-            font-size: 13px; font-weight: 600; color: #374151; background: #fff; cursor: pointer;
+            border: 1px solid #d1d5db;
+            border-radius: 18px;
+            padding: 3px 11px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            background: #fff;
         }
 
-        /* FEED CONTAINER */
-        .feed-container { max-width: 650px; margin: 0 auto; }
+        /* SCROLLABLE NATIVE FEED VIEWPORT */
+        .app-feed-viewport {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
+        }
+        .app-feed-viewport::-webkit-scrollbar { display: none; }
 
-        /* 4. HERO CARD */
+        /* SHIMMER SKELETON LOADER (REAL APP LOADING EFFECT) */
+        .skeleton-card {
+            background: #fff;
+            padding: 14px;
+            margin-bottom: 6px;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmerAnim 1.2s infinite;
+            border-radius: 6px;
+        }
+        @keyframes shimmerAnim {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 4. HERO BREAKING CARD */
         .hero-card {
-            background: var(--card-white); padding: 14px; margin-bottom: 8px;
+            background: var(--card-white);
+            padding: 14px;
+            margin-bottom: 6px;
             border-bottom: 1px solid var(--border-light);
-        }
-        .hero-headline { font-size: 19px; line-height: 1.45; font-weight: 700; margin: 0 0 12px 0; cursor: pointer; }
-        .hero-media-box {
-            position: relative; width: 100%; height: 210px; border-radius: 8px;
-            overflow: hidden; background: #000; cursor: pointer;
-        }
-        .hero-media-box img { width: 100%; height: 100%; object-fit: cover; }
-        .play-btn-center {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 48px; height: 48px; background: rgba(0,0,0,0.65); color: #fff;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;
-        }
-        .duration-badge {
-            position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8);
-            color: #fff; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
         }
 
-        /* 5. COMPACT CARD */
+        .hero-headline {
+            font-size: 18px;
+            line-height: 1.42;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+        }
+
+        .hero-media-box {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .hero-media-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-btn-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px; height: 44px;
+            background: rgba(0,0,0,0.65);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 8px; right: 8px;
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* 5. COMPACT HORIZONTAL CARD */
         .compact-card {
-            background: var(--card-white); padding: 14px; margin-bottom: 8px;
+            background: var(--card-white);
+            padding: 14px;
+            margin-bottom: 6px;
             border-bottom: 1px solid var(--border-light);
+            transition: background 0.1s;
         }
-        .compact-body { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; cursor: pointer; }
+        .compact-card:active {
+            background: #f9fafb;
+        }
+
+        .compact-body {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
         .compact-text { flex: 1; }
-        .compact-headline { font-size: 16px; line-height: 1.45; font-weight: 700; margin: 0; }
+
+        .compact-headline {
+            font-size: 15.5px;
+            line-height: 1.42;
+            font-weight: 700;
+            margin: 0;
+        }
+
         .tag-badge {
-            display: inline-block; padding: 1px 6px; border-radius: 3px;
-            font-size: 12px; font-weight: 800; margin-right: 5px; vertical-align: middle;
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-right: 5px;
+            vertical-align: middle;
         }
+
         .compact-thumb {
-            position: relative; width: 115px; height: 84px; border-radius: 6px;
-            overflow: hidden; flex-shrink: 0; background: #000;
+            position: relative;
+            width: 112px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #222;
         }
-        .compact-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .compact-play {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 30px; height: 30px; background: rgba(0,0,0,0.65); color: #fff;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+
+        .compact-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* CARD FOOTER */
-        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 4px; }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 11px;
+        }
+
         .loc-pill {
-            border: 1px solid #d1d5db; border-radius: 16px; padding: 3px 10px;
-            font-size: 12px; font-weight: 700; color: #1f2937; background: #fff; cursor: pointer;
+            border: 1px solid #d1d5db;
+            border-radius: 16px;
+            padding: 2px 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #1f2937;
+            background: #fff;
         }
-        .footer-actions { display: flex; align-items: center; gap: 12px; }
+
+        .footer-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .audio-btn {
-            background: #fef2f2; color: var(--bhaskar-red); border: 1px solid #fecaca;
-            padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: 700; cursor: pointer;
+            background: #fef2f2;
+            color: var(--bhaskar-red);
+            border: 1px solid #fecaca;
+            padding: 3px 9px;
+            border-radius: 14px;
+            font-size: 11.5px;
+            font-weight: 700;
         }
-        .audio-btn.playing { background: var(--bhaskar-red); color: #fff; }
-        .share-btn { background: none; border: none; color: #4b5563; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .dots-btn { background: none; border: none; color: #6b7280; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .audio-btn.playing {
+            background: var(--bhaskar-red);
+            color: #fff;
+        }
 
-        /* 6. BOTTOM NAV */
+        .share-btn {
+            background: none;
+            border: none;
+            color: #4b5563;
+            font-size: 12.5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 6. FIXED NATIVE BOTTOM BAR */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-white);
-            border-top: 1px solid var(--border-light); display: flex; justify-content: space-around;
-            padding: 6px 0; z-index: 100;
+            background: var(--card-white);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 8px 0;
+            flex-shrink: 0;
+            z-index: 50;
         }
-        .nav-tab { text-align: center; color: #6b7280; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; user-select: none; }
-        .nav-tab .icon { display: block; font-size: 20px; margin-bottom: 2px; }
-        .nav-tab.active { color: #111827; font-weight: 800; }
 
-        /* MODALS */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75); z-index: 1000; justify-content: center; align-items: flex-end;
+        .nav-tab {
+            text-align: center;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 600;
+            flex: 1;
         }
-        .article-sheet, .admin-sheet {
-            background: #fff; width: 100%; max-width: 650px; height: 92vh;
-            border-radius: 16px 16px 0 0; padding: 16px; overflow-y: auto;
+        .nav-tab .icon {
+            display: block;
+            font-size: 19px;
+            margin-bottom: 1px;
         }
-        .close-sheet {
-            float: right; background: #f3f4f6; border: none; width: 34px; height: 34px;
-            border-radius: 50%; font-size: 18px; font-weight: bold; cursor: pointer;
+        .nav-tab.active {
+            color: #111827;
+            font-weight: 800;
         }
-        .article-full-body { font-size: 16px; line-height: 1.7; color: #1f2937; margin-top: 14px; }
 
-        /* ADMIN PANEL STYLES */
-        .admin-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid var(--bhaskar-red); padding-bottom: 10px; margin-bottom: 15px;
+        /* SLIDE-UP NATIVE APP DRAWERS (ARTICLE & ADMIN) */
+        .app-drawer-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65);
+            z-index: 200;
+            align-items: flex-end;
         }
-        .admin-header h2 { margin: 0; font-size: 17px; color: var(--bhaskar-red); }
-        .admin-tabs { display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; }
+
+        .app-drawer-sheet {
+            background: #fff;
+            width: 100%;
+            height: 92%;
+            border-radius: 18px 18px 0 0;
+            padding: 16px;
+            overflow-y: auto;
+            animation: slideUp 0.22s ease-out;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .drawer-bar {
+            width: 40px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 4px;
+            margin: 0 auto 12px auto;
+        }
+
+        .close-drawer {
+            float: right;
+            background: #f3f4f6;
+            border: none;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* ADMIN PANEL FORM STYLES */
+        .admin-tabs { display: flex; gap: 6px; margin: 12px 0; }
         .adm-tab-btn {
-            flex: 1; padding: 8px 6px; border: 1px solid #d1d5db; background: #f9fafb;
-            font-weight: 700; font-size: 11px; border-radius: 6px; cursor: pointer; white-space: nowrap;
+            flex: 1; padding: 8px 4px; border: 1px solid #d1d5db; background: #f9fafb;
+            font-weight: 700; font-size: 11px; border-radius: 6px;
         }
         .adm-tab-btn.active { background: var(--bhaskar-red); color: #fff; border-color: var(--bhaskar-red); }
-        .form-row { margin-bottom: 12px; }
-        .form-row label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #374151; }
+        .form-row { margin-bottom: 11px; }
+        .form-row label { display: block; font-size: 11.5px; font-weight: 700; margin-bottom: 4px; color: #374151; }
         .form-row input[type="text"], .form-row textarea, .form-row select {
-            width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;
+            width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;
+            -webkit-user-select: text; user-select: text;
         }
         .color-group {
-            display: flex; gap: 10px; align-items: center; background: #f8fafc;
-            padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0;
+            display: flex; gap: 8px; align-items: center; background: #f8fafc;
+            padding: 6px; border-radius: 6px; border: 1px solid #e2e8f0;
         }
-        .color-group input[type="color"] { width: 40px; height: 32px; border: none; cursor: pointer; background: none; }
-        .btn-publish {
+        .color-group input[type="color"] { width: 38px; height: 30px; border: none; background: none; }
+        .btn-main {
             width: 100%; background: #16a34a; color: #fff; border: none; padding: 11px;
-            font-size: 14px; font-weight: 800; border-radius: 8px; cursor: pointer; margin-top: 8px;
+            font-size: 13.5px; font-weight: 800; border-radius: 8px; margin-top: 6px;
         }
-        .btn-copy-code {
-            width: 100%; background: #2563eb; color: #fff; border: none; padding: 11px;
-            font-size: 14px; font-weight: 800; border-radius: 8px; cursor: pointer; margin-top: 8px;
-        }
-        .info-box {
-            background: #eff6ff; border-left: 4px solid #2563eb; padding: 10px;
-            font-size: 12px; color: #1e3a8a; margin-bottom: 12px; line-height: 1.5; border-radius: 4px;
-        }
-        .sync-status {
-            font-size: 12px; font-weight: bold; padding: 6px 10px; border-radius: 4px;
-            margin-bottom: 10px; display: inline-block;
+        .info-note {
+            background: #eff6ff; border-left: 3px solid #2563eb; padding: 8px;
+            font-size: 11.5px; color: #1e3a8a; margin-bottom: 10px; border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. TOP STICKY HEADER -->
-    <header>
-        <div class="brand-logo">
-            <img src="https://files.catbox.moe/9wwlm5.png" alt="Indian News Logo">
-        </div>
-        <div class="header-right">
-            <button class="epaper-btn" onclick="fetchFromBlogger(true)">🔄 रिफ्रेश</button>
-            <div class="notif-bell" onclick="alert('ताज़ा खबरें अपडेट हो चुकी हैं!')">
-                🔔<span class="notif-badge">5+</span>
+<div class="app-shell">
+
+    <!-- FIXED TOP APP BARS -->
+    <div class="app-top-bars">
+        <header>
+            <div class="brand-logo">
+                <img src="https://files.catbox.moe/9wwlm5.png" alt="Indian News">
             </div>
-            <div class="search-icon" onclick="searchNewsPrompt()">🔍</div>
-        </div>
-    </header>
+            <div class="header-right">
+                <button class="epaper-btn" onclick="loadAllLiveNews()">📰 ई-पेपर</button>
+                <div class="icon-btn" onclick="loadAllLiveNews()">
+                    🔔<span class="notif-badge">Live</span>
+                </div>
+                <div class="icon-btn" onclick="searchLiveNews()">🔍</div>
+            </div>
+        </header>
 
-    <!-- 2. CATEGORY BAR -->
-    <div class="category-bar" id="categoryBar"></div>
-
-    <!-- 3. TRENDING BAR -->
-    <div class="trending-bar" id="trendingBar"></div>
-
-    <!-- 4 & 5. NEWS FEED CONTAINER -->
-    <div class="feed-container" id="newsFeedContainer">
-        <p style="text-align:center; padding:30px; color:#666;">खबरें लोड हो रही हैं...</p>
+        <div class="category-bar" id="categoryBar"></div>
+        <div class="trending-bar" id="trendingBar"></div>
     </div>
 
-    <!-- FULL ARTICLE MODAL -->
-    <div class="modal-overlay" id="articleModal">
-        <div class="article-sheet">
-            <button class="close-sheet" onclick="closeArticleModal()">✕</button>
-            <div id="articleModalContent"></div>
-        </div>
-    </div>
+    <!-- MAIN SCROLLABLE NEWS FEED (REAL APP VIEWPORT) -->
+    <div class="app-feed-viewport" id="newsFeedContainer"></div>
 
-    <!-- 7. HIDDEN ADMIN PANEL MODAL (5 TAPS ON PROFILE) -->
-    <div class="modal-overlay" id="adminModal">
-        <div class="admin-sheet">
-            <div class="admin-header">
-                <h2>⚙️ इंडियन न्यूज़ - मास्टर एडमिन पैनल</h2>
-                <button class="close-sheet" onclick="closeAdmin()">✕</button>
-            </div>
-
-            <div class="admin-tabs">
-                <button class="adm-tab-btn active" onclick="switchAdminTab('bloggerTab', this)">🌐 ब्लॉगर लिंक कनेक्ट</button>
-                <button class="adm-tab-btn" onclick="switchAdminTab('postTab', this)">🎨 कस्टम खबर डिजाइनर</button>
-                <button class="adm-tab-btn" onclick="switchAdminTab('catTab', this)">📌 कैटेगरी व सेटिंग</button>
-            </div>
-
-            <!-- TAB 1: BLOGGER LIVE CONNECTION (SABSE ZAROORI) -->
-            <div id="bloggerTab" class="adm-tab-content">
-                <div class="info-box">
-                    <strong>💡 यह कैसे काम करता है?</strong><br>
-                    यहाँ अपने Google Blogger का लिंक डालें। जब भी आप अपने ब्लॉगर पर कोई पोस्ट डालेंगे, यह ऐप बिना किसी कोडिंग के अपने आप वहाँ से फोटो, हेडलाइन और पूरी खबर खींचकर दैनिक भास्कर डिजाइन में दिखा देगा!
-                </div>
-
-                <div class="form-row">
-                    <label>🔗 आपके Blogger का URL (लिंक यहाँ डालें):</label>
-                    <input type="text" id="bloggerUrlInput" placeholder="जैसे: https://uppclkanpur.blogspot.com">
-                </div>
-
-                <div class="form-row">
-                    <label>📡 डेटा सोर्स मोड चुनें (Data Mode):</label>
-                    <select id="dataSourceMode">
-                        <option value="both">🌐 ब्लॉगर + लोकल कस्टम खबरें (दोनों दिखाएं)</option>
-                        <option value="blogger_only">🌐 सिर्फ ब्लॉगर की लाइव खबरें दिखाएं</option>
-                        <option value="local_only">📱 सिर्फ एडमिन पैनल की लोकल खबरें दिखाएं</option>
-                    </select>
-                </div>
-
-                <button class="btn-publish" onclick="saveAndSyncBlogger()">🔄 ब्लॉगर लिंक सेव करें और अभी खबरें खींचें (Sync Now)</button>
-
-                <hr style="margin: 18px 0; border: 0; border-top: 1px solid #ddd;">
-
-                <div class="info-box" style="background:#fef2f2; border-color:#dc2626; color:#991b1b;">
-                    <strong>🎨 ब्लॉगर से ही 3 रंगों वाली हेडलाइन कैसे लिखें?</strong><br>
-                    जब आप ब्लॉगर ऐप में पोस्ट का Title लिखें, तो बीच में <code>|</code> (पाइप) लगा दें:<br>
-                    <code>भास्कर एक्सक्लूसिव | जान लेकर बंद हुए अस्पताल: | यूपी में सील अस्पताल पर कार्रवाई</code><br>
-                    • पहला हिस्सा <strong>लाल बैज</strong> बन जाएगा।<br>
-                    • दूसरा हिस्सा <strong>केसरी/लाल रंग</strong> में दिखेगा।<br>
-                    • तीसरा हिस्सा <strong>काले रंग</strong> में दिखेगा!
-                </div>
-            </div>
-
-            <!-- TAB 2: CUSTOM NEWS DESIGNER & BLOGGER CODE GENERATOR -->
-            <div id="postTab" class="adm-tab-content" style="display:none;">
-                <div class="info-box">
-                    यहाँ से आप हर शब्द का रंग चुनकर खबर डिजाइन कर सकते हैं। आप इसे सीधे ऐप में टेस्ट कर सकते हैं या <strong>"ब्लॉगर कोड कॉपी करें"</strong> दबाकर उस कोड को अपने ब्लॉगर पोस्ट में पेस्ट कर सकते हैं ताकि दुनिया के हर फोन में सेम कलर दिखे!
-                </div>
-
-                <div class="form-row">
-                    <label>1. कार्ड का प्रकार (Hero Bada Card vs Compact Chhota Card):</label>
-                    <select id="newsType">
-                        <option value="hero">🔥 पहली बड़ी खबर (Full-Width Hero Banner)</option>
-                        <option value="compact" selected>📰 सामान्य छोटी खबर (Side-by-Side Compact Card)</option>
-                    </select>
-                </div>
-
-                <div class="form-row">
-                    <label>2. टैग बैज (जैसे: भास्कर इन्वेस्टिगेशन) + रंग:</label>
-                    <div class="color-group">
-                        <input type="text" id="badgeText" placeholder="टैग का नाम (Optional)">
-                        <input type="color" id="badgeBg" value="#dc2626" title="बैकग्राउंड कलर">
-                        <input type="color" id="badgeColor" value="#ffffff" title="टेक्स्ट कलर">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <label>3. शुरुआती रंगीन लाइन (Kicker Text) + रंग:</label>
-                    <div class="color-group">
-                        <input type="text" id="kickerText" placeholder="जैसे: जान लेकर बंद हुए अस्पताल:">
-                        <input type="color" id="kickerColor" value="#d97706">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <label>4. मुख्य हेडलाइन (Main Headline) + रंग:</label>
-                    <div class="color-group">
-                        <input type="text" id="mainHeadline" placeholder="जैसे: यूपी में सील अस्पताल को खोलने के मांगे 3 लाख">
-                        <input type="color" id="mainColor" value="#111827">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <label>5. लोकेशन पिल (Location) और कैटेगरी:</label>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="locationPill" value="उत्तरप्रदेश" placeholder="लोकेशन">
-                        <input type="text" id="newsCategory" value="कानपुर देहात" placeholder="कैटेगरी">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <label>6. फोटो का लिंक (Catbox / Blogger Image URL):</label>
-                    <input type="text" id="mediaImage" placeholder="https://... (.jpg / .png)">
-                </div>
-
-                <div class="form-row">
-                    <label>7. यूट्यूब वीडियो लिंक (Optional) + समय (Duration):</label>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="videoUrl" placeholder="YouTube URL" style="flex:2;">
-                        <input type="text" id="videoDuration" placeholder="3:22" style="flex:1;">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <label>8. पूरी खबर (Full Story & Audio Script):</label>
-                    <textarea id="fullArticle" rows="4" placeholder="यहाँ पूरी खबर लिखें..."></textarea>
-                </div>
-
-                <button class="btn-publish" onclick="saveLocalCustomNews()">📱 इस फोन में तुरंत पब्लिश करें</button>
-                <button class="btn-copy-code" onclick="generateBloggerPostCode()">📋 ब्लॉगर पोस्ट के लिए कोड कॉपी करें (सभी यूजर्स के लिए)</button>
-            </div>
-
-            <!-- TAB 3: CATEGORIES & SETTINGS -->
-            <div id="catTab" class="adm-tab-content" style="display:none;">
-                <div class="form-row">
-                    <label>कैटेगरी लिस्ट (कॉमा `,` लगाकर):</label>
-                    <input type="text" id="admCategoriesInput">
-                </div>
-                <div class="form-row">
-                    <label>ट्रेंडिंग टॉपिक्स (कॉमा `,` लगाकर):</label>
-                    <input type="text" id="admTrendingInput">
-                </div>
-                <div class="form-row">
-                    <label>🔊 ऑडियो स्पीड (Voice Speed):</label>
-                    <select id="voiceSpeedSelect">
-                        <option value="0.9">धीमा (0.9x)</option>
-                        <option value="1.0" selected>सामान्य (1.0x)</option>
-                        <option value="1.15">तेज़ (1.15x)</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label>🔒 एडमिन गुप्त पिन (PIN):</label>
-                    <input type="text" id="adminPinInput" value="1234">
-                </div>
-                <button class="btn-publish" onclick="saveSettings()">✔️ सेटिंग्स सेव करें</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6. BOTTOM NAVIGATION -->
+    <!-- FIXED NATIVE BOTTOM BAR -->
     <div class="bottom-nav">
-        <div class="nav-tab active" onclick="filterByTab('all', this)">
+        <div class="nav-tab active" onclick="switchMainTab('all', this)">
             <span class="icon">🏠</span>होम
         </div>
-        <div class="nav-tab" onclick="filterByTab('video', this)">
+        <div class="nav-tab" onclick="switchMainTab('video', this)">
             <span class="icon">▶️</span>वीडियो
         </div>
-        <!-- 5 Taps Secret Trigger -->
-        <div class="nav-tab" onclick="handleSecretProfileTap()">
+        <!-- 5 Rapid Taps on Profile Opens Hidden Admin Panel -->
+        <div class="nav-tab" onclick="triggerHiddenAdmin()">
             <span class="icon">👤</span>प्रोफाइल
         </div>
     </div>
 
-    <script>
-        // APP CONFIGURATION (INCLUDES BLOGGER URL)
-        let appConfig = JSON.parse(localStorage.getItem('indian_news_cfg_v3')) || {
-            bloggerUrl: "https://uppclkanpur.blogspot.com", // Yahan aap apna koi bhi blog daal sakte hain
-            dataSourceMode: "both",
-            categories: ["🔥 टॉप न्यूज़", "📍 कानपुर देहात", "🎬 भास्कर सीरियल्स", "⚡ तेज़", "उत्तरप्रदेश", "क्रिकेट"],
-            trending: ["चुनाव", "IND Vs NZ सीरीज", "करवा चौथ", "इजराइल में चुनाव", "सर्दी की दस्तक"],
-            voiceSpeed: 1.0,
-            adminPin: "1234"
-        };
+    <!-- ARTICLE READER DRAWER -->
+    <div class="app-drawer-overlay" id="articleDrawer">
+        <div class="app-drawer-sheet">
+            <div class="drawer-bar"></div>
+            <button class="close-drawer" onclick="closeDrawer('articleDrawer')">✕</button>
+            <div id="articleDrawerContent"></div>
+        </div>
+    </div>
 
-        // DEFAULT FALLBACK / LOCAL NEWS
-        let localNewsDB = JSON.parse(localStorage.getItem('indian_news_local_v3')) || [
-            {
-                type: "hero",
-                badgeText: "",
-                badgeBg: "#dc2626",
-                badgeColor: "#ffffff",
-                kickerText: "मॉर्निंग न्यूज ब्रीफ:",
-                kickerColor: "#dc2626",
-                mainHeadline: "केंद्रीय कर्मचारियों का DA बढ़ा; सुप्रीम कोर्ट बोला- फॉर्म-6 दोबारा क्यों भरें; ED ने आजम की जौहर यूनिवर्सिटी अटैच की",
-                mainColor: "#111827",
-                location: "उत्तरप्रदेश",
-                category: "टॉप न्यूज़",
-                image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&auto=format&fit=crop&q=80",
-                videoUrl: "",
-                duration: "3:21",
-                fullText: "मॉर्निंग न्यूज ब्रीफ में आज की सबसे बड़ी खबरें विस्तार से पढ़िए और सुनिए।"
-            },
-            {
-                type: "compact",
-                badgeText: "भास्कर इन्वेस्टिगेशन",
-                badgeBg: "#dc2626",
-                badgeColor: "#ffffff",
-                kickerText: "जान लेकर बंद हुए अस्पताल, अफसर पैसा लेकर खोल रहे:",
-                kickerColor: "#d97706",
-                mainHeadline: "यूपी में सील अस्पताल को खोलने के ACMO ने 3 लाख रुपए मांगे",
-                mainColor: "#111827",
-                location: "उत्तरप्रदेश",
-                category: "कानपुर देहात",
-                image: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=500&auto=format&fit=crop&q=80",
-                videoUrl: "",
-                duration: "3:22",
-                fullText: "उत्तर प्रदेश में सील किए गए अस्पतालों को खोलने के नाम पर रिश्वत मांगे जाने का मामला सामने आया है।"
+    <!-- HIDDEN ADMIN PANEL DRAWER -->
+    <div class="app-drawer-overlay" id="adminDrawer">
+        <div class="app-drawer-sheet">
+            <div class="drawer-bar"></div>
+            <button class="close-drawer" onclick="closeDrawer('adminDrawer')">✕</button>
+            <h3 style="margin:0; color:var(--bhaskar-red);">⚙️ गुप्त एडमिन कंट्रोल पैनल</h3>
+
+            <div class="admin-tabs">
+                <button class="adm-tab-btn active" onclick="switchAdmTab('tabBlogger', this)">🌐 ब्लॉगर व लाइव सोर्स</button>
+                <button class="adm-tab-btn" onclick="switchAdmTab('tabDesigner', this)">🎨 कस्टम खबर पोस्ट</button>
+                <button class="adm-tab-btn" onclick="switchAdmTab('tabSettings', this)">📌 कैटेगरी व पिन</button>
+            </div>
+
+            <!-- TAB 1: BLOGGER & LIVE RSS -->
+            <div id="tabBlogger" class="adm-section">
+                <div class="info-note">
+                    यहाँ अपने <strong>Blogger</strong> का लिंक डालें। अगर आपका ब्लॉगर खाली है, तो यह ऐप अपने आप <strong>Live Hindi News (Google News UP/India)</strong> से असली खबरें खींचकर दिखाएगा (कोई डमी न्यूज़ नहीं)।
+                </div>
+                <div class="form-row">
+                    <label>🔗 आपका Blogger URL (अपने न्यूज़ ब्लॉग का लिंक डालें):</label>
+                    <input type="text" id="admBloggerUrl" placeholder="https://apka-news-blog.blogspot.com">
+                </div>
+                <div class="form-row">
+                    <label>📡 लाइव न्यूज़ फीड मोड:</label>
+                    <select id="admFeedMode">
+                        <option value="blogger_plus_live">🌐 मेरा ब्लॉगर + लाइव इंडिया न्यूज़ (Auto Live)</option>
+                        <option value="blogger_only">📝 सिर्फ मेरे ब्लॉगर की खबरें दिखाएं</option>
+                    </select>
+                </div>
+                <button class="btn-main" onclick="saveBloggerConfig()">🔄 सेव करें और लाइव खबरें लोड करें</button>
+            </div>
+
+            <!-- TAB 2: CUSTOM NEWS DESIGNER -->
+            <div id="tabDesigner" class="adm-section" style="display:none;">
+                <div class="form-row">
+                    <label>1. कार्ड का प्रकार:</label>
+                    <select id="postType">
+                        <option value="hero">🔥 पहली बड़ी खबर (Full-Width Hero Card)</option>
+                        <option value="compact" selected>📰 सामान्य छोटी खबर (Side-by-Side Card)</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>2. टैग बैज (जैसे: एक्सक्लूसिव / ब्रेकिंग) + रंग:</label>
+                    <div class="color-group">
+                        <input type="text" id="postBadge" placeholder="बैज (Optional)">
+                        <input type="color" id="postBadgeBg" value="#dc2626">
+                        <input type="color" id="postBadgeTxt" value="#ffffff">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>3. रंगीन हाइलाइट लाइन (Kicker) + रंग:</label>
+                    <div class="color-group">
+                        <input type="text" id="postKicker" placeholder="शुरुआती रंगीन लाइन...">
+                        <input type="color" id="postKickerColor" value="#ea580c">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>4. मुख्य हेडलाइन + रंग:</label>
+                    <div class="color-group">
+                        <input type="text" id="postTitle" placeholder="मुख्य खबर की हेडलाइन...">
+                        <input type="color" id="postTitleColor" value="#111827">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>5. राज्य/जिला (Location) व फोटो लिंक (URL):</label>
+                    <div style="display:flex; gap:6px;">
+                        <input type="text" id="postLoc" value="कानपुर देहात" style="flex:1;">
+                        <input type="text" id="postImg" placeholder="Image URL (Catbox/Blogger)" style="flex:2;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>6. यूट्यूब वीडियो लिंक (Optional) व समय (जैसे 3:20):</label>
+                    <div style="display:flex; gap:6px;">
+                        <input type="text" id="postVid" placeholder="YouTube Link" style="flex:2;">
+                        <input type="text" id="postDur" placeholder="3:20" style="flex:1;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label>7. पूरी खबर (Audio सुनने और पढ़ने के लिए):</label>
+                    <textarea id="postFull" rows="3" placeholder="यहाँ पूरी खबर लिखें..."></textarea>
+                </div>
+                <button class="btn-main" onclick="publishCustomPost()">🚀 अभी ऐप में पब्लिश करें</button>
+                <button class="btn-main" style="background:#2563eb;" onclick="copyBloggerHTML()">📋 ब्लॉगर पोस्ट के लिए कोड कॉपी करें</button>
+            </div>
+
+            <!-- TAB 3: SETTINGS -->
+            <div id="tabSettings" class="adm-section" style="display:none;">
+                <div class="form-row">
+                    <label>कैटेगरी बार (कॉमा `,` लगाकर):</label>
+                    <input type="text" id="admCats">
+                </div>
+                <div class="form-row">
+                    <label>ट्रेंडिंग टॉपिक्स (कॉमा `,` लगाकर):</label>
+                    <input type="text" id="admTrends">
+                </div>
+                <div class="form-row">
+                    <label>🔒 गुप्त एडमिन पिन (PIN):</label>
+                    <input type="text" id="admPin" value="1234">
+                </div>
+                <button class="btn-main" onclick="saveGeneralSettings()">✔️ सेटिंग्स सेव करें</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ZERO DUMMY NEWS - 100% LIVE CONFIGURATION
+    let appConfig = JSON.parse(localStorage.getItem('indian_news_native_cfg')) || {
+        bloggerUrl: "", // Jab aap apna Blogger URL dalenge toh wo sabse upar aayega
+        feedMode: "blogger_plus_live",
+        categories: ["🔥 टॉप न्यूज़", "📍 कानपुर देहात", "उत्तरप्रदेश", "देश", "क्रिकेट", "मनोरंजन", "बिजनेस"],
+        trending: ["यूपी बड़ी खबरें", "कानपुर समाचार", "टीम इंडिया", "मौसम अपडेट", "रोजगार समाचार"],
+        pin: "1234"
+    };
+
+    let customLocalPosts = JSON.parse(localStorage.getItem('indian_news_custom_posts')) || [];
+    let liveMasterFeed = [];
+
+    // RENDER SHIMMER SKELETON (APP LOADING UI)
+    function showAppSkeleton() {
+        const container = document.getElementById('newsFeedContainer');
+        let skelHTML = `
+            <div class="skeleton-card">
+                <div class="shimmer" style="height:22px; width:90%; margin-bottom:8px;"></div>
+                <div class="shimmer" style="height:22px; width:65%; margin-bottom:12px;"></div>
+                <div class="shimmer" style="height:190px; width:100%;"></div>
+            </div>
+        `;
+        for (let i = 0; i < 4; i++) {
+            skelHTML += `
+                <div class="skeleton-card" style="display:flex; gap:12px;">
+                    <div style="flex:1;">
+                        <div class="shimmer" style="height:16px; width:95%; margin-bottom:8px;"></div>
+                        <div class="shimmer" style="height:16px; width:80%; margin-bottom:8px;"></div>
+                        <div class="shimmer" style="height:16px; width:50%;"></div>
+                    </div>
+                    <div class="shimmer" style="width:110px; height:80px; flex-shrink:0;"></div>
+                </div>
+            `;
+        }
+        container.innerHTML = skelHTML;
+    }
+
+    // RENDER TOP NAVIGATION BARS
+    function renderTopBars() {
+        document.getElementById('categoryBar').innerHTML = appConfig.categories.map((c, i) => `
+            <div class="cat-item ${i === 0 ? 'active' : ''}" onclick="fetchCategoryLive('${c}', this)">${c}</div>
+        `).join('');
+
+        document.getElementById('trendingBar').innerHTML = `<span class="trending-label">ट्रेंडिंग टॉपिक</span>` +
+            appConfig.trending.map(t => `<span class="trend-pill" onclick="fetchTopicLive('${t}')">${t} &gt;</span>`).join('');
+    }
+
+    // 1. FETCH BLOGGER + REAL-TIME HINDI NEWS (ZERO DUMMY DATA)
+    async function loadAllLiveNews(searchQuery = "उत्तर प्रदेश कानपुर भारत") {
+        showAppSkeleton();
+        liveMasterFeed = [...customLocalPosts];
+
+        // Step A: Fetch from User's Blogger if configured
+        if (appConfig.bloggerUrl && appConfig.bloggerUrl.trim() !== "") {
+            await fetchBloggerJSONP(appConfig.bloggerUrl.trim());
+        }
+
+        // Step B: Fetch Real-Time Original Hindi News via Google News RSS-to-JSON API
+        if (appConfig.feedMode === "blogger_plus_live" || liveMasterFeed.length === 0) {
+            try {
+                const rssUrl = encodeURIComponent(`https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=hi&gl=IN&ceid=IN:hi`);
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
+                const data = await res.json();
+
+                if (data && data.items) {
+                    data.items.forEach((item, index) => {
+                        // Clean source name from Google News title
+                        let cleanTitle = item.title.split(" - ")[0];
+                        let sourceName = item.title.split(" - ")[1] || "ब्रेकिंग न्यूज़";
+
+                        // Split title into Kicker (Colored) + Main Headline (Black) like Dainik Bhaskar
+                        let kicker = "";
+                        let mainHead = cleanTitle;
+                        if (cleanTitle.includes(":")) {
+                            let pts = cleanTitle.split(":");
+                            kicker = pts[0] + ":";
+                            mainHead = pts.slice(1).join(":").trim();
+                        } else if (cleanTitle.length > 45) {
+                            let words = cleanTitle.split(" ");
+                            kicker = words.slice(0, 4).join(" ") + " -";
+                            mainHead = words.slice(4).join(" ");
+                        }
+
+                        // Extract or assign relevant high-res news image
+                        let thumb = item.thumbnail || extractImgFromDesc(item.description) || `https://picsum.photos/seed/${ encodeURIComponent(cleanTitle.substring(0,10)) }/600/400`;
+
+                        const cleanDesc = item.description ? item.description.replace(/<[^>]*>?/gm, '') : cleanTitle;
+
+                        liveMasterFeed.push({
+                            type: (liveMasterFeed.length === 0 && index === 0) ? "hero" : "compact",
+                            badgeText: index % 3 === 0 ? sourceName : "",
+                            badgeBg: "#dc2626",
+                            badgeColor: "#ffffff",
+                            kickerText: kicker,
+                            kickerColor: (index === 0) ? "#dc2626" : "#d97706",
+                            mainHeadline: mainHead,
+                            mainColor: "#111827",
+                            location: searchQuery.includes("कानपुर") ? "उत्तरप्रदेश" : sourceName,
+                            image: thumb,
+                            videoUrl: "",
+                            duration: "",
+                            fullText: `${cleanTitle}\n\nस्रोत: ${sourceName}\nप्रकाशित समय: ${new Date(item.pubDate).toLocaleString('hi-IN')}\n\nविस्तृत जानकारी: ${cleanDesc}`
+                        });
+                    });
+                }
+            } catch (e) {
+                console.error("Live RSS Fetch Error:", e);
             }
-        ];
+        }
 
-        let bloggerFetchedNews = [];
-        let combinedFeed = [];
+        renderCardsToViewport(liveMasterFeed);
+    }
 
-        // 1. FETCH LIVE NEWS FROM BLOGGER (JSONP - NO CORS ERROR)
-        function fetchFromBlogger(showAlert = false) {
-            if (!appConfig.bloggerUrl || appConfig.dataSourceMode === "local_only") {
-                buildAndRenderFeed();
-                return;
-            }
+    function extractImgFromDesc(htmlStr) {
+        if (!htmlStr) return null;
+        const div = document.createElement('div');
+        div.innerHTML = htmlStr;
+        const img = div.querySelector('img');
+        return img ? img.src : null;
+    }
 
-            let cleanUrl = appConfig.bloggerUrl.trim().replace(/\/$/, "");
+    // BLOGGER JSONP FETCHER
+    function fetchBloggerJSONP(blogUrl) {
+        return new Promise((resolve) => {
+            let cleanUrl = blogUrl.replace(/\/$/, "");
             if (!cleanUrl.startsWith("http")) cleanUrl = "https://" + cleanUrl;
 
-            const script = document.createElement('script');
-            script.src = `${cleanUrl}/feeds/posts/default?alt=json-in-script&max-results=25&callback=parseBloggerFeed`;
-            script.onerror = () => {
-                if (showAlert) alert("⚠️ ब्लॉगर से डेटा लोड नहीं हो पाया। कृपया जांचें कि ब्लॉग पब्लिक है और लिंक सही है।");
-                buildAndRenderFeed();
-            };
-            document.body.appendChild(script);
-        }
+            window.bloggerCallbackTemp = function(json) {
+                const entries = (json && json.feed && json.feed.entry) ? json.feed.entry : [];
+                entries.forEach((entry, idx) => {
+                    const rawTitle = entry.title ? entry.title.$t : "";
+                    const rawContent = entry.content ? entry.content.$t : "";
+                    const temp = document.createElement('div');
+                    temp.innerHTML = rawContent;
 
-        // PARSE BLOGGER POSTS INTO ULTRA PRO MAX CARDS
-        window.parseBloggerFeed = function(json) {
-            bloggerFetchedNews = [];
-            const entries = (json && json.feed && json.feed.entry) ? json.feed.entry : [];
-
-            entries.forEach((entry, idx) => {
-                const rawTitle = entry.title ? entry.title.$t : "ताज़ा खबर";
-                const rawContent = entry.content ? entry.content.$t : (entry.summary ? entry.summary.$t : "");
-
-                // Check if post contains custom JSON config generated from Admin Panel
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = rawContent;
-                const customMeta = tempDiv.querySelector('#indian-news-custom-meta');
-
-                if (customMeta) {
-                    try {
-                        const parsedCustom = JSON.parse(decodeURIComponent(customMeta.getAttribute('data-config')));
-                        bloggerFetchedNews.push(parsedCustom);
-                        return;
-                    } catch (e) {}
-                }
-
-                // Otherwise, auto-parse normal Blogger post
-                let badgeText = "";
-                let kickerText = "";
-                let mainHeadline = rawTitle;
-
-                // Support Pipe "|" separation in Blogger Title: Badge | Kicker | Main Headline
-                if (rawTitle.includes("|")) {
-                    const parts = rawTitle.split("|").map(s => s.trim());
-                    if (parts.length === 3) {
-                        badgeText = parts[0];
-                        kickerText = parts[1];
-                        mainHeadline = parts[2];
-                    } else if (parts.length === 2) {
-                        kickerText = parts[0];
-                        mainHeadline = parts[1];
+                    const customMeta = temp.querySelector('#indian-news-custom-meta');
+                    if (customMeta) {
+                        try {
+                            liveMasterFeed.push(JSON.parse(decodeURIComponent(customMeta.getAttribute('data-config'))));
+                            return;
+                        } catch (err) {}
                     }
-                } else if (rawTitle.includes(":")) {
-                    const colonParts = rawTitle.split(":");
-                    kickerText = colonParts[0] + ":";
-                    mainHeadline = colonParts.slice(1).join(":").trim();
-                }
 
-                // Extract First Image from Blogger Post
-                let imgUrl = "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600&auto=format&fit=crop&q=80";
-                const imgTag = tempDiv.querySelector('img');
-                if (imgTag && imgTag.src) {
-                    imgUrl = imgTag.src;
-                } else if (entry.media$thumbnail && entry.media$thumbnail.url) {
-                    imgUrl = entry.media$thumbnail.url.replace(/\/s\d+(-c)?\//, "/w600/");
-                }
+                    let badge = "", kicker = "", mainH = rawTitle;
+                    if (rawTitle.includes("|")) {
+                        const p = rawTitle.split("|").map(s => s.trim());
+                        if (p.length >= 3) { badge = p[0]; kicker = p[1]; mainH = p[2]; }
+                        else if (p.length === 2) { kicker = p[0]; mainH = p[1]; }
+                    } else if (rawTitle.includes(":")) {
+                        const p = rawTitle.split(":");
+                        kicker = p[0] + ":";
+                        mainH = p.slice(1).join(":").trim();
+                    }
 
-                // Extract Category/Label from Blogger Post
-                let labelName = "उत्तरप्रदेश";
-                if (entry.category && entry.category.length > 0) {
-                    labelName = entry.category[0].term;
-                }
+                    const imgEl = temp.querySelector('img');
+                    const imgSrc = imgEl ? imgEl.src : "https://picsum.photos/600/400";
+                    const loc = (entry.category && entry.category.length) ? entry.category[0].term : "उत्तरप्रदेश";
 
-                const plainText = (tempDiv.textContent || tempDiv.innerText || "").trim();
-
-                bloggerFetchedNews.push({
-                    type: idx === 0 ? "hero" : "compact", // Pehli post apne aap Bada Hero Card banegi!
-                    badgeText: badgeText,
-                    badgeBg: "#dc2626",
-                    badgeColor: "#ffffff",
-                    kickerText: kickerText,
-                    kickerColor: idx === 0 ? "#dc2626" : "#d97706",
-                    mainHeadline: mainHeadline,
-                    mainColor: "#111827",
-                    location: labelName,
-                    category: labelName,
-                    image: imgUrl,
-                    videoUrl: "",
-                    duration: "",
-                    fullText: plainText
+                    liveMasterFeed.push({
+                        type: idx === 0 ? "hero" : "compact",
+                        badgeText: badge,
+                        badgeBg: "#dc2626",
+                        badgeColor: "#ffffff",
+                        kickerText: kicker,
+                        kickerColor: "#dc2626",
+                        mainHeadline: mainH,
+                        mainColor: "#111827",
+                        location: loc,
+                        image: imgSrc,
+                        videoUrl: "",
+                        duration: "",
+                        fullText: (temp.textContent || temp.innerText || "").trim()
+                    });
                 });
-            });
-
-            buildAndRenderFeed();
-        };
-
-        function buildAndRenderFeed() {
-            if (appConfig.dataSourceMode === "blogger_only") {
-                combinedFeed = [...bloggerFetchedNews];
-            } else if (appConfig.dataSourceMode === "local_only") {
-                combinedFeed = [...localNewsDB];
-            } else {
-                combinedFeed = [...bloggerFetchedNews, ...localNewsDB];
-            }
-            renderNewsFeed(combinedFeed);
-        }
-
-        // RENDER TOP BARS
-        function renderTopBars() {
-            document.getElementById('categoryBar').innerHTML = appConfig.categories.map((cat, i) => `
-                <div class="cat-item ${i === 0 ? 'active' : ''}" onclick="selectCategory('${cat}', this)">${cat}</div>
-            `).join('');
-
-            document.getElementById('trendingBar').innerHTML = `<span class="trending-label">ट्रेंडिंग टॉपिक</span>` +
-                appConfig.trending.map(t => `<span class="trend-pill" onclick="filterByKeyword('${t}')">${t} &gt;</span>`).join('');
-        }
-
-        // RENDER CARDS ON SCREEN
-        function renderNewsFeed(list) {
-            const container = document.getElementById('newsFeedContainer');
-            if (!list || list.length === 0) {
-                container.innerHTML = `<p style="text-align:center; padding:30px; color:#666;">कोई खबर उपलब्ध नहीं है। एडमिन पैनल में ब्लॉगर लिंक चेक करें।</p>`;
-                return;
-            }
-
-            let html = "";
-            list.forEach((item, index) => {
-                const badgeHTML = item.badgeText
-                    ? `<span class="tag-badge" style="background:${item.badgeBg}; color:${item.badgeColor};">${item.badgeText}</span>`
-                    : "";
-                const kickerHTML = item.kickerText
-                    ? `<span style="color:${item.kickerColor};">${item.kickerText} </span>`
-                    : "";
-                const mainHTML = `<span style="color:${item.mainColor};">${item.mainHeadline}</span>`;
-                const hasDuration = item.duration && item.duration.trim() !== "";
-
-                if (item.type === "hero") {
-                    html += `
-                        <div class="hero-card">
-                            <h2 class="hero-headline" onclick="openArticleModal(${index})">
-                                ${badgeHTML}${kickerHTML}${mainHTML}
-                            </h2>
-                            <div class="hero-media-box" onclick="openArticleModal(${index})">
-                                <img src="${item.image}" alt="News">
-                                ${hasDuration || item.videoUrl ? `<div class="play-btn-center">▶</div>` : ''}
-                                ${hasDuration ? `<span class="duration-badge">${item.duration}</span>` : ''}
-                            </div>
-                            <div class="card-footer">
-                                <span class="loc-pill" onclick="filterByKeyword('${item.location}')">${item.location} &gt;</span>
-                                <div class="footer-actions">
-                                    <button class="audio-btn" id="audBtn_${index}" onclick="toggleSpeech(${index})">🔊 सुनें</button>
-                                    <button class="share-btn" onclick="shareArticle(${index})">🟢 शेयर</button>
-                                    <button class="dots-btn" onclick="openArticleModal(${index})">⋮</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="compact-card">
-                            <div class="compact-body" onclick="openArticleModal(${index})">
-                                <div class="compact-text">
-                                    <h3 class="compact-headline">
-                                        ${badgeHTML}${kickerHTML}${mainHTML}
-                                    </h3>
-                                </div>
-                                <div class="compact-thumb">
-                                    <img src="${item.image}" alt="Thumb">
-                                    ${hasDuration || item.videoUrl ? `<div class="compact-play">▶</div>` : ''}
-                                    ${hasDuration ? `<span class="duration-badge">${item.duration}</span>` : ''}
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <span class="loc-pill" onclick="filterByKeyword('${item.location}')">${item.location} &gt;</span>
-                                <div class="footer-actions">
-                                    <button class="audio-btn" id="audBtn_${index}" onclick="toggleSpeech(${index})">🔊 सुनें</button>
-                                    <button class="share-btn" onclick="shareArticle(${index})">🟢 शेयर</button>
-                                    <button class="dots-btn" onclick="openArticleModal(${index})">⋮</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            container.innerHTML = html;
-        }
-
-        // FULL ARTICLE READER
-        function openArticleModal(index) {
-            const item = combinedFeed[index];
-            let mediaElement = `<img src="${item.image}" style="width:100%; border-radius:8px; margin:10px 0;">`;
-
-            if (item.videoUrl && item.videoUrl.includes("youtube.com/watch?v=")) {
-                const vidId = item.videoUrl.split("v=")[1].split("&")[0];
-                mediaElement = `<iframe width="100%" height="220" src="https://www.youtube.com/embed/${vidId}" frameborder="0" allowfullscreen style="border-radius:8px; margin:10px 0;"></iframe>`;
-            } else if (item.videoUrl && item.videoUrl.includes("youtu.be/")) {
-                const vidId = item.videoUrl.split("youtu.be/")[1].split("?")[0];
-                mediaElement = `<iframe width="100%" height="220" src="https://www.youtube.com/embed/${vidId}" frameborder="0" allowfullscreen style="border-radius:8px; margin:10px 0;"></iframe>`;
-            }
-
-            document.getElementById('articleModalContent').innerHTML = `
-                <span class="loc-pill">${item.location}</span>
-                <h2 style="font-size:20px; line-height:1.4; margin:10px 0;">
-                    <span style="color:${item.kickerColor};">${item.kickerText}</span>
-                    <span style="color:${item.mainColor};">${item.mainHeadline}</span>
-                </h2>
-                ${mediaElement}
-                <div style="margin:10px 0;">
-                    <button class="audio-btn" onclick="toggleSpeech(${index})">🔊 पूरी खबर सुनें</button>
-                </div>
-                <div class="article-full-body">${item.fullText || item.mainHeadline}</div>
-            `;
-            document.getElementById('articleModal').style.display = 'flex';
-        }
-
-        function closeArticleModal() {
-            document.getElementById('articleModal').style.display = 'none';
-        }
-
-        // AUDIO READER (HINDI TTS)
-        let currentSpeakingIndex = -1;
-        function toggleSpeech(index) {
-            if (!('speechSynthesis' in window)) {
-                alert("आपका ब्राउज़र ऑडियो सपोर्ट नहीं करता।");
-                return;
-            }
-            if (currentSpeakingIndex === index && window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                currentSpeakingIndex = -1;
-                renderNewsFeed(combinedFeed);
-                return;
-            }
-            window.speechSynthesis.cancel();
-            const item = combinedFeed[index];
-            const textToRead = `${item.kickerText} ${item.mainHeadline}. ${item.fullText || ''}`;
-            const utter = new SpeechSynthesisUtterance(textToRead);
-            utter.lang = 'hi-IN';
-            utter.rate = parseFloat(appConfig.voiceSpeed) || 1.0;
-            utter.onend = () => { currentSpeakingIndex = -1; renderNewsFeed(combinedFeed); };
-            currentSpeakingIndex = index;
-            window.speechSynthesis.speak(utter);
-
-            const btn = document.getElementById(`audBtn_${index}`);
-            if (btn) { btn.classList.add('playing'); btn.innerText = "⏹️ रोकें"; }
-        }
-
-        function shareArticle(index) {
-            const item = combinedFeed[index];
-            const title = `${item.kickerText} ${item.mainHeadline}`;
-            if (navigator.share) {
-                navigator.share({ title: 'Indian News', text: title, url: window.location.href });
-            } else {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(title + " - " + window.location.href)}`, '_blank');
-            }
-        }
-
-        // FILTERS
-        function selectCategory(catName, el) {
-            document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            const cleanCat = catName.replace(/[^\u0900-\u097F\w\s]/g, '').trim();
-            if (cleanCat.includes("टॉप न्यूज़")) {
-                renderNewsFeed(combinedFeed);
-            } else {
-                const filtered = combinedFeed.filter(n => n.category.includes(cleanCat) || n.location.includes(cleanCat) || n.mainHeadline.includes(cleanCat));
-                renderNewsFeed(filtered.length ? filtered : combinedFeed);
-            }
-        }
-
-        function filterByKeyword(kw) {
-            const filtered = combinedFeed.filter(n => n.mainHeadline.includes(kw) || n.kickerText.includes(kw) || n.location.includes(kw));
-            renderNewsFeed(filtered.length ? filtered : combinedFeed);
-        }
-
-        function filterByTab(tabType, el) {
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            if (tabType === 'video') {
-                const vidList = combinedFeed.filter(n => (n.videoUrl && n.videoUrl !== "") || (n.duration && n.duration !== ""));
-                renderNewsFeed(vidList);
-            } else {
-                renderNewsFeed(combinedFeed);
-            }
-        }
-
-        function searchNewsPrompt() {
-            const q = prompt("खबर खोजें:");
-            if (q && q.trim() !== "") filterByKeyword(q.trim());
-        }
-
-        // SECRET 5-TAP ADMIN PANEL
-        let tapCount = 0;
-        let tapTimer = null;
-        function handleSecretProfileTap() {
-            tapCount++;
-            clearTimeout(tapTimer);
-            tapTimer = setTimeout(() => { tapCount = 0; }, 1800);
-            if (tapCount >= 5) {
-                tapCount = 0;
-                const pin = prompt("🔒 गुप्त एडमिन पिन डालें (Default: 1234):");
-                if (pin === appConfig.adminPin) openAdminModal();
-                else if (pin !== null) alert("❌ गलत पिन!");
-            }
-        }
-
-        function openAdminModal() {
-            document.getElementById('bloggerUrlInput').value = appConfig.bloggerUrl;
-            document.getElementById('dataSourceMode').value = appConfig.dataSourceMode;
-            document.getElementById('admCategoriesInput').value = appConfig.categories.join(', ');
-            document.getElementById('admTrendingInput').value = appConfig.trending.join(', ');
-            document.getElementById('voiceSpeedSelect').value = appConfig.voiceSpeed;
-            document.getElementById('adminPinInput').value = appConfig.adminPin;
-            document.getElementById('adminModal').style.display = 'flex';
-        }
-
-        function closeAdmin() {
-            document.getElementById('adminModal').style.display = 'none';
-        }
-
-        function switchAdminTab(tabId, btn) {
-            document.querySelectorAll('.adm-tab-content').forEach(t => t.style.display = 'none');
-            document.querySelectorAll('.adm-tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).style.display = 'block';
-            btn.classList.add('active');
-        }
-
-        // SAVE BLOGGER URL & SYNC IMMEDIATELY
-        function saveAndSyncBlogger() {
-            appConfig.bloggerUrl = document.getElementById('bloggerUrlInput').value.trim();
-            appConfig.dataSourceMode = document.getElementById('dataSourceMode').value;
-            localStorage.setItem('indian_news_cfg_v3', JSON.stringify(appConfig));
-            closeAdmin();
-            fetchFromBlogger(true);
-            alert("✔️ ब्लॉगर लिंक सेव हो गया और लाइव सिंक चालू हो गया!");
-        }
-
-        function getFormNewsObject() {
-            return {
-                type: document.getElementById('newsType').value,
-                badgeText: document.getElementById('badgeText').value.trim(),
-                badgeBg: document.getElementById('badgeBg').value,
-                badgeColor: document.getElementById('badgeColor').value,
-                kickerText: document.getElementById('kickerText').value.trim(),
-                kickerColor: document.getElementById('kickerColor').value,
-                mainHeadline: document.getElementById('mainHeadline').value.trim(),
-                mainColor: document.getElementById('mainColor').value,
-                location: document.getElementById('locationPill').value.trim() || "उत्तरप्रदेश",
-                category: document.getElementById('newsCategory').value.trim() || "टॉप न्यूज़",
-                image: document.getElementById('mediaImage').value.trim() || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600&auto=format&fit=crop&q=80",
-                videoUrl: document.getElementById('videoUrl').value.trim(),
-                duration: document.getElementById('videoDuration').value.trim(),
-                fullText: document.getElementById('fullArticle').value.trim()
+                resolve();
             };
+
+            const s = document.createElement('script');
+            s.src = `${cleanUrl}/feeds/posts/default?alt=json-in-script&max-results=15&callback=bloggerCallbackTemp`;
+            s.onerror = () => resolve();
+            document.body.appendChild(s);
+        });
+    }
+
+    // RENDER CARDS IN EXACT DAINIK BHASKAR APP STYLE
+    function renderCardsToViewport(list) {
+        const container = document.getElementById('newsFeedContainer');
+        if (!list || list.length === 0) {
+            container.innerHTML = `<p style="text-align:center; padding:40px 20px; color:#666;">अभी कोई लाइव खबर उपलब्ध नहीं है। ऊपर रिफ्रेश बटन दबाएं।</p>`;
+            return;
         }
 
-        function saveLocalCustomNews() {
-            const obj = getFormNewsObject();
-            if (!obj.mainHeadline) { alert("मुख्य हेडलाइन लिखें!"); return; }
-            localNewsDB.unshift(obj);
-            localStorage.setItem('indian_news_local_v3', JSON.stringify(localNewsDB));
-            buildAndRenderFeed();
-            closeAdmin();
-            alert("✔️ खबर लोकल फीड में जुड़ गई!");
+        let html = "";
+        list.forEach((item, index) => {
+            const badgeHTML = item.badgeText
+                ? `<span class="tag-badge" style="background:${item.badgeBg}; color:${item.badgeColor};">${item.badgeText}</span>`
+                : "";
+            const kickerHTML = item.kickerText
+                ? `<span style="color:${item.kickerColor};">${item.kickerText} </span>`
+                : "";
+            const mainHTML = `<span style="color:${item.mainColor};">${item.mainHeadline}</span>`;
+            const hasDur = item.duration && item.duration.trim() !== "";
+
+            if (item.type === "hero") {
+                html += `
+                    <div class="hero-card">
+                        <h2 class="hero-headline" onclick="openArticleDrawer(${index})">
+                            ${badgeHTML}${kickerHTML}${mainHTML}
+                        </h2>
+                        <div class="hero-media-box" onclick="openArticleDrawer(${index})">
+                            <img src="${item.image}" loading="lazy" alt="News">
+                            ${hasDur || item.videoUrl ? `<div class="play-btn-center">▶</div>` : ''}
+                            ${hasDur ? `<span class="duration-badge">${item.duration}</span>` : ''}
+                        </div>
+                        <div class="card-footer">
+                            <span class="loc-pill" onclick="fetchTopicLive('${item.location}')">${item.location} &gt;</span>
+                            <div class="footer-actions">
+                                <button class="audio-btn" id="audBtn_${index}" onclick="speakNews(${index})">🔊 सुनें</button>
+                                <button class="share-btn" onclick="shareNewsItem(${index})">🟢 शेयर</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="compact-card">
+                        <div class="compact-body" onclick="openArticleDrawer(${index})">
+                            <div class="compact-text">
+                                <h3 class="compact-headline">
+                                    ${badgeHTML}${kickerHTML}${mainHTML}
+                                </h3>
+                            </div>
+                            <div class="compact-thumb">
+                                <img src="${item.image}" loading="lazy" alt="Thumb">
+                                ${hasDur ? `<span class="duration-badge">${item.duration}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="loc-pill" onclick="fetchTopicLive('${item.location}')">${item.location} &gt;</span>
+                            <div class="footer-actions">
+                                <button class="audio-btn" id="audBtn_${index}" onclick="speakNews(${index})">🔊 सुनें</button>
+                                <button class="share-btn" onclick="shareNewsItem(${index})">🟢 शेयर</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        container.innerHTML = html;
+        container.scrollTop = 0;
+    }
+
+    // LIVE CATEGORY & TOPIC CLICK HANDLERS
+    function fetchCategoryLive(catName, el) {
+        document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        const clean = catName.replace(/[^\u0900-\u097F\w\s]/g, '').trim();
+        if (clean.includes("टॉप न्यूज़")) {
+            loadAllLiveNews("उत्तर प्रदेश भारत बड़ी खबरें");
+        } else {
+            loadAllLiveNews(clean + " समाचार");
+        }
+    }
+
+    function fetchTopicLive(topic) {
+        loadAllLiveNews(topic);
+    }
+
+    function searchLiveNews() {
+        const q = prompt("लाइव खबर खोजें (जैसे: कानपुर देहात, बिजली विभाग, क्रिकेट):");
+        if (q && q.trim() !== "") loadAllLiveNews(q.trim());
+    }
+
+    function switchMainTab(tab, el) {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        if (tab === 'video') {
+            loadAllLiveNews("वीडियो समाचार इंडिया");
+        } else {
+            loadAllLiveNews();
+        }
+    }
+
+    // OPEN FULL ARTICLE DRAWER
+    function openArticleDrawer(index) {
+        const item = liveMasterFeed[index];
+        let mediaHTML = `<img src="${item.image}" style="width:100%; border-radius:10px; margin:12px 0;">`;
+
+        if (item.videoUrl && item.videoUrl.includes("watch?v=")) {
+            const vidId = item.videoUrl.split("v=")[1].split("&")[0];
+            mediaHTML = `<iframe width="100%" height="210" src="https://www.youtube.com/embed/${vidId}" frameborder="0" allowfullscreen style="border-radius:10px; margin:12px 0;"></iframe>`;
         }
 
-        // GENERATE CODE FOR BLOGGER POST (SO ALL USERS SEE EXACT CUSTOM COLORS)
-        function generateBloggerPostCode() {
-            const obj = getFormNewsObject();
-            if (!obj.mainHeadline) { alert("पहले मुख्य हेडलाइन भरें!"); return; }
-            const encodedConfig = encodeURIComponent(JSON.stringify(obj));
-            const htmlCode = `<div id="indian-news-custom-meta" data-config="${encodedConfig}" style="display:none;"></div><img src="${obj.image}" style="max-width:100%;"><p>${obj.fullText}</p>`;
+        document.getElementById('articleDrawerContent').innerHTML = `
+            <span class="loc-pill">${item.location}</span>
+            <h2 style="font-size:19px; line-height:1.45; margin:10px 0;">
+                <span style="color:${item.kickerColor};">${item.kickerText}</span>
+                <span style="color:${item.mainColor};">${item.mainHeadline}</span>
+            </h2>
+            ${mediaHTML}
+            <button class="audio-btn" onclick="speakNews(${index})" style="margin-bottom:12px; padding:6px 14px; font-size:13px;">🔊 पूरी खबर ऑडियो में सुनें</button>
+            <div style="font-size:16px; line-height:1.75; color:#1f2937; white-space:pre-line;">${item.fullText}</div>
+        `;
+        document.getElementById('articleDrawer').style.display = 'flex';
+    }
 
-            navigator.clipboard.writeText(htmlCode).then(() => {
-                alert("📋 कोड कॉपी हो गया! अब अपने Blogger ऐप/वेबसाइट में नई पोस्ट बनाएं, 'HTML View' चुनें और इसे पेस्ट करके Publish कर दें। सभी यूजर्स के फोन में बिल्कुल यही रंग और डिजाइन लाइव हो जाएगा!");
-            }).catch(() => {
-                prompt("इस कोड को कॉपी करके ब्लॉगर के HTML View में पेस्ट करें:", htmlCode);
-            });
+    function closeDrawer(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    // HINDI TEXT TO SPEECH
+    let activeSpeechIdx = -1;
+    function speakNews(index) {
+        if (!('speechSynthesis' in window)) {
+            alert("आपके फोन में हिंदी वॉइस इंजन उपलब्ध नहीं है।");
+            return;
         }
-
-        function saveSettings() {
-            appConfig.categories = document.getElementById('admCategoriesInput').value.split(',').map(s => s.trim()).filter(Boolean);
-            appConfig.trending = document.getElementById('admTrendingInput').value.split(',').map(s => s.trim()).filter(Boolean);
-            appConfig.voiceSpeed = parseFloat(document.getElementById('voiceSpeedSelect').value);
-            appConfig.adminPin = document.getElementById('adminPinInput').value.trim() || "1234";
-            localStorage.setItem('indian_news_cfg_v3', JSON.stringify(appConfig));
-            renderTopBars();
-            closeAdmin();
-            alert("✔️ सेटिंग्स अपडेट हो गईं!");
+        if (activeSpeechIdx === index && window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            activeSpeechIdx = -1;
+            renderCardsToViewport(liveMasterFeed);
+            return;
         }
+        window.speechSynthesis.cancel();
+        const item = liveMasterFeed[index];
+        const utter = new SpeechSynthesisUtterance(`${item.kickerText} ${item.mainHeadline}. ${item.fullText}`);
+        utter.lang = 'hi-IN';
+        utter.onend = () => { activeSpeechIdx = -1; renderCardsToViewport(liveMasterFeed); };
+        activeSpeechIdx = index;
+        window.speechSynthesis.speak(utter);
 
-        // START APP
+        const btn = document.getElementById(`audBtn_${index}`);
+        if (btn) { btn.classList.add('playing'); btn.innerText = "⏹️ रोकें"; }
+    }
+
+    function shareNewsItem(index) {
+        const item = liveMasterFeed[index];
+        const t = `${item.kickerText} ${item.mainHeadline}`;
+        if (navigator.share) {
+            navigator.share({ title: 'Indian News', text: t, url: window.location.href });
+        } else {
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(t)}`, '_blank');
+        }
+    }
+
+    // SECRET 5-TAP ADMIN PANEL
+    let taps = 0, tapClock = null;
+    function triggerHiddenAdmin() {
+        taps++;
+        clearTimeout(tapClock);
+        tapClock = setTimeout(() => { taps = 0; }, 1600);
+        if (taps >= 5) {
+            taps = 0;
+            const p = prompt("🔒 गुप्त एडमिन पिन डालें:");
+            if (p === appConfig.pin) {
+                document.getElementById('admBloggerUrl').value = appConfig.bloggerUrl;
+                document.getElementById('admFeedMode').value = appConfig.feedMode;
+                document.getElementById('admCats').value = appConfig.categories.join(', ');
+                document.getElementById('admTrends').value = appConfig.trending.join(', ');
+                document.getElementById('admPin').value = appConfig.pin;
+                document.getElementById('adminDrawer').style.display = 'flex';
+            }
+        }
+    }
+
+    function switchAdmTab(id, btn) {
+        document.querySelectorAll('.adm-section').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.adm-tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).style.display = 'block';
+        btn.classList.add('active');
+    }
+
+    function saveBloggerConfig() {
+        appConfig.bloggerUrl = document.getElementById('admBloggerUrl').value.trim();
+        appConfig.feedMode = document.getElementById('admFeedMode').value;
+        localStorage.setItem('indian_news_native_cfg', JSON.stringify(appConfig));
+        closeDrawer('adminDrawer');
+        loadAllLiveNews();
+    }
+
+    function buildCustomPostObj() {
+        return {
+            type: document.getElementById('postType').value,
+            badgeText: document.getElementById('postBadge').value.trim(),
+            badgeBg: document.getElementById('postBadgeBg').value,
+            badgeColor: document.getElementById('postBadgeTxt').value,
+            kickerText: document.getElementById('postKicker').value.trim(),
+            kickerColor: document.getElementById('postKickerColor').value,
+            mainHeadline: document.getElementById('postTitle').value.trim(),
+            mainColor: document.getElementById('postTitleColor').value,
+            location: document.getElementById('postLoc').value.trim() || "उत्तरप्रदेश",
+            image: document.getElementById('postImg').value.trim() || "https://picsum.photos/600/400",
+            videoUrl: document.getElementById('postVid').value.trim(),
+            duration: document.getElementById('postDur').value.trim(),
+            fullText: document.getElementById('postFull').value.trim()
+        };
+    }
+
+    function publishCustomPost() {
+        const obj = buildCustomPostObj();
+        if (!obj.mainHeadline) { alert("हेडलाइन लिखें!"); return; }
+        customLocalPosts.unshift(obj);
+        localStorage.setItem('indian_news_custom_posts', JSON.stringify(customLocalPosts));
+        closeDrawer('adminDrawer');
+        loadAllLiveNews();
+    }
+
+    function copyBloggerHTML() {
+        const obj = buildCustomPostObj();
+        if (!obj.mainHeadline) { alert("हेडलाइन लिखें!"); return; }
+        const code = `<div id="indian-news-custom-meta" data-config="${encodeURIComponent(JSON.stringify(obj))}" style="display:none;"></div><img src="${obj.image}"><p>${obj.fullText}</p>`;
+        navigator.clipboard.writeText(code).then(() => alert("📋 ब्लॉगर कोड कॉपी हो गया! इसे ब्लॉगर के HTML View में पेस्ट करके पब्लिश कर दें।"));
+    }
+
+    function saveGeneralSettings() {
+        appConfig.categories = document.getElementById('admCats').value.split(',').map(s => s.trim()).filter(Boolean);
+        appConfig.trending = document.getElementById('admTrends').value.split(',').map(s => s.trim()).filter(Boolean);
+        appConfig.pin = document.getElementById('admPin').value.trim() || "1234";
+        localStorage.setItem('indian_news_native_cfg', JSON.stringify(appConfig));
         renderTopBars();
-        fetchFromBlogger(false);
-    </script>
+        closeDrawer('adminDrawer');
+    }
+
+    // INIT NATIVE APP
+    renderTopBars();
+    loadAllLiveNews();
+</script>
 </body>
 </html>
