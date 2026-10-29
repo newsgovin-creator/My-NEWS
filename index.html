@@ -33,7 +33,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .cats::-webkit-scrollbar{display:none}
 .cat{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;font-weight:700;font-size:15px;color:var(--mute);white-space:nowrap;min-height:44px}
 .cat[aria-selected=true]{color:var(--ink);border-color:var(--accent)}
-.feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:90px;}
+/* Padding badha di gayi hai taaki text na chhupe */
+.feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:130px;}
 .ptr{height:0;overflow:hidden;text-align:center;font-size:13px;color:var(--mute);transition:height .2s}
 .card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px}
 .card h3{margin:0;font-size:calc(var(--fs) + 1px);line-height:1.45;font-weight:800;cursor:pointer}
@@ -65,7 +66,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   left: 15px;
   right: 15px;
   display: flex;
-  background: rgba(255, 255, 255, 0.85);
+  /* Yahan opacity 0.85 se 0.4 kar di gayi hai (Light mode) */
+  background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -76,7 +78,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   gap: 4px;
 }
 :root[data-theme=dark] .nav {
-  background: rgba(30, 27, 24, 0.85);
+  /* Yahan opacity 0.85 se 0.4 kar di gayi hai (Dark mode) */
+  background: rgba(30, 27, 24, 0.4);
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
 }
@@ -238,7 +241,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
      <div class="cg"><input id="aBadge" placeholder="बैज (जैसे: एक्सक्लूसिव)"><input type="color" id="aBg" value="#dc2626"><input type="color" id="aBt" value="#ffffff"></div>
      <span class="meta">रंगीन शुरुआती लाइन + रंग</span>
      <div class="cg"><input id="aKick" placeholder="शुरुआती लाइन"><input type="color" id="aKc" value="#c2410c"></div>
-     <span class="meta">मुख्य हेडलाइन + रंग</span>
+     <span class="meta">main हेडलाइन + रंग</span>
      <div class="cg"><input id="aTitle" placeholder="हेडलाइन"><input type="color" id="aHc" value="#111827"></div>
      <input id="aLoc" placeholder="ज़िला / इलाका" value="कानपुर देहात">
      <input id="aImg" placeholder="फोटो लिंक (Blogger की फोटो का)">
@@ -549,7 +552,6 @@ async function runSearch(q){
 }
 
 // ---------- Admin (local only) ----------
-// यहाँ मैंने आपकी API KEY और DB URL डाल दी है
 const DB='https://indian-news-d1559-default-rtdb.asia-southeast1.firebasedatabase.app';
 const FB_KEY='AIzaSyB72sw1fEuJcPja99c02ecAby6uA8uQKxo'; 
 
@@ -598,7 +600,7 @@ async function openAdmin(){
   const rt=S.get('rt',null);if(!st.auth&&rt)st.auth={t:'',r:rt,e:0};
   if(st.auth&&FB_KEY){try{await token();showA(true);return}catch(e){st.auth=null}}
 }
-function showA(on){$('#aLogin').style.display=on?'none':'block';$('#aMain').style.display=on?'flex':'none';$('#aOut').style.display=on?'':'none';
+function showA(on){$('#aLogin').style.display=on?'none':'block';$('#aMain').style.display=on?'flex':'none';$('#aOut').style.display=on?'none':'';
   if(on){$('#aBlog').value=st.cfg.blog||BLOG;$('#aMode').value=st.cfg.only===false?'mix':'blog';$('#aTrend').value=st.trend.join(', ');$('#aTick').value=st.cfg.tick||'';fillCatSel();renderAC();atab('aList');renderList()}}
 async function doLogin(){const e=V('aEm'),p=$('#aPw').value;if(!e||!p){toast('ईमेल और पासवर्ड लिखें');return}
   if(!FB_KEY){toast('कोड में FB_KEY (Firebase Web API Key) डालनी बाकी है');return}
@@ -711,7 +713,7 @@ $('#feed').addEventListener('scroll',e=>$('#up').classList.toggle('show',e.targe
 applyRemote(S.get('rem',null));renderCats();renderTrend();setTab('home');loadRemote();
 </script>
 
-<!-- यहाँ नीचे मैंने आपका Firebase Analytics वाला कोड जोड़ दिया है -->
+<!-- Firebase Analytics -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-analytics.js";
