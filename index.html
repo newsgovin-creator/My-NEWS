@@ -36,19 +36,20 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:130px;}
 .ptr{height:0;overflow:hidden;text-align:center;font-size:13px;color:var(--mute);transition:height .2s}
 
-/* Thumbnail & Image Smart System */
+/* Thumbnail, Image & Premium Play Button CSS */
 .card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px;}
 .card h3{margin:0;font-size:calc(var(--fs) + 1px);line-height:1.45;font-weight:800;cursor:pointer}
 .card.hero h3{font-size:calc(var(--fs) + 4px);margin-bottom:10px}
 .kick{color:var(--accent)}
 .row{display:flex;gap:12px;align-items:flex-start}
 .row>div:first-child{flex:1}
-.img{background:linear-gradient(135deg,var(--line),var(--bg));border-radius:8px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:26px}
-/* SMART AUTO CROP - Photo pichkegi nahi */
+/* Image Box styling */
+.img{background:linear-gradient(135deg,var(--line),var(--bg));border-radius:8px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:26px;position:relative;cursor:pointer;}
 .img img{width:100%;height:100%;object-fit:cover;object-position:center top;} 
-/* 4:3 Aspect ratio for compact cards */
+/* Pro Video Play Button */
+.play { position: absolute; background: rgba(0,0,0,0.5); color: #fff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; backdrop-filter: blur(4px); border: 2px solid rgba(255,255,255,0.7); z-index: 2; pointer-events: none; padding-left: 4px; }
+.dur { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.8); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; z-index: 2; pointer-events: none; }
 .thumb{width:120px;aspect-ratio:4/3;height:auto;} 
-/* 16:9 Aspect ratio for big cards */
 .big{width:100%;aspect-ratio:16/9;}
 
 .foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:6px}
@@ -182,39 +183,26 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .fab{position:absolute;right:14px;bottom:calc(95px + var(--sab));width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.3);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}.fab.show{opacity:1;pointer-events:auto}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* -----------------------------------------------------------
-   ULTRA PRO MAX: DESKTOP & TABLET RESPONSIVE DESIGN (Naya Code)
-   ----------------------------------------------------------- */
+/* DESKTOP RESPONSIVE DESIGN */
 @media (min-width: 768px) {
   body { background: #e5e5e5; display: flex; align-items: center; justify-content: center; }
   :root[data-theme=dark] body { background: #0a0a0a; }
-  
-  /* Main Container wide ho jayega */
   .shell { max-width: 1200px; width: 95vw; height: 96vh; border-radius: 16px; margin: 2vh auto; box-shadow: 0 10px 40px rgba(0,0,0,0.15); overflow: hidden; }
-  
-  /* Nav Bar bottom se ud kar Top Right mein aa jayega */
   .nav { bottom: auto; top: 15px; left: auto; right: 15px; flex-direction: row; width: auto; padding: 5px 15px; border-radius: 30px; }
   .nt { padding: 8px 12px; flex-direction: row; gap: 8px; }
   .nt svg { margin-bottom: 0; width: 18px; height: 18px; }
-  
-  /* Feed ki padding kam ki (kyunki nav ab upar hai) */
   .feed { padding-bottom: 40px; padding-top: 10px; }
-  
-  /* Grid System - Khabrein Line se aayengi */
   #list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; padding: 0 16px; }
   #list > div.empty, #list > .morebox { grid-column: 1 / -1; }
-  
   .card { margin-bottom: 0; display: flex; flex-direction: column; border-radius: 12px; border: 1px solid var(--line); height: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
   .card .foot { margin-top: auto; padding-top: 10px; }
   .row { flex-direction: column-reverse; }
   .thumb { width: 100%; aspect-ratio: 16/9; margin-bottom: 12px; border-radius: 8px; }
   .card h3 { font-size: calc(var(--fs) + 2px); }
-  
-  /* Article Reader Pop-Up (Modal System) */
   .sheet { height: 90vh; top: 5vh; bottom: auto; left: 50%; width: 90vw; max-width: 800px; transform: translate(-50%, 120%); border-radius: 16px; box-shadow: 0 25px 80px rgba(0,0,0,0.4); border: 1px solid var(--line); }
   .sheet.open { transform: translate(-50%, 0); }
   .sh-head { border-radius: 16px 16px 0 0; }
-  .body { padding-bottom: 40px; } /* Modal mein bottom padding kam chahiye */
+  .body { padding-bottom: 40px; }
 }
 </style>
 </head>
@@ -236,7 +224,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   
   <div class="feed" id="feed"><div class="ptr" id="ptr">↓ रिफ्रेश के लिए खींचें</div><div id="list"></div></div>
   
-  <nav class="nav" role="tablist">
+  <!-- Nav bar id="mainNav" diya hai taaki baad mein isko hide/show kar sakein -->
+  <nav class="nav" id="mainNav" role="tablist">
     <button class="nt" role="tab" aria-selected="true" data-tab="home">
       <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
       <span>होम</span>
@@ -373,10 +362,13 @@ function norm(o){const s=(x,n)=>String(x==null?'':x).slice(0,n);
   return {type:o.type==='hero'||o.type==='fc'?o.type:'compact',cat:s(o.cat,20),badge:s(o.badge,20),bg:col(o.bg,'#dc2626'),bt:col(o.bt,'#ffffff'),kick:s(o.kick,80),kc:col(o.kc,''),head:s(o.head,300),hc:col(o.hc,''),loc:s(o.loc,40)||'उत्तरप्रदेश',img:safeUrl(o.img),vid:safeUrl(o.vid),dur:s(o.dur,8),full:s(o.full,20000),ver:o.ver==='v'?'v':'u',vsrc:(Array.isArray(o.vsrc)?o.vsrc:[]).map(safeUrl).filter(Boolean).slice(0,5),vnote:s(o.vnote,120),claim:s(o.claim,400),verdict:FV[o.verdict]?o.verdict:'',how:s(o.how,2000),src:'हमारी खबर',own:1}}
 const T=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r([]),ms))]);
 const onlyBlog=()=>st.cfg.only!==false&&!!st.cfg.blog;
-const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
+
+/* ULTRA PRO MAX - Shorts Link Support Added Here */
+const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
 const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
 const yt=id=>'<div class="yt" data-a="yt" data-v="'+id+'" role="button" aria-label="वीडियो चलाएँ"><img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" loading="lazy" alt=""><span class="play">▶</span></div>';
 const INL=/^(B|I|U|STRONG|EM|A|SPAN|FONT|SMALL|MARK)$/;
+
 function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/\s+/g,' ').trim();if(t)out.push({t:'p',x:t});buf=''};
   const walk=n=>{for(const c of n.childNodes){
     if(c.nodeType===3){buf+=c.textContent;continue}
@@ -450,9 +442,15 @@ function showSkel(){
   let h='';for(let i=0;i<5;i++)h+='<div class="sk"><div style="flex:1"><div class="sh" style="height:16px;margin-bottom:8px"></div><div class="sh" style="height:16px;width:70%"></div></div><div class="sh" style="width:112px;height:80px"></div></div>';
   $('#list').innerHTML=h;
 }
-function imgBox(it,cls){const id=ytid(it.vid),im=it.img||(id?'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg':'');
-  return '<div class="img '+cls+'">'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="'+esc(it.head)+'" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+(it.vid?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
+
+/* ULTRA PRO MAX - Smart Image Box (Inline Play Logic) */
+function imgBox(it,cls){
+  const id=ytid(it.vid),im=it.img||(id?'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg':'');
+  // Logic: Badi photo par click = Wahi par video chalegi. Chhoti photo par click = Poora article khulega.
+  const action = (id && cls === 'big') ? ' data-a="yt" data-v="'+id+'" role="button"' : (cls === 'thumb' ? ' data-a="open" data-id="'+it.id+'"' : '');
+  return '<div class="img '+cls+'"'+action+'>'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="'+esc(it.head)+'" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+(it.vid?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
 }
+
 const SV=(p,c)=>'<svg class="'+(c||'')+'" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
 const IC={bm:SV('<path d="M6 3.5h12v17.2l-6-4.6-6 4.6z"/>','bmk'),sh:SV('<line x1="22" y1="3" x2="9.2" y2="10.1"/><polygon points="11.7 20.3 22 3 2 3 9.2 10.1 11.7 20.3"/>'),sp:SV('<path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8.5 8.5 0 0 1 0 11"/>')};
 const MORE='<div class="morebox" style="padding:14px"><button class="btn" data-a="more" style="width:100%">⬇ और खबरें देखें</button></div>';
@@ -519,9 +517,23 @@ function openArticle(id){
    +(it.link&&!it.own?'<a class="btn" style="display:inline-block;text-decoration:none" href="'+esc(it.link)+'" target="_blank" rel="noopener noreferrer">'+(it.own?'🌐 ब्लॉग पर पूरी खबर खोलें':'पूरी खबर '+esc(it.src)+' पर पढ़ें')+'</a>':'')+relHTML(it);
   $('#rBm').classList.toggle('on',!!st.bm[id]);
   $('#rBody').scrollTop=0;$('#prog').style.width='0';
-  if(!$('#reader').classList.contains('open')){$('#reader').classList.add('open');pushS()}
+  if(!$('#reader').classList.contains('open')){
+    $('#reader').classList.add('open');
+    // Article khulte hi Nav Bar chhupa do (UX Fix)
+    $('#mainNav').style.opacity='0'; $('#mainNav').style.pointerEvents='none';
+    pushS();
+  }
 }
-function closeSheet(){const t=$('#reader.open')||$$('.sheet.open').pop();if(t)t.classList.remove('open');if(!$('#reader.open'))stopSpeak();if(st.dirty&&!$('.sheet.open')){st.dirty=0;setTab(st.tab)}}
+function closeSheet(){
+  const t=$('#reader.open')||$$('.sheet.open').pop();
+  if(t)t.classList.remove('open');
+  if(!$('#reader.open')){
+      stopSpeak();
+      // Wapas aane par Nav bar dikha do
+      $('#mainNav').style.opacity='1'; $('#mainNav').style.pointerEvents='auto';
+  }
+  if(st.dirty&&!$('.sheet.open')){st.dirty=0;setTab(st.tab)}
+}
 function closeUI(){if(st.hs>0)history.back();else closeSheet()}
 function pushS(){history.pushState({s:1},'');st.hs=(st.hs||0)+1}
 
@@ -664,7 +676,7 @@ function clearForm(){st.editId=st.editOv=null;['aBadge','aKick','aTitle','aImg',
   $('#aVer').value='u';$('#aVerdict').value='';$('#aBg').value='#dc2626';$('#aBt').value='#ffffff';$('#aKc').value='#c2410c';$('#aHc').value='#111827';
   $('#aPubBtn').textContent='🚀 पब्लिश करें (सबके ऐप में)';$('#aNote').style.display='none';fcToggle()}
 async function adminPost(){
-  const o=readPost();if(!o.head){toast('हेडलाइन लिखें');return}
+  const o=readPost();if(!o.head){toast('हेheadline लिखें');return}
   if(o.type==='fc'){if(!o.claim||!o.verdict){toast('दावा और नतीजा चुनें');return}o.ver='v'}
   if(!o.kick&&(o.head.includes(':')||o.head.includes('|'))){const p=parseTitle(o.head);o.kick=p.kick;o.head=p.head}
   try{
@@ -720,7 +732,10 @@ document.addEventListener('click',e=>{
     case 'fs':st.prefs.fs=+v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
     case 'th':st.prefs.theme=v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
     case 'admin':adminGate();break;
-    case 'ver':showVer(id);break;case 'vclose':$('#verBox').classList.remove('open');break;case 'yt':el.outerHTML='<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:8px" src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>';break;case 'login':doLogin();break;case 'logout':st.auth=null;S.set('rt',null);showA(false);break;case 'rlist':renderList();break;case 'atog':ovSet(id,{ver:verOf(st.byId[id])==='v'?'u':'v'});break;case 'ahide':ovSet(id,{hide:!st.byId[id].hide});break;case 'apin':ovSet(id,{pin:!st.byId[id].pin});break;case 'adel':delPost(id);break;case 'aedit':editPost(id);break;case 'more':showMore();break;case 'top':$('#feed').scrollTo({top:0,behavior:'smooth'});break;case 'pub':adminPost();break;case 'atab':atab(v);break;case 'cadd':catSave();break;case 'cmv':catMove(+el.dataset.i,+v);break;case 'chide':catHide(+el.dataset.i);break;case 'cedit':catEdit(+el.dataset.i);break;case 'cdel':catDel(+el.dataset.i);break;case 'creset':if(confirm('डिफ़ॉल्ट कैटेगरी लौटाएँ?')){st.cats=JSON.parse(JSON.stringify(DEFCATS));saveCats()}break;case 'pedit':editPost(id);break;case 'pdel':delPost(id);break;case 'pcancel':clearForm();break;
+    case 'ver':showVer(id);break;case 'vclose':$('#verBox').classList.remove('open');break;
+    /* ULTRA PRO MAX - Inline Iframe Swap Code (Feed me video chalane ke liye) */
+    case 'yt':el.outerHTML='<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:8px" src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>';break;
+    case 'login':doLogin();break;case 'logout':st.auth=null;S.set('rt',null);showA(false);break;case 'rlist':renderList();break;case 'atog':ovSet(id,{ver:verOf(st.byId[id])==='v'?'u':'v'});break;case 'ahide':ovSet(id,{hide:!st.byId[id].hide});break;case 'apin':ovSet(id,{pin:!st.byId[id].pin});break;case 'adel':delPost(id);break;case 'aedit':editPost(id);break;case 'more':showMore();break;case 'top':$('#feed').scrollTo({top:0,behavior:'smooth'});break;case 'pub':adminPost();break;case 'atab':atab(v);break;case 'cadd':catSave();break;case 'cmv':catMove(+el.dataset.i,+v);break;case 'chide':catHide(+el.dataset.i);break;case 'cedit':catEdit(+el.dataset.i);break;case 'cdel':catDel(+el.dataset.i);break;case 'creset':if(confirm('डिफ़ॉल्ट कैटेगरी लौटाएँ?')){st.cats=JSON.parse(JSON.stringify(DEFCATS));saveCats()}break;case 'pedit':editPost(id);break;case 'pdel':delPost(id);break;case 'pcancel':clearForm();break;
     case 'saveset':saveSet();break;
   }
 });
