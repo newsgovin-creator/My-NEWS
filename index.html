@@ -18,7 +18,7 @@
 html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:Mukta,'Noto Sans Devanagari',system-ui,sans-serif;color:var(--ink)}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.shell{max-width:480px;height:100%;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;padding-top:var(--sat)}
+.shell{max-width:480px;height:100%;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;padding-top:var(--sat); transition: all 0.3s ease;}
 .top{background:var(--card);border-bottom:1px solid var(--line);flex-shrink:0}
 .bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
 .logo{font-weight:800;font-size:23px;letter-spacing:-.3px;color:var(--accent);line-height:1.25}
@@ -35,16 +35,22 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .cat[aria-selected=true]{color:var(--ink);border-color:var(--accent)}
 .feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:130px;}
 .ptr{height:0;overflow:hidden;text-align:center;font-size:13px;color:var(--mute);transition:height .2s}
-.card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px}
+
+/* Thumbnail & Image Smart System */
+.card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px;}
 .card h3{margin:0;font-size:calc(var(--fs) + 1px);line-height:1.45;font-weight:800;cursor:pointer}
 .card.hero h3{font-size:calc(var(--fs) + 4px);margin-bottom:10px}
 .kick{color:var(--accent)}
 .row{display:flex;gap:12px;align-items:flex-start}
 .row>div:first-child{flex:1}
 .img{background:linear-gradient(135deg,var(--line),var(--bg));border-radius:8px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:26px}
-.img img{width:100%;height:100%;object-fit:cover}
-.thumb{width:112px;height:80px}
-.big{width:100%;aspect-ratio:16/9}
+/* SMART AUTO CROP - Photo pichkegi nahi */
+.img img{width:100%;height:100%;object-fit:cover;object-position:center top;} 
+/* 4:3 Aspect ratio for compact cards */
+.thumb{width:120px;aspect-ratio:4/3;height:auto;} 
+/* 16:9 Aspect ratio for big cards */
+.big{width:100%;aspect-ratio:16/9;}
+
 .foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:6px}
 .pill{border:1px solid var(--line);background:none;border-radius:16px;padding:4px 11px;font-size:12px;font-weight:700;color:var(--mute);min-height:30px}
 .acts{display:flex;gap:2px}
@@ -65,7 +71,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   left: 15px;
   right: 15px;
   display: flex;
-  /* Opacity aur kam kar di gayi hai (Bahut zyada transparent) */
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -75,9 +80,9 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0,0,0,0.05);
   z-index: 50;
   gap: 4px;
+  transition: all 0.3s ease;
 }
 :root[data-theme=dark] .nav {
-  /* Dark mode mein bhi aur zyada transparent */
   background: rgba(30, 27, 24, 0.15);
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
@@ -126,12 +131,11 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   transform: translateY(1px);
 }
 
-.sheet{position:absolute;inset:0;background:var(--bg);z-index:30;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s ease;visibility:hidden}
+.sheet{position:absolute;inset:0;background:var(--bg);z-index:30;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(0.2,0.8,0.2,1);visibility:hidden}
 .sheet.open{transform:none;visibility:visible}
 .sh-head{display:flex;align-items:center;gap:4px;padding:6px 8px;background:var(--card);border-bottom:1px solid var(--line);padding-top:calc(6px + var(--sat))}
 .sh-head .sp{flex:1}
 .prog{height:3px;background:var(--accent);width:0;flex-shrink:0}
-/* Yahan article reader ki body mein bottom padding 120px jodi gayi hai taaki text na chhupe */
 .body{flex:1;overflow-y:auto;padding:16px 16px 120px;background:var(--card)}
 .body h1{font-size:calc(var(--fs) + 5px);line-height:1.4;margin:8px 0}
 .body p{font-size:var(--fs);line-height:1.85;white-space:pre-line}
@@ -143,7 +147,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .seg{display:flex;gap:8px;flex-wrap:wrap}
 .seg button{border:1px solid var(--line);background:none;border-radius:8px;padding:8px 14px;font-weight:700;min-height:44px}
 .seg button[aria-pressed=true]{background:var(--accent);color:#fff;border-color:var(--accent)}
-.toast{position:absolute;left:50%;bottom:calc(95px + var(--sab));transform:translateX(-50%);background:#292524;color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast{position:absolute;left:50%;bottom:calc(95px + var(--sab));transform:translateX(-50%);background:#292524;color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;z-index:999;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
 .off{background:#b45309;color:#fff;text-align:center;font-size:12.5px;padding:4px;display:none}
 .form input,.form textarea,.form select{width:100%;margin-bottom:10px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
@@ -177,6 +181,41 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .act.pop svg{animation:pop .32s ease}@keyframes pop{40%{transform:scale(1.4)}}
 .fab{position:absolute;right:14px;bottom:calc(95px + var(--sab));width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.3);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}.fab.show{opacity:1;pointer-events:auto}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* -----------------------------------------------------------
+   ULTRA PRO MAX: DESKTOP & TABLET RESPONSIVE DESIGN (Naya Code)
+   ----------------------------------------------------------- */
+@media (min-width: 768px) {
+  body { background: #e5e5e5; display: flex; align-items: center; justify-content: center; }
+  :root[data-theme=dark] body { background: #0a0a0a; }
+  
+  /* Main Container wide ho jayega */
+  .shell { max-width: 1200px; width: 95vw; height: 96vh; border-radius: 16px; margin: 2vh auto; box-shadow: 0 10px 40px rgba(0,0,0,0.15); overflow: hidden; }
+  
+  /* Nav Bar bottom se ud kar Top Right mein aa jayega */
+  .nav { bottom: auto; top: 15px; left: auto; right: 15px; flex-direction: row; width: auto; padding: 5px 15px; border-radius: 30px; }
+  .nt { padding: 8px 12px; flex-direction: row; gap: 8px; }
+  .nt svg { margin-bottom: 0; width: 18px; height: 18px; }
+  
+  /* Feed ki padding kam ki (kyunki nav ab upar hai) */
+  .feed { padding-bottom: 40px; padding-top: 10px; }
+  
+  /* Grid System - Khabrein Line se aayengi */
+  #list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; padding: 0 16px; }
+  #list > div.empty, #list > .morebox { grid-column: 1 / -1; }
+  
+  .card { margin-bottom: 0; display: flex; flex-direction: column; border-radius: 12px; border: 1px solid var(--line); height: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+  .card .foot { margin-top: auto; padding-top: 10px; }
+  .row { flex-direction: column-reverse; }
+  .thumb { width: 100%; aspect-ratio: 16/9; margin-bottom: 12px; border-radius: 8px; }
+  .card h3 { font-size: calc(var(--fs) + 2px); }
+  
+  /* Article Reader Pop-Up (Modal System) */
+  .sheet { height: 90vh; top: 5vh; bottom: auto; left: 50%; width: 90vw; max-width: 800px; transform: translate(-50%, 120%); border-radius: 16px; box-shadow: 0 25px 80px rgba(0,0,0,0.4); border: 1px solid var(--line); }
+  .sheet.open { transform: translate(-50%, 0); }
+  .sh-head { border-radius: 16px 16px 0 0; }
+  .body { padding-bottom: 40px; } /* Modal mein bottom padding kam chahiye */
+}
 </style>
 </head>
 <body>
@@ -458,7 +497,7 @@ function showVer(id){
   const find='<a class="vl" href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener noreferrer">🔎 Google पर खुद जाँचें</a><a class="vl" href="https://news.google.com/search?q='+q+'&hl=hi&gl=IN&ceid=IN:hi" target="_blank" rel="noopener noreferrer">🗞️ Google News पर देखें</a>';
   $('#verCard').innerHTML=v
    ?'<h3>✓ सत्यापित खबर</h3><p>इस खबर को हमारी संपादकीय टीम ने जाँचकर सत्यापित किया है। यह जानकारी सार्वजनिक रूप से भी उपलब्ध है, आप चाहें तो खुद भी जाँच सकते हैं।</p>'+links+find+(it.vnote?'<p class="meta">'+esc(it.vnote)+'</p>':'')+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>'
-   :'<h3>⚠ असत्यापित खबर</h3><p>यह खबर अभी किसी भरोसेमंद सार्वजनिक स्रोत से पुष्ट মোহना नहीं हुई है। यह मिली हुई कुछ तस्वीरों और सूचना के आधार पर है, इसलिए इसमें गलती हो सकती है।</p>'
+   :'<h3>⚠ असत्यापित खबर</h3><p>यह खबर अभी किसी भरोसेमंद सार्वजनिक स्रोत से पुष्ट नहीं हुई है। यह मिली हुई कुछ तस्वीरों और सूचना के आधार पर है, इसलिए इसमें गलती हो सकती है।</p>'
     +(it.vnote?'<p><b>कारण:</b> '+esc(it.vnote)+'</p>':'')+'<ul><li>इसे पक्का सच मानकर आगे शेयर न करें।</li><li>नीचे दिए लिंक से खुद जाँच करें।</li><li>पुष्टि होने पर खबर को सत्यापित किया जाएगा।</li></ul>'+links+find+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>';
   $('#verBox').classList.add('open');
 }
