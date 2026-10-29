@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#fffaf3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>इंडियन न्यूज़</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://blogger.googleusercontent.com" crossorigin>
 <link rel="preconnect" href="https://i.ytimg.com">
 <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap" rel="stylesheet">
@@ -105,6 +107,13 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .pim{width:100%;border-radius:8px;margin:8px 0;background:var(--line);display:block}
 .yt{position:relative;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:8px 0;cursor:pointer}.yt img{width:100%;height:100%;object-fit:cover}
 .more{background:none;border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:6px 12px;font-weight:800;font-size:13px;margin-top:10px;min-height:36px}
+#reader{z-index:31}
+.act svg,.ib svg{display:block;margin:auto;pointer-events:none}
+.act[data-a=bm].on,#rBm.on{color:var(--ink)}.on .bmk path{fill:currentColor}
+#rSpeak.on{color:var(--accent)}
+.act.pop svg{animation:pop .32s ease}@keyframes pop{40%{transform:scale(1.4)}}
+.logo img{height:34px;width:auto;display:block}
+.fab{position:absolute;right:14px;bottom:calc(72px + var(--sab));width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.3);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}.fab.show{opacity:1;pointer-events:auto}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -112,7 +121,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 <div class="shell" id="app">
   <div class="top">
     <div class="bar">
-      <div class="logo">इंडियन न्यूज़<small>आपके ज़िले की हर खबर</small></div>
+      <div class="logo"><img src="logo.png" alt="इंडियन न्यूज़" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://files.catbox.moe/9wwlm5.png'}else{this.replaceWith(document.createTextNode('इंडियन न्यूज़'))}"></div>
       <div class="ibtns">
         <button class="ib" data-a="search" aria-label="खोजें">🔍</button>
         <button class="ib" data-a="theme" aria-label="डार्क मोड बदलें">🌓</button>
@@ -135,54 +144,60 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 
   <div class="sheet" id="searchS"><div class="sh-head"><button class="ib" data-a="close" aria-label="वापस">←</button><input class="search" id="q" type="search" placeholder="खबर खोजें…" enterkeyhint="search"></div><div class="feed" id="sRes"><div class="chips" id="recent"></div></div></div>
 
-  <div class="sheet" id="admin"><div class="sh-head"><button class="ib" data-a="close" aria-label="बंद करें">✕</button><b>एडमिन पैनल</b></div>
-  <div class="atabs"><button data-a="atab" data-v="aPost">✍️ खबर</button><button data-a="atab" data-v="aCats">📂 कैटेगरी</button><button data-a="atab" data-v="aSet">⚙️ सेटिंग</button></div>
-  <div class="body form">
-   <div id="aPost">
-    <select id="aType"><option value="compact">📰 छोटा कार्ड (साइड-बाय-साइड)</option><option value="hero">🔥 बड़ा कार्ड (पूरी चौड़ाई)</option><option value="fc">🔍 फैक्ट चेक कार्ड</option></select>
-    <select id="aCat"></select>
-    <span class="meta">बैज + पृष्ठभूमि रंग + अक्षर रंग</span>
-    <div class="cg"><input id="aBadge" placeholder="बैज (जैसे: एक्सक्लूसिव)"><input type="color" id="aBg" value="#dc2626"><input type="color" id="aBt" value="#ffffff"></div>
-    <span class="meta">रंगीन शुरुआती लाइन + रंग</span>
-    <div class="cg"><input id="aKick" placeholder="शुरुआती लाइन"><input type="color" id="aKc" value="#c2410c"></div>
-    <span class="meta">मुख्य हेडलाइन + रंग</span>
-    <div class="cg"><input id="aTitle" placeholder="हेडलाइन"><input type="color" id="aHc" value="#111827"></div>
-    <input id="aLoc" placeholder="ज़िला / इलाका" value="कानपुर देहात">
-    <input id="aImg" placeholder="फोटो लिंक (https://…)">
-    <div class="cg"><input id="aVid" placeholder="YouTube लिंक (वैकल्पिक)" style="flex:2"><input id="aDur" placeholder="3:20" style="flex:1"></div>
-    <select id="aVer"><option value="u">⚠️ असत्यापित (अभी पुष्टि बाकी)</option><option value="v">✓ सत्यापित (कई जगह उपलब्ध)</option></select>
-    <input id="aSrc" placeholder="सत्यापन स्रोत लिंक — सत्यापित के लिए ज़रूरी (कई हों तो कॉमा से)">
-    <input id="aVnote" placeholder="असत्यापित का कारण (जैसे: सिर्फ़ फोटो के आधार पर)">
-    <div id="fcBox" style="display:none"><span class="meta">🔍 फैक्ट चेक: सबूत का लिंक ऊपर वाले "स्रोत लिंक" खाने में डालें (ज़रूरी)</span>
-    <textarea id="aClaim" rows="2" placeholder="दावा: जो बात फैल रही है (जैसे: वायरल मैसेज में लिखी बात)"></textarea>
-    <select id="aVerdict"><option value="">— नतीजा चुनें —</option><option value="s">✓ सही</option><option value="g">✗ गलत</option><option value="b">⚠ भ्रामक</option><option value="a">◐ अधूरा सच</option><option value="n">? पुष्टि नहीं हो सकी</option></select>
-    <textarea id="aHow" rows="3" placeholder="कैसे जाँचा: किस अधिकारी, दस्तावेज़ या स्रोत से पुष्टि की"></textarea></div>
-    <textarea id="aFull" rows="5" placeholder="पूरी खबर…"></textarea>
-    <button class="btn" id="aPubBtn" data-a="pub" style="width:100%">🚀 पब्लिश करें</button>
-    <button class="btn" data-a="cpy" style="width:100%;background:#2563eb">📋 Blogger कोड कॉपी करें</button>
-    <button class="btn" data-a="pcancel" style="width:100%;background:#78716c">फ़ॉर्म खाली करें</button>
-    <p class="meta">नोट: यहाँ की खबरें सिर्फ़ इसी फ़ोन में रहती हैं। सबको दिखाने के लिए Blogger कोड से पोस्ट करें और कैटेगरी का लेबल लगाएँ।</p>
-    <h4>मेरी खबरें</h4><div id="myPosts"></div>
-   </div>
-   <div id="aCats" style="display:none">
-    <h4>कैटेगरी जोड़ें / बदलें</h4>
-    <input id="cName" placeholder="नाम (इमोजी भी लगा सकते हैं)">
-    <input id="cQ" placeholder="खोज शब्द, जैसे: कानपुर देहात रसूलाबाद अकबरपुर">
-    <input id="cLab" placeholder="Blogger लेबल (वैकल्पिक)">
-    <select id="cMode"><option value="both">लाइव + मेरी खबर</option><option value="live">सिर्फ़ लाइव खबर</option><option value="own">सिर्फ़ मेरी खबर</option></select>
-    <button class="btn" id="cBtn" data-a="cadd" style="width:100%">➕ कैटेगरी जोड़ें</button>
-    <h4>सभी कैटेगरी</h4><div id="acList"></div>
-    <button class="btn" data-a="creset" style="width:100%;background:#78716c">डिफ़ॉल्ट कैटेगरी लौटाएँ</button>
-   </div>
-   <div id="aSet" style="display:none">
-    <input id="aBlog" placeholder="Blogger URL (जैसे https://apka-blog.blogspot.com)">
-    <select id="aMode"><option value="blog">📝 सिर्फ़ मेरा Blogger (AdSense के लिए सुरक्षित)</option><option value="mix">🌐 Blogger + Google News लाइव</option></select>
-    <input id="aTrend" placeholder="ट्रेंडिंग टॉपिक (कॉमा से अलग)">
-    <input id="aTick" placeholder="ब्रेकिंग पट्टी का अपना टेक्स्ट (खाली = अपने आप)">
-    <input id="aPin" placeholder="नया पिन (बदलना हो तो)" inputmode="numeric">
-    <button class="btn" data-a="saveset" style="width:100%;background:#16a34a">💾 सेटिंग सेव करें</button>
-   </div>
-  </div></div>
+  <div class="sheet" id="admin"><div class="sh-head"><button class="ib" data-a="close" aria-label="बंद करें">✕</button><b>एडमिन पैनल</b><span class="sp"></span><button class="pill" id="aOut" data-a="logout" style="display:none">लॉग आउट</button></div>
+  <div class="body form" id="aLogin">
+    <h3 style="margin:4px 0 10px">🔐 एडमिन लॉगिन</h3>
+    <input id="aEm" type="email" placeholder="ईमेल" autocomplete="username">
+    <input id="aPw" type="password" placeholder="पासवर्ड" autocomplete="current-password">
+    <button class="btn" data-a="login" style="width:100%">लॉगिन करें</button>
+    <p class="meta">यह लॉगिन Firebase का है। गलत व्यक्ति न लॉगिन कर सकता है, न कुछ बदल सकता है।</p>
+  </div>
+  <div id="aMain" style="display:none;flex:1;flex-direction:column;min-height:0">
+   <div class="atabs"><button data-a="atab" data-v="aList">📋 खबरें</button><button data-a="atab" data-v="aPost">✍️ नई</button><button data-a="atab" data-v="aCats">📂 कैटेगरी</button><button data-a="atab" data-v="aSet">⚙️ सेटिंग</button></div>
+   <div class="body form" id="aBody">
+    <div id="aList"><button class="btn" data-a="rlist" style="width:100%;margin:0 0 8px">🔄 सूची ताज़ा करें</button>
+     <p class="meta">✓/⚠ दबाकर सत्यापन बदलें • ✏️ बदलें • 👁 छिपाएँ • 📌 ऊपर टिकाएँ • 🗑 हटाएँ (सिर्फ़ ऐप में लिखी खबर)</p><div id="aListBox"></div></div>
+    <div id="aPost" style="display:none">
+     <p class="meta" id="aNote" style="display:none">Blogger की खबर: यहाँ सिर्फ़ दिखावट और स्थिति बदलती है। जो फ़ील्ड बदलेंगे सिर्फ़ वही सेव होगा। असली पोस्ट Blogger में रहती है।</p>
+     <select id="aType"><option value="compact">📰 छोटा कार्ड</option><option value="hero">🔥 बड़ा कार्ड</option><option value="fc">🔍 फैक्ट चेक कार्ड</option></select>
+     <select id="aCat"></select>
+     <span class="meta">बैज + पृष्ठभूमि रंग + अक्षर रंग</span>
+     <div class="cg"><input id="aBadge" placeholder="बैज (जैसे: एक्सक्लूसिव)"><input type="color" id="aBg" value="#dc2626"><input type="color" id="aBt" value="#ffffff"></div>
+     <span class="meta">रंगीन शुरुआती लाइन + रंग</span>
+     <div class="cg"><input id="aKick" placeholder="शुरुआती लाइन"><input type="color" id="aKc" value="#c2410c"></div>
+     <span class="meta">मुख्य हेडलाइन + रंग</span>
+     <div class="cg"><input id="aTitle" placeholder="हेडलाइन"><input type="color" id="aHc" value="#111827"></div>
+     <input id="aLoc" placeholder="ज़िला / इलाका" value="कानपुर देहात">
+     <input id="aImg" placeholder="फोटो लिंक (Blogger की फोटो का)">
+     <div class="cg"><input id="aVid" placeholder="YouTube लिंक (वैकल्पिक)" style="flex:2"><input id="aDur" placeholder="3:20" style="flex:1"></div>
+     <select id="aVer"><option value="u">⚠️ असत्यापित</option><option value="v">✓ सत्यापित</option></select>
+     <input id="aVnote" placeholder="पाठकों को दिखने वाला नोट (वैकल्पिक, जैसे: सिर्फ़ फोटो के आधार पर)">
+     <div id="fcBox" style="display:none"><textarea id="aClaim" rows="2" placeholder="दावा: जो बात फैल रही है"></textarea>
+      <select id="aVerdict"><option value="">— नतीजा चुनें —</option><option value="s">✓ सही</option><option value="g">✗ गलत</option><option value="b">⚠ भ्रामक</option><option value="a">◐ अधूरा सच</option><option value="n">? पुष्टि नहीं हो सकी</option></select>
+      <textarea id="aHow" rows="3" placeholder="कैसे जाँचा"></textarea></div>
+     <textarea id="aFull" rows="6" placeholder="पूरी खबर…"></textarea>
+     <button class="btn" id="aPubBtn" data-a="pub" style="width:100%">🚀 पब्लिश करें (सबके ऐप में)</button>
+     <button class="btn" data-a="pcancel" style="width:100%;background:#78716c">फ़ॉर्म खाली करें</button>
+    </div>
+    <div id="aCats" style="display:none">
+     <h4>कैटेगरी जोड़ें / बदलें</h4>
+     <input id="cName" placeholder="नाम (इमोजी भी लगा सकते हैं)">
+     <input id="cQ" placeholder="खोज शब्द (Google News मोड के लिए)">
+     <input id="cLab" placeholder="Blogger लेबल (खाली = नाम वही लेबल)">
+     <select id="cMode"><option value="both">लाइव + मेरी खबर</option><option value="live">सिर्फ़ लाइव खबर</option><option value="own">सिर्फ़ मेरी खबर</option></select>
+     <button class="btn" id="cBtn" data-a="cadd" style="width:100%">➕ कैटेगरी जोड़ें</button>
+     <h4>सभी कैटेगरी</h4><div id="acList"></div>
+     <button class="btn" data-a="creset" style="width:100%;background:#78716c">डिफ़ॉल्ट कैटेगरी लौटाएँ</button>
+    </div>
+    <div id="aSet" style="display:none">
+     <input id="aBlog" placeholder="Blogger URL">
+     <select id="aMode"><option value="blog">📝 सिर्फ़ मेरा Blogger</option><option value="mix">🌐 Blogger + Google News लाइव</option></select>
+     <input id="aTrend" placeholder="ट्रेंडिंग टॉपिक (कॉमा से अलग)">
+     <input id="aTick" placeholder="ब्रेकिंग पट्टी का टेक्स्ट (खाली = अपने आप)">
+     <button class="btn" data-a="saveset" style="width:100%;background:#16a34a">💾 सेटिंग सबके ऐप में सेव करें</button>
+    </div>
+   </div></div></div>
+  <button class="fab" id="up" data-a="top" aria-label="ऊपर जाएँ">↑</button>
   <div class="vb" id="verBox"><div class="vbk" data-a="vclose"></div><div class="vcard" id="verCard"></div></div>
   <div class="toast" id="toast"></div>
 </div>
@@ -207,6 +222,8 @@ const st={tab:'home',cat:0,items:[],byId:{},bm:S.get('bm',{}),local:S.get('local
   cur:null,speakId:null,reqId:0};
 const FCCAT={id:'cfc',n:'🔍 फैक्ट चेक',q:'फैक्ट चेक',mode:'own',label:'FactCheck'};
 st.cats=S.get('cats',DEFCATS);if(!S.get('fcAdded',0)){if(!st.cats.some(c=>c.id==='cfc'))st.cats.splice(2,0,FCCAT);S.set('cats',st.cats);S.set('fcAdded',1)}st.trend=S.get('trend',['यूपी बड़ी खबरें','कानपुर समाचार','टीम इंडिया','मौसम अपडेट','रोजगार समाचार']);
+const BLOG='https://newschannelffuyy.blogspot.com';
+st.rem={config:{},ov:{},custom:{}};st.cfg.blog=BLOG;delete st.cfg.pin;
 let CATS=[];function syncCats(){CATS=st.cats.filter(c=>!c.hide);if(!CATS.length)CATS=[st.cats[0]||DEFCATS[0]];if(st.cat>=CATS.length)st.cat=0}syncCats();
 
 // ---------- Theme / font ----------
@@ -224,7 +241,7 @@ function parseTitle(t){let kick='',head=t;
   else if(t.includes(':')){const i=t.indexOf(':');kick=t.slice(0,i+1);head=t.slice(i+1).trim()}
   else if(t.length>45){const w=t.split(' ');kick=w.slice(0,4).join(' ')+' -';head=w.slice(4).join(' ')}
   return {kick,head}}
-function mk(o){o.id=o.id||hash(o.link||o.head+o.date);st.byId[o.id]=o;return o}
+function mk(o){o.id=o.id||hash(o.link||o.head+o.date);const v=st.rem.ov&&st.rem.ov[o.id];if(v){Object.assign(o,ovClean(v));if(v.full)o.blocks=null}st.byId[o.id]=o;return o}
 
 async function fetchLive(q){
   const rss=encodeURIComponent('https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=hi&gl=IN&ceid=IN:hi');
@@ -241,7 +258,7 @@ async function fetchLive(q){
   });
 }
 function norm(o){const s=(x,n)=>String(x==null?'':x).slice(0,n);
-  return {type:o.type==='hero'||o.type==='fc'?o.type:'compact',cat:s(o.cat,20),badge:s(o.badge,20),bg:col(o.bg,'#dc2626'),bt:col(o.bt,'#ffffff'),kick:s(o.kick,80),kc:col(o.kc,''),head:s(o.head,300),hc:col(o.hc,''),loc:s(o.loc,40)||'उत्तरप्रदेश',img:safeUrl(o.img),vid:safeUrl(o.vid),dur:s(o.dur,8),full:s(o.full,20000),ver:o.ver==='v'&&Array.isArray(o.vsrc)&&o.vsrc.some(safeUrl)?'v':'u',vsrc:(Array.isArray(o.vsrc)?o.vsrc:[]).map(safeUrl).filter(Boolean).slice(0,5),vnote:s(o.vnote,120),claim:s(o.claim,400),verdict:FV[o.verdict]?o.verdict:'',how:s(o.how,2000),src:'हमारी खबर',own:1}}
+  return {type:o.type==='hero'||o.type==='fc'?o.type:'compact',cat:s(o.cat,20),badge:s(o.badge,20),bg:col(o.bg,'#dc2626'),bt:col(o.bt,'#ffffff'),kick:s(o.kick,80),kc:col(o.kc,''),head:s(o.head,300),hc:col(o.hc,''),loc:s(o.loc,40)||'उत्तरप्रदेश',img:safeUrl(o.img),vid:safeUrl(o.vid),dur:s(o.dur,8),full:s(o.full,20000),ver:o.ver==='v'?'v':'u',vsrc:(Array.isArray(o.vsrc)?o.vsrc:[]).map(safeUrl).filter(Boolean).slice(0,5),vnote:s(o.vnote,120),claim:s(o.claim,400),verdict:FV[o.verdict]?o.verdict:'',how:s(o.how,2000),src:'हमारी खबर',own:1}}
 const onlyBlog=()=>st.cfg.only!==false&&!!st.cfg.blog;
 const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
 const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
@@ -262,12 +279,12 @@ function renderBlocks(bl){return bl.map(b=>b.t==='p'?'<p>'+esc(b.x)+'</p>':b.t==
 function bodyHTML(it){return it.blocks&&it.blocks.length?renderBlocks(it.blocks):'<p>'+esc(it.full||it.head)+'</p>'}
 function relHTML(it){
   const w=x=>new Set((x||'').split(/[\s,.:;|\-–()'"!?।]+/).filter(y=>y.length>3)),tw=w(it.kick+' '+it.head),tl=new Set(it.labels||[]);
-  const sc=Object.values(st.byId).filter(o=>o.id!==it.id&&(!onlyBlog()||o.own)).map(o=>{let n=0;(o.labels||[]).forEach(l=>{if(tl.has(l))n+=3});if(o.loc&&o.loc===it.loc)n+=2;w(o.kick+' '+o.head).forEach(x=>{if(tw.has(x))n++});return [n,o]})
+  const sc=Object.values(st.byId).filter(o=>o.id!==it.id&&(!onlyBlog()||o.own)&&!o.hide).map(o=>{let n=0;(o.labels||[]).forEach(l=>{if(tl.has(l))n+=3});if(o.loc&&o.loc===it.loc)n+=2;w(o.kick+' '+o.head).forEach(x=>{if(tw.has(x))n++});return [n,o]})
    .filter(a=>a[0]>=3).sort((a,b)=>b[0]-a[0]||new Date(b[1].date)-new Date(a[1].date)).slice(0,4);
   return sc.length?'<div class="hl2"></div><h4 style="margin:6px 0">📌 यह भी पढ़ें</h4>'+sc.map(a=>'<div class="rel" data-a="open" data-id="'+esc(a[1].id)+'" tabindex="0">'+titleHTML(a[1])+'<div class="src">'+esc(a[1].src)+(a[1].date?' • '+ago(a[1].date):'')+'</div></div>').join(''):''}
-function searchPool(q){const ws=q.toLowerCase().split(/\s+/).filter(Boolean);return Object.values(st.byId).filter(o=>o.own).filter(o=>{const t=(o.kick+' '+o.head+' '+o.full+' '+(o.labels||[]).join(' ')+' '+o.loc).toLowerCase();return ws.every(x=>t.includes(x))})}
-function getBlog(){const c=st.bc;if(c&&Date.now()-c.t<6e4)return Promise.resolve(c.items);return fetchBlog(st.cfg.blog).then(i=>{if(i.length)st.bc={t:Date.now(),items:i};return i})}
-function fetchBlog(url){
+function searchPool(q){const ws=q.toLowerCase().split(/\s+/).filter(Boolean);return Object.values(st.byId).filter(o=>o.own&&!o.hide).filter(o=>{const t=(o.kick+' '+o.head+' '+o.full+' '+(o.labels||[]).join(' ')+' '+o.loc).toLowerCase();return ws.every(x=>t.includes(x))})}
+function getBlog(label,start){const k=(label||'')+'|'+(start||1),c=st.bc&&st.bc[k];if(c&&Date.now()-c.t<6e4)return Promise.resolve(c.items);st.berr=0;return fetchBlog(st.cfg.blog,label,start).then(i=>{if(i.length){st.bc=st.bc||{};st.bc[k]={t:Date.now(),items:i}}return i})}
+function fetchBlog(url,label,start){
   return new Promise(res=>{
     let u=url.replace(/\/$/,'');if(!/^https?:/.test(u))u='https://'+u;
     const cb='bcb'+Date.now(),sc=document.createElement('script');
@@ -281,8 +298,8 @@ function fetchBlog(url){
       if(!o){const p=parseTitle(t);o={kick:p.kick,head:p.head,loc:labels[1]||labels[0]||'उत्तरप्रदेश',src:'हमारी खबर',own:1,ver:'u'}}
       if(!o.img)o.img=im?safeUrl(im.u):'';if(!o.vid&&vd)o.vid='https://youtu.be/'+vd.id;if(!o.full)o.full=txt;
       o.blocks=bl;{const lk=(e.link||[]).find(x=>x.rel==='alternate');o.link=lk?safeUrl(lk.href):''}o.labels=labels;o.date=e.published?e.published.$t:'';o.id=hash('b'+(e.id?e.id.$t:t));return mk(o)}));
-    sc.src=u+'/feeds/posts/default?alt=json-in-script&max-results=40&callback='+cb;
-    sc.onerror=()=>done([]);document.body.appendChild(sc);setTimeout(()=>done([]),8000);
+    sc.src=u+'/feeds/posts/default'+(label?'/-/'+encodeURIComponent(label):'')+'?alt=json-in-script&max-results=40'+(start?'&start-index='+start:'')+'&callback='+cb;
+    sc.onerror=()=>{st.berr=1;done([])};document.body.appendChild(sc);setTimeout(()=>{if(window[cb]){st.berr=1;done([])}},8000);
   });
 }
 const lbl=c=>c.label||c.n.replace(/^[^\u0900-\u097F\w]+/,'');
@@ -296,9 +313,10 @@ async function load(q,force){
   let items=[],failed=false;
   try{
     const c=st.tab==='home'?CATS[st.cat]:null,mode=c?(onlyBlog()&&c.mode==='live'?'both':c.mode):'both';
-    const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?getBlog():[],mode==='own'||onlyBlog()?[]:fetchLive(q)]);
-    items=[...[...st.local,...own].filter(i=>!c||inCat(i,c)).map(mk),...live];
+    const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?getBlog(c&&c!==CATS[0]?lbl(c):''):[],mode==='own'||onlyBlog()?[]:fetchLive(q)]);
+    items=[...[...st.local,...customList(),...own].filter(i=>!c||inCat(i,c)).map(mk),...live];
     if(st.tab==='video'&&onlyBlog())items=items.filter(i=>i.vid);
+    items=items.filter(i=>!i.hide).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));st.more=onlyBlog()&&own.length>=40;st.pg=1;
     $('#off').style.display='none';
     S.set(key,{t:Date.now(),items:items.slice(0,25)});
   }catch(e){failed=true;}
@@ -308,7 +326,9 @@ async function load(q,force){
     if(cached){cached.items.forEach(i=>st.byId[i.id]=i);show(cached.items);toast('ताज़ा खबरें नहीं मिलीं, सेव की हुई दिखा रहे हैं');return}
     $('#list').innerHTML='<div class="empty"><b>खबरें नहीं आ पाईं</b>इंटरनेट जाँचें और फिर कोशिश करें।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return;
   }
+  if(onlyBlog()&&st.berr&&!items.length&&!cached){$('#list').innerHTML='<div class="empty"><b>Blogger से खबरें नहीं आ पाईं</b>इंटरनेट जाँचें। ब्लॉग सार्वजनिक होना चाहिए और फ़ीड "Full" होनी चाहिए।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return}
   show(items);
+  if(st.deep){const d=st.deep;st.deep=null;if(st.byId[d])openArticle(d)}
 }
 
 // ---------- Render ----------
@@ -317,11 +337,14 @@ function showSkel(){
   $('#list').innerHTML=h;
 }
 function imgBox(it,cls){const id=ytid(it.vid),im=it.img||(id?'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg':'');
-  return '<div class="img '+cls+'">'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+(it.vid?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
+  return '<div class="img '+cls+'">'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="'+esc(it.head)+'" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+(it.vid?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
 }
+const SV=(p,c)=>'<svg class="'+(c||'')+'" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+const IC={bm:SV('<path d="M6 3.5h12v17.2l-6-4.6-6 4.6z"/>','bmk'),sh:SV('<line x1="22" y1="3" x2="9.2" y2="10.1"/><polygon points="11.7 20.3 22 3 2 3 9.2 10.1 11.7 20.3"/>'),sp:SV('<path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8.5 8.5 0 0 1 0 11"/>')};
+const MORE='<div class="morebox" style="padding:14px"><button class="btn" data-a="more" style="width:100%">⬇ और खबरें देखें</button></div>';
 function titleHTML(it){
   const fv=it.type==='fc'&&FV[it.verdict];
-  return (fv?'<span class="tag" style="background:'+fv[1]+';color:#fff">'+fv[0]+'</span>':it.badge?'<span class="tag" style="background:'+col(it.bg,'#dc2626')+';color:'+col(it.bt,'#ffffff')+'">'+esc(it.badge)+'</span>':'')
+  return (it.pin?'📌 ':'')+(fv?'<span class="tag" style="background:'+fv[1]+';color:#fff">'+fv[0]+'</span>':it.badge?'<span class="tag" style="background:'+col(it.bg,'#dc2626')+';color:'+col(it.bt,'#ffffff')+'">'+esc(it.badge)+'</span>':'')
    +(it.kick?'<span class="kick"'+(it.kc?' style="color:'+col(it.kc,'#c2410c')+'"':'')+'>'+esc(it.kick)+'</span> ':'')
    +'<span'+(it.hc?' style="color:'+col(it.hc,'#111827')+'"':'')+'>'+esc(it.head)+'</span>';
 }
@@ -330,10 +353,10 @@ function media(it){const id=ytid(it.vid);
   return id?yt(id):imgBox(it,'big')}
 function card(it,hero){
   const saved=st.bm[it.id]?' on':'',title=titleHTML(it),more='<button class="more" data-a="open" data-id="'+it.id+'">पूरी खबर पढ़ें ›</button>';
-  const foot='<div class="foot"><button class="pill" data-a="loc" data-v="'+esc(it.loc)+'">'+esc(it.loc)+' ›</button><div class="acts">'
-   +'<button class="act" data-a="speakc" data-id="'+it.id+'" aria-label="सुनें">🔊</button>'
-   +'<button class="act'+saved+'" data-a="bm" data-id="'+it.id+'" aria-label="सेव करें">🔖</button>'
-   +'<button class="act" data-a="share" data-id="'+it.id+'" aria-label="शेयर">📤</button></div></div>';
+  const foot='<div class="foot"><div class="acts"><button class="act" data-a="share" data-id="'+it.id+'" aria-label="शेयर">'+IC.sh+'</button>'
+   +'<button class="act" data-a="speakc" data-id="'+it.id+'" aria-label="सुनें">'+IC.sp+'</button>'
+   +'<button class="pill" data-a="loc" data-v="'+esc(it.loc)+'">'+esc(it.loc)+' ›</button></div>'
+   +'<button class="act'+saved+'" data-a="bm" data-id="'+it.id+'" aria-label="सेव करें">'+IC.bm+'</button></div>';
   const meta='<div class="src">'+vchip(it)+' '+esc(it.src)+(it.date?' • '+ago(it.date):'')+'</div>';
   if(hero)return '<article class="card hero"><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+imgBox(it,'big')+meta+more+foot+'</article>';
   return '<article class="card"><div class="row"><div><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+meta+'</div>'+imgBox(it,'thumb')+'</div>'+more+foot+'</article>';
@@ -342,7 +365,7 @@ function show(items,into){
   const box=into||$('#list');
   if(!items.length){box.innerHTML='<div class="empty"><b>कुछ नहीं मिला</b>कोई दूसरी कैटेगरी या शब्द आज़माएँ।</div>';return}
   st.items=into?st.items:items;
-  box.innerHTML=items.map((it,i)=>card(it,it.type==='hero'||(i===0&&!it.type&&!into))).join('');
+  box.innerHTML=items.map((it,i)=>card(it,it.type==='hero'||(i===0&&!it.type&&!into))).join('')+(!into&&st.more?MORE:'');
   if(!into){
     $('#ticker').hidden=false;$('#tickTxt').textContent=st.cfg.tick||items.slice(0,6).map(i=>i.head).join('  ◆  ');
     $('#feed').scrollTop=0;const f0=box.querySelector('img');if(f0){f0.loading='eager';f0.fetchPriority='high'}
@@ -359,7 +382,7 @@ function showVer(id){
   const links=(it.vsrc||[]).map((u,i)=>'<a class="vl" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">🔗 स्रोत '+(i+1)+': '+esc(host(u))+'</a>').join('');
   const find='<a class="vl" href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener noreferrer">🔎 Google पर खुद जाँचें</a><a class="vl" href="https://news.google.com/search?q='+q+'&hl=hi&gl=IN&ceid=IN:hi" target="_blank" rel="noopener noreferrer">🗞️ Google News पर देखें</a>';
   $('#verCard').innerHTML=v
-   ?'<h3>✓ सत्यापित खबर</h3><p>यह खबर सार्वजनिक रूप से कई जगह उपलब्ध है। आप इसकी जानकारी स्वतंत्र रूप से खुद भी जाँच सकते हैं।</p>'+links+find+(it.vnote?'<p class="meta">'+esc(it.vnote)+'</p>':'')+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>'
+   ?'<h3>✓ सत्यापित खबर</h3><p>इस खबर को हमारी संपादकीय टीम ने जाँचकर सत्यापित किया है। यह जानकारी सार्वजनिक रूप से भी उपलब्ध है, आप चाहें तो खुद भी जाँच सकते हैं।</p>'+links+find+(it.vnote?'<p class="meta">'+esc(it.vnote)+'</p>':'')+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>'
    :'<h3>⚠ असत्यापित खबर</h3><p>यह खबर अभी किसी भरोसेमंद सार्वजनिक स्रोत से पुष्ट नहीं हुई है। यह मिली हुई कुछ तस्वीरों और सूचना के आधार पर है, इसलिए इसमें गलती हो सकती है।</p>'
     +(it.vnote?'<p><b>कारण:</b> '+esc(it.vnote)+'</p>':'')+'<ul><li>इसे पक्का सच मानकर आगे शेयर न करें।</li><li>नीचे दिए लिंक से खुद जाँच करें।</li><li>पुष्टि होने पर खबर को सत्यापित किया जाएगा।</li></ul>'+links+find+'<button class="btn" data-a="vclose" style="width:100%">ठीक है</button>';
   $('#verBox').classList.add('open');
@@ -381,36 +404,38 @@ function openArticle(id){
    +fcHTML(it)+(verOf(it)==='u'?'<div class="vwarn">⚠ यह खबर असत्यापित है। आगे शेयर करने से पहले खुद जाँच लें।</div>':'')+'<div style="margin:12px 0">'+media(it)+'</div>'
    +bodyHTML(it)
    +(it.link?'<a class="btn" style="display:inline-block;text-decoration:none" href="'+esc(it.link)+'" target="_blank" rel="noopener noreferrer">'+(it.own?'🌐 ब्लॉग पर पूरी खबर खोलें':'पूरी खबर '+esc(it.src)+' पर पढ़ें')+'</a>':'')+relHTML(it);
-  $('#rBm').style.color=st.bm[id]?'var(--accent)':'';
+  $('#rBm').classList.toggle('on',!!st.bm[id]);
   $('#rBody').scrollTop=0;$('#prog').style.width='0';
-  $('#reader').classList.add('open');history.pushState({r:1},'');
+  if(!$('#reader').classList.contains('open')){$('#reader').classList.add('open');pushS()}
 }
-function closeSheet(){$$('.sheet.open').forEach(s=>s.classList.remove('open'));stopSpeak()}
+function closeSheet(){const t=$('#reader.open')||$$('.sheet.open').pop();if(t)t.classList.remove('open');if(!$('#reader.open'))stopSpeak();if(st.dirty&&!$('.sheet.open')){st.dirty=0;setTab(st.tab)}}
+function closeUI(){if(st.hs>0)history.back();else closeSheet()}
+function pushS(){history.pushState({s:1},'');st.hs=(st.hs||0)+1}
 
 // ---------- Actions ----------
 function toggleBm(id){
   const it=st.byId[id];if(!it)return;
   if(st.bm[id]){delete st.bm[id];toast('सेव से हटाया')}else{st.bm[id]=it;toast('सेव हो गया');navigator.vibrate&&navigator.vibrate(15)}
   S.set('bm',st.bm);
-  $$('[data-a=bm][data-id="'+id+'"]').forEach(b=>b.classList.toggle('on',!!st.bm[id]));
-  if(st.cur&&st.cur.id===id)$('#rBm').style.color=st.bm[id]?'var(--accent)':'';
+  $$('[data-a=bm][data-id="'+id+'"]').forEach(b=>{b.classList.toggle('on',!!st.bm[id]);b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')});
+  if(st.cur&&st.cur.id===id)$('#rBm').classList.toggle('on',!!st.bm[id]);
   if(st.tab==='saved')showSaved();
 }
 async function share(id){
   const it=st.byId[id];if(!it)return;
-  const text=(it.kick+' '+it.head).trim(),url=it.link||location.href;
+  const text=(it.kick+' '+it.head).trim(),url=it.link||location.origin+location.pathname+'#a='+id;
   try{if(navigator.share)await navigator.share({title:'इंडियन न्यूज़',text,url});
   else window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(text+' '+url),'_blank','noopener')}catch(e){}
 }
 // Hindi TTS - lambi khabar ko chhote tukdon me todta hai
 function chunks(t){return (t.match(/[^।.!?\n]+[।.!?\n]?/g)||[t]).reduce((a,s)=>{const l=a[a.length-1];if(l&&l.length+s.length<180)a[a.length-1]=l+s;else a.push(s);return a},[])}
-function stopSpeak(){if('speechSynthesis' in window)speechSynthesis.cancel();st.speakId=null;$$('[data-a=speakc]').forEach(b=>b.textContent='🔊');$('#rSpeak').textContent='🔊'}
+function stopSpeak(){if('speechSynthesis' in window)speechSynthesis.cancel();st.speakId=null;$$('[data-a=speakc]').forEach(b=>b.classList.remove('on'));$('#rSpeak').classList.remove('on')}
 function speak(id,btn){
   if(!('speechSynthesis' in window)){toast('इस फोन में आवाज़ उपलब्ध नहीं');return}
   if(st.speakId===id){stopSpeak();return}
   stopSpeak();const it=st.byId[id];if(!it)return;
   const parts=chunks((it.kick+' '+it.head+'। '+(it.full||'')).trim());
-  st.speakId=id;btn.textContent='⏹️';
+  st.speakId=id;btn.classList.add('on');
   parts.forEach((p,i)=>{const u=new SpeechSynthesisUtterance(p);u.lang='hi-IN';
     if(i===parts.length-1)u.onend=()=>{if(st.speakId===id)stopSpeak()};speechSynthesis.speak(u)});
 }
@@ -437,12 +462,12 @@ function showSettings(){
    +'</div></div><div class="set"><h4>थीम</h4><div class="seg">'
    +[['auto','ऑटो'],['light','दिन'],['dark','रात']].map(a=>'<button data-a="th" data-v="'+a[0]+'" aria-pressed="'+(p.theme===a[0])+'">'+a[1]+'</button>').join('')
    +'</div></div><div class="set"><h4>ऐप के बारे में</h4><p class="meta" style="margin:0">इंडियन न्यूज़ • खबरें Google News और आपके Blogger से आती हैं। हर खबर पर असली स्रोत का लिंक दिया जाता है।</p></div>'
-   +'<div class="set"><button class="pill" data-a="admin">एडमिन</button></div>';
+   ;
 }
 
 // ---------- Search ----------
 function openSearch(){
-  $('#searchS').classList.add('open');history.pushState({s:1},'');
+  $('#searchS').classList.add('open');pushS();
   renderRecent();setTimeout(()=>$('#q').focus(),260);
 }
 function renderRecent(){
@@ -457,74 +482,115 @@ async function runSearch(q){
 }
 
 // ---------- Admin (local only) ----------
+const DB='https://indian-news-d1559-default-rtdb.firebaseio.com';
+const FB_KEY='';  // <-- Firebase Web API Key यहाँ डालें (Project settings → General)
 let taps=0,tapT;
 const V=id=>$('#'+id).value.trim(),dv=(v,d)=>v.toLowerCase()===d?'':v;
 const cbtn=(a,i,v,t)=>'<button class="act" data-a="'+a+'" data-i="'+i+'" data-v="'+v+'">'+t+'</button>';
-function adminGate(){
-  const p=prompt(st.cfg.pin?'एडमिन पिन डालें:':'पहली बार: नया पिन बनाएँ (4+ अंक):');
-  if(!p)return;
-  hashPin(p).then(h=>{
-    if(!st.cfg.pin){if(p.length<4){toast('पिन छोटा है');return}st.cfg.pin=h;S.set('cfg',st.cfg)}
-    else if(st.cfg.pin!==h){toast('गलत पिन');return}
-    openAdmin();
-  });
+const cb2=(a,id,t)=>'<button class="act" data-a="'+a+'" data-id="'+esc(id)+'">'+t+'</button>';
+function ovClean(v){const s=(x,n)=>String(x==null?'':x).slice(0,n),o={};
+  if('ver' in v)o.ver=v.ver==='v'?'v':'u';
+  ['vnote','head','kick','badge','loc','claim'].forEach(k=>{if(v[k]!=null)o[k]=s(v[k],300)});
+  ['how','full'].forEach(k=>{if(v[k]!=null)o[k]=s(v[k],20000)});
+  ['kc','hc','bg','bt'].forEach(k=>{if(v[k]!=null)o[k]=col(v[k],'')});
+  ['img','vid'].forEach(k=>{if(v[k]!=null)o[k]=safeUrl(v[k])});
+  if(v.dur!=null)o.dur=s(v.dur,8);if(v.cat!=null)o.cat=s(v.cat,20);
+  if(v.type!=null)o.type=['hero','compact','fc'].includes(v.type)?v.type:'compact';
+  if(v.verdict!=null)o.verdict=FV[v.verdict]?v.verdict:'';
+  if('hide' in v)o.hide=!!v.hide;if('pin' in v)o.pin=!!v.pin;return o}
+function customList(){return Object.entries(st.rem.custom||{}).filter(a=>a[1]&&a[1].head).map(a=>{const o=norm(a[1]);o.id=a[0];o.date=String(a[1].date||'');return o})}
+// ---- Firebase ----
+function applyRemote(r){
+  st.rem=Object.assign({config:{},ov:{},custom:{}},r||{});st.rem.ov=st.rem.ov||{};st.rem.custom=st.rem.custom||{};
+  const c=st.rem.config||{};
+  if(c.cats){const a=Object.values(c.cats).filter(x=>x&&x.n);if(a.length)st.cats=a.map(x=>({id:String(x.id||'c'+x.n),n:String(x.n).slice(0,40),q:String(x.q||x.n),label:String(x.label||''),mode:['live','own','both'].includes(x.mode)?x.mode:'both',hide:!!x.hide}))}
+  if(c.trend)st.trend=Object.values(c.trend).map(String);
+  st.cfg.tick=c.tick||'';st.cfg.blog=c.blog&&/^https?:\/\//.test(c.blog)?c.blog:BLOG;st.cfg.only=c.only!==false;
+  syncCats();renderCats();renderTrend();
 }
-async function hashPin(p){
-  try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('inp:'+p));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-  catch(e){return hash(p)}
+async function loadRemote(){try{const r=await fetch(DB+'/pub.json');if(!r.ok)return;const d=(await r.json())||{},old=JSON.stringify(S.get('rem',null));
+  S.set('rem',d);applyRemote(d);if(JSON.stringify(d)!==old&&!$('.sheet.open'))setTab(st.tab)}catch(e){}}
+function setAuth(d){st.auth={t:d.idToken,r:d.refreshToken,e:Date.now()+(+d.expiresIn-60)*1000};S.set('rt',d.refreshToken)}
+async function fbLogin(e,p){const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+FB_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:e,password:p,returnSecureToken:true})});const d=await r.json();if(!r.ok)throw new Error((d.error&&d.error.message)||'login');setAuth(d)}
+async function token(){if(!st.auth)return null;
+  if(Date.now()>st.auth.e){const r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB_KEY,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(st.auth.r)});const d=await r.json();if(!r.ok){st.auth=null;throw new Error('session')}setAuth({idToken:d.id_token,refreshToken:d.refresh_token,expiresIn:d.expires_in})}
+  return st.auth.t}
+async function fbWrite(path,val,method){const t=await token();if(!t)throw new Error('पहले लॉगिन करें');
+  const r=await fetch(DB+path+'.json?auth='+encodeURIComponent(t),{method:method||(val===undefined?'DELETE':'PUT'),headers:{'Content-Type':'application/json'},body:val===undefined?undefined:JSON.stringify(val)});
+  if(!r.ok)throw new Error(r.status===401?'अनुमति नहीं (Rules और UID जाँचें)':'त्रुटि '+r.status);return r.json()}
+async function pushConfig(){const c={cats:st.cats,trend:st.trend,tick:st.cfg.tick||'',blog:st.cfg.blog||BLOG,only:st.cfg.only!==false};
+  try{await fbWrite('/pub/config',c);st.rem.config=c;S.set('rem',st.rem);toast('सबके ऐप में सेव हुआ ✓')}catch(e){toast('सेव नहीं हुआ: '+e.message)}}
+async function ovSet(id,patch){const c=ovClean(patch);
+  try{await fbWrite('/pub/ov/'+id,c,'PATCH');st.rem.ov[id]=Object.assign(st.rem.ov[id]||{},c);S.set('rem',st.rem);st.bc=null;
+    const it=st.byId[id];if(it){Object.assign(it,c);if(c.full)it.blocks=null}toast('सेव हुआ ✓');renderList();dirty()}catch(e){toast('सेव नहीं हुआ: '+e.message)}}
+// ---- एडमिन खोलना ----
+function adminGate(){openAdmin()}
+async function openAdmin(){
+  $('#admin').classList.add('open');pushS();showA(false);
+  const rt=S.get('rt',null);if(!st.auth&&rt)st.auth={t:'',r:rt,e:0};
+  if(st.auth&&FB_KEY){try{await token();showA(true);return}catch(e){st.auth=null}}
 }
-function openAdmin(){
-  $('#aBlog').value=st.cfg.blog||'';$('#aMode').value=st.cfg.only===false?'mix':'blog';$('#aTrend').value=st.trend.join(', ');$('#aTick').value=st.cfg.tick||'';$('#aPin').value='';
-  fillCatSel();renderAC();renderMine();atab('aPost');
-  $('#admin').classList.add('open');history.pushState({a:1},'');
-}
-function atab(v){['aPost','aCats','aSet'].forEach(x=>$('#'+x).style.display=x===v?'block':'none');$$('.atabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v))}
-function fillCatSel(){$('#aCat').innerHTML=st.cats.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.n)+'</option>').join('')}
-// ---- खबर ----
-function readPost(){return {type:V('aType'),cat:V('aCat'),badge:V('aBadge'),bg:V('aBg'),bt:V('aBt'),kick:V('aKick'),kc:dv(V('aKc'),'#c2410c'),head:V('aTitle'),hc:dv(V('aHc'),'#111827'),loc:V('aLoc')||'उत्तरप्रदेश',img:safeUrl(V('aImg')),vid:safeUrl(V('aVid')),dur:V('aDur'),full:V('aFull'),ver:V('aVer'),vsrc:V('aSrc').split(',').map(x=>safeUrl(x.trim())).filter(Boolean),vnote:V('aVnote'),claim:V('aClaim'),verdict:V('aVerdict'),how:V('aHow'),src:'हमारी खबर',own:1}}
-function clearForm(){st.editId=null;['aBadge','aKick','aTitle','aImg','aVid','aDur','aFull','aSrc','aVnote','aClaim','aHow'].forEach(i=>$('#'+i).value='');
-  $('#aVer').value='u';$('#aVerdict').value='';fcToggle();$('#aBg').value='#dc2626';$('#aBt').value='#ffffff';$('#aKc').value='#c2410c';$('#aHc').value='#111827';$('#aPubBtn').textContent='🚀 पब्लिश करें'}
-function adminPost(){
-  const o=readPost();if(!o.head){toast('हेडलाइन लिखें');return}
-  if(o.type==='fc'){if(!o.claim||!o.verdict){toast('दावा और नतीजा चुनें');return}if(!o.vsrc.length){toast('फैक्ट चेक के लिए सबूत का लिंक ज़रूरी है');return}o.ver='v'}
-  if(o.ver==='v'&&!o.vsrc.length){toast('सत्यापित के लिए स्रोत लिंक ज़रूरी है');return}
-  if(!o.kick){const p=parseTitle(o.head);if(o.head.includes(':')||o.head.includes('|')){o.kick=p.kick;o.head=p.head}}
-  const i=st.editId?st.local.findIndex(x=>x.id===st.editId):-1;
-  if(i>=0){o.id=st.editId;o.date=st.local[i].date;st.local[i]=o}else{o.id='l'+Date.now();o.date=new Date().toISOString();st.local.unshift(o)}
-  S.set('local',st.local);clearForm();closeSheet();toast('पब्लिश हुआ');setTab('home');
-}
-function renderMine(){$('#myPosts').innerHTML=st.local.length?st.local.map(o=>'<div class="crow"><span style="flex:1">'+esc(o.head).slice(0,60)+'</span>'+'<button class="act" data-a="pedit" data-id="'+o.id+'">✏️</button><button class="act" data-a="pdel" data-id="'+o.id+'">🗑</button></div>').join(''):'<p class="meta">अभी कोई खबर नहीं।</p>'}
-function editPost(id){const o=st.local.find(x=>x.id===id);if(!o)return;st.editId=id;
-  const m={aType:o.type,aCat:o.cat,aBadge:o.badge,aBg:col(o.bg,'#dc2626'),aBt:col(o.bt,'#ffffff'),aKick:o.kick,aKc:col(o.kc,'#c2410c'),aTitle:o.head,aHc:col(o.hc,'#111827'),aLoc:o.loc,aImg:o.img,aVid:o.vid,aDur:o.dur,aFull:o.full,aVer:o.ver==='v'?'v':'u',aSrc:(o.vsrc||[]).join(', '),aVnote:o.vnote,aClaim:o.claim,aVerdict:o.verdict,aHow:o.how};
-  for(const k in m)$('#'+k).value=m[k]||'';fcToggle();$('#aPubBtn').textContent='💾 बदलाव सेव करें';$('.body.form').scrollTop=0}
-function delPost(id){if(!confirm('यह खबर हटाएँ?'))return;st.local=st.local.filter(x=>x.id!==id);S.set('local',st.local);renderMine();dirty()}
+function showA(on){$('#aLogin').style.display=on?'none':'block';$('#aMain').style.display=on?'flex':'none';$('#aOut').style.display=on?'':'none';
+  if(on){$('#aBlog').value=st.cfg.blog||BLOG;$('#aMode').value=st.cfg.only===false?'mix':'blog';$('#aTrend').value=st.trend.join(', ');$('#aTick').value=st.cfg.tick||'';fillCatSel();renderAC();atab('aList');renderList()}}
+async function doLogin(){const e=V('aEm'),p=$('#aPw').value;if(!e||!p){toast('ईमेल और पासवर्ड लिखें');return}
+  if(!FB_KEY){toast('कोड में FB_KEY (Firebase Web API Key) डालनी बाकी है');return}
+  try{await fbLogin(e,p);$('#aPw').value='';showA(true)}catch(x){toast(/INVALID|PASSWORD|EMAIL/.test(x.message)?'ईमेल या पासवर्ड गलत':'लॉगिन नहीं हुआ: '+x.message)}}
+function atab(v){['aList','aPost','aCats','aSet'].forEach(x=>$('#'+x).style.display=x===v?'block':'none');$$('.atabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));$('#aBody').scrollTop=0}
+function fillCatSel(){$('#aCat').innerHTML='<option value="">अपने आप (लेबल से)</option>'+st.cats.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.n)+'</option>').join('')}
 function dirty(){st.dirty=1}
-function fcToggle(){const f=$('#aType').value==='fc';$('#fcBox').style.display=f?'block':'none';if(f&&st.cats.some(c=>c.id==='cfc')&&!st.editId)$('#aCat').value='cfc'}
-function adminCopy(){
-  const o=readPost();if(!o.head){toast('हेडलाइन लिखें');return}delete o.cat;
-  const code='<div id="indian-news-custom-meta" data-config="'+encodeURIComponent(JSON.stringify(o))+'" style="display:none"></div>'+(o.img?'<img src="'+esc(o.img)+'">':'')+'<p>'+esc(o.full).replace(/\n/g,'<br>')+'</p>';
-  navigator.clipboard.writeText(code).then(()=>toast('कोड कॉपी हुआ: Blogger के HTML व्यू में चिपकाएँ'),()=>toast('कॉपी नहीं हो पाया'));
+function fcToggle(){const f=$('#aType').value==='fc';$('#fcBox').style.display=f?'block':'none';if(f&&st.cats.some(c=>c.id==='cfc')&&!st.editId&&!st.editOv)$('#aCat').value='cfc'}
+// ---- सभी खबरें ----
+async function renderList(){
+  const box=$('#aListBox');box.innerHTML='<p class="meta">लोड हो रहा है…</p>';
+  let bl=[];try{bl=await getBlog('')}catch(e){}
+  const all=[...customList().map(mk),...bl].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  box.innerHTML=all.length?all.map(it=>'<div class="crow" style="flex-wrap:wrap"><span style="flex:1;min-width:55%;'+(it.hide?'opacity:.45':'')+'">'+(it.pin?'📌 ':'')+esc((it.kick+' '+it.head).trim().slice(0,70))+'<br><small class="meta">'+(st.rem.custom[it.id]?'ऐप':'Blogger')+(it.date?' • '+ago(it.date):'')+'</small></span>'
+    +'<button class="vchip '+verOf(it)+'" data-a="atog" data-id="'+esc(it.id)+'">'+(verOf(it)==='v'?'✓ सत्यापित':'⚠ असत्यापित')+'</button>'
+    +cb2('aedit',it.id,'✏️')+cb2('ahide',it.id,it.hide?'🙈':'👁')+cb2('apin',it.id,'📌')+(st.rem.custom[it.id]?cb2('adel',it.id,'🗑'):'')+'</div>').join(''):'<p class="meta">कोई खबर नहीं मिली। Blogger का पता और फ़ीड जाँचें।</p>'}
+async function delPost(id){if(!confirm('यह खबर सबके ऐप से हटाएँ?'))return;
+  try{await fbWrite('/pub/custom/'+id);delete st.rem.custom[id];delete st.byId[id];S.set('rem',st.rem);st.bc=null;toast('हटा दी');renderList();dirty()}catch(e){toast('नहीं हट पाई: '+e.message)}}
+// ---- खबर लिखना / बदलना ----
+const FLDS=['type','cat','badge','bg','bt','kick','kc','head','hc','loc','img','vid','dur','full','ver','vnote','claim','verdict','how'];
+function readPost(){return {type:V('aType'),cat:V('aCat'),badge:V('aBadge'),bg:V('aBg'),bt:V('aBt'),kick:V('aKick'),kc:dv(V('aKc'),'#c2410c'),head:V('aTitle'),hc:dv(V('aHc'),'#111827'),loc:V('aLoc')||'उत्तरप्रदेश',img:safeUrl(V('aImg')),vid:safeUrl(V('aVid')),dur:V('aDur'),full:V('aFull'),ver:V('aVer'),vnote:V('aVnote'),claim:V('aClaim'),verdict:V('aVerdict'),how:V('aHow')}}
+function clearForm(){st.editId=st.editOv=null;['aBadge','aKick','aTitle','aImg','aVid','aDur','aFull','aVnote','aClaim','aHow'].forEach(i=>$('#'+i).value='');
+  $('#aVer').value='u';$('#aVerdict').value='';$('#aBg').value='#dc2626';$('#aBt').value='#ffffff';$('#aKc').value='#c2410c';$('#aHc').value='#111827';
+  $('#aPubBtn').textContent='🚀 पब्लिश करें (सबके ऐप में)';$('#aNote').style.display='none';fcToggle()}
+async function adminPost(){
+  const o=readPost();if(!o.head){toast('हेडलाइन लिखें');return}
+  if(o.type==='fc'){if(!o.claim||!o.verdict){toast('दावा और नतीजा चुनें');return}o.ver='v'}
+  if(!o.kick&&(o.head.includes(':')||o.head.includes('|'))){const p=parseTitle(o.head);o.kick=p.kick;o.head=p.head}
+  try{
+    if(st.editOv){const it=st.byId[st.editOv],p={};
+      FLDS.forEach(k=>{let n=o[k]||'';if(k==='bg'&&n==='#dc2626')n='';if(k==='bt'&&n==='#ffffff')n='';
+        const cur=k==='type'?(it.type||'compact'):k==='ver'?verOf(it):(it[k]||'');if(n!==cur)p[k]=n});
+      const id=st.editOv;clearForm();atab('aList');if(Object.keys(p).length)await ovSet(id,p);else toast('कुछ बदला नहीं');return}
+    const id=st.editId||'p'+Date.now().toString(36),old=st.rem.custom[id];o.date=(old&&old.date)||new Date().toISOString();
+    await fbWrite('/pub/custom/'+id,o);st.rem.custom[id]=o;S.set('rem',st.rem);st.bc=null;clearForm();toast('पब्लिश हुआ ✓');dirty();atab('aList');renderList();
+  }catch(e){toast('नहीं हो पाया: '+e.message)}
 }
+function editPost(id){const o=st.byId[id];if(!o)return;const cu=!!st.rem.custom[id];st.editId=cu?id:null;st.editOv=cu?null:id;
+  const m={aType:o.type||'compact',aCat:o.cat||'',aBadge:o.badge,aBg:col(o.bg,'#dc2626'),aBt:col(o.bt,'#ffffff'),aKick:o.kick,aKc:col(o.kc,'#c2410c'),aTitle:o.head,aHc:col(o.hc,'#111827'),aLoc:o.loc,aImg:o.img,aVid:o.vid,aDur:o.dur,aFull:o.full,aVer:verOf(o),aVnote:o.vnote,aClaim:o.claim,aVerdict:o.verdict,aHow:o.how};
+  atab('aPost');for(const k in m)$('#'+k).value=m[k]||'';fcToggle();
+  $('#aPubBtn').textContent=cu?'💾 बदलाव सेव करें':'💾 दिखावट के बदलाव सेव करें';$('#aNote').style.display=cu?'none':'block'}
 // ---- कैटेगरी ----
-function saveCats(){S.set('cats',st.cats);syncCats();renderCats();fillCatSel();renderAC();dirty()}
-function renderAC(){$('#acList').innerHTML=st.cats.map((c,i)=>'<div class="crow"><span style="flex:1;'+(c.hide?'opacity:.45':'')+'"><b>'+esc(c.n)+'</b><br><small class="meta">'+esc(c.q)+(c.label?' • लेबल: '+esc(c.label):'')+' • '+({both:'दोनों',live:'लाइव',own:'मेरी'}[c.mode]||'दोनों')+'</small></span>'
+function saveCats(){S.set('cats',st.cats);syncCats();renderCats();fillCatSel();renderAC();dirty();pushConfig()}
+function renderAC(){$('#acList').innerHTML=st.cats.map((c,i)=>'<div class="crow"><span style="flex:1;'+(c.hide?'opacity:.45':'')+'"><b>'+esc(c.n)+'</b><br><small class="meta">लेबल: '+esc(c.label||c.n)+' • '+({both:'दोनों',live:'लाइव',own:'मेरी'}[c.mode]||'दोनों')+'</small></span>'
   +cbtn('cmv',i,-1,'↑')+cbtn('cmv',i,1,'↓')+cbtn('chide',i,0,c.hide?'🙈':'👁')+cbtn('cedit',i,0,'✏️')+cbtn('cdel',i,0,'🗑')+'</div>').join('')}
 function catSave(){
   const n=V('cName');if(!n){toast('नाम लिखें');return}
   const o={n,q:V('cQ')||n+' समाचार',label:V('cLab'),mode:V('cMode')};
   if(st.ec!=null){Object.assign(st.cats[st.ec],o);st.ec=null}else st.cats.push(Object.assign({id:'c'+Date.now().toString(36)},o));
-  ['cName','cQ','cLab'].forEach(i=>$('#'+i).value='');$('#cBtn').textContent='➕ कैटेगरी जोड़ें';saveCats();toast('कैटेगरी सेव हुई');
+  ['cName','cQ','cLab'].forEach(i=>$('#'+i).value='');$('#cBtn').textContent='➕ कैटेगरी जोड़ें';saveCats();
 }
 function catMove(i,d){const j=i+d;if(j<0||j>=st.cats.length)return;[st.cats[i],st.cats[j]]=[st.cats[j],st.cats[i]];saveCats()}
 function catHide(i){const c=st.cats[i];if(!c.hide&&st.cats.filter(x=>!x.hide).length<2){toast('कम से कम एक कैटेगरी दिखनी चाहिए');return}c.hide=!c.hide;saveCats()}
-function catEdit(i){const c=st.cats[i];st.ec=i;$('#cName').value=c.n;$('#cQ').value=c.q;$('#cLab').value=c.label||'';$('#cMode').value=c.mode||'both';$('#cBtn').textContent='💾 बदलाव सेव करें';$('.body.form').scrollTop=0}
+function catEdit(i){const c=st.cats[i];st.ec=i;$('#cName').value=c.n;$('#cQ').value=c.q;$('#cLab').value=c.label||'';$('#cMode').value=c.mode||'both';$('#cBtn').textContent='💾 बदलाव सेव करें';$('#aBody').scrollTop=0}
 function catDel(i){if(st.cats.length<2){toast('आख़िरी कैटेगरी नहीं हटा सकते');return}if(!confirm('"'+st.cats[i].n+'" हटाएँ?'))return;st.cats.splice(i,1);st.ec=null;saveCats()}
-function saveSet(){
-  st.cfg.blog=V('aBlog');st.cfg.only=V('aMode')!=='mix';st.cfg.tick=V('aTick');st.trend=V('aTrend').split(',').map(x=>x.trim()).filter(Boolean);
-  const np=V('aPin');S.set('trend',st.trend);
-  const fin=()=>{S.set('cfg',st.cfg);closeSheet();renderTrend();toast('सेव हुआ');setTab('home')};
-  if(np){if(np.length<4){toast('पिन कम से कम 4 अंक का हो');return}hashPin(np).then(h=>{st.cfg.pin=h;fin()})}else fin();
-}
+function saveSet(){const b=V('aBlog');st.cfg.blog=/^https?:\/\//.test(b)?b.replace(/\/$/,''):BLOG;st.cfg.only=V('aMode')!=='mix';st.cfg.tick=V('aTick');
+  st.trend=V('aTrend').split(',').map(x=>x.trim()).filter(Boolean);S.set('trend',st.trend);renderTrend();st.bc=null;dirty();pushConfig()}
+async function showMore(){const c=CATS[st.cat],label=c&&c!==CATS[0]?lbl(c):'',raw=await getBlog(label,st.pg*40+1);st.pg++;
+  const r=raw.filter(i=>(!c||inCat(i,c))&&!i.hide),mb=$('#list .morebox');if(mb)mb.remove();
+  $('#list').insertAdjacentHTML('beforeend',r.map(i=>card(i)).join('')+(raw.length>=40?MORE:''))}
 
 // ---------- Events (ek hi jagah, delegation) ----------
 document.addEventListener('click',e=>{
@@ -540,7 +606,7 @@ document.addEventListener('click',e=>{
     case 'speak':if(st.cur)speak(st.cur.id,el);break;
     case 'rbm':if(st.cur)toggleBm(st.cur.id);break;
     case 'rshare':if(st.cur)share(st.cur.id);break;
-    case 'close':closeSheet();if(st.dirty){st.dirty=0;setTab(st.tab)}break;
+    case 'close':closeUI();if(st.dirty){st.dirty=0;setTab(st.tab)}break;
     case 'search':openSearch();break;
     case 'theme':st.prefs.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';S.set('prefs',st.prefs);applyPrefs();break;
     case 'loc':case 'rq':openSearch();$('#q').value=v;runSearch(v);break;
@@ -548,15 +614,14 @@ document.addEventListener('click',e=>{
     case 'fs':st.prefs.fs=+v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
     case 'th':st.prefs.theme=v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
     case 'admin':adminGate();break;
-    case 'ver':showVer(id);break;case 'vclose':$('#verBox').classList.remove('open');break;case 'yt':el.outerHTML='<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:8px" src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>';break;case 'pub':adminPost();break;case 'atab':atab(v);break;case 'cadd':catSave();break;case 'cmv':catMove(+el.dataset.i,+v);break;case 'chide':catHide(+el.dataset.i);break;case 'cedit':catEdit(+el.dataset.i);break;case 'cdel':catDel(+el.dataset.i);break;case 'creset':if(confirm('डिफ़ॉल्ट कैटेगरी लौटाएँ?')){st.cats=JSON.parse(JSON.stringify(DEFCATS));saveCats()}break;case 'pedit':editPost(id);break;case 'pdel':delPost(id);break;case 'pcancel':clearForm();break;
-    case 'cpy':adminCopy();break;
+    case 'ver':showVer(id);break;case 'vclose':$('#verBox').classList.remove('open');break;case 'yt':el.outerHTML='<iframe style="width:100%;aspect-ratio:16/9;border:0;border-radius:8px" src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>';break;case 'login':doLogin();break;case 'logout':st.auth=null;S.set('rt',null);showA(false);break;case 'rlist':renderList();break;case 'atog':ovSet(id,{ver:verOf(st.byId[id])==='v'?'u':'v'});break;case 'ahide':ovSet(id,{hide:!st.byId[id].hide});break;case 'apin':ovSet(id,{pin:!st.byId[id].pin});break;case 'adel':delPost(id);break;case 'aedit':editPost(id);break;case 'more':showMore();break;case 'top':$('#feed').scrollTo({top:0,behavior:'smooth'});break;case 'pub':adminPost();break;case 'atab':atab(v);break;case 'cadd':catSave();break;case 'cmv':catMove(+el.dataset.i,+v);break;case 'chide':catHide(+el.dataset.i);break;case 'cedit':catEdit(+el.dataset.i);break;case 'cdel':catDel(+el.dataset.i);break;case 'creset':if(confirm('डिफ़ॉल्ट कैटेगरी लौटाएँ?')){st.cats=JSON.parse(JSON.stringify(DEFCATS));saveCats()}break;case 'pedit':editPost(id);break;case 'pdel':delPost(id);break;case 'pcancel':clearForm();break;
     case 'saveset':saveSet();break;
   }
 });
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.a==='open')openArticle(e.target.dataset.id)});
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch(e.target.value)});
 $('#rBody').addEventListener('scroll',e=>{const b=e.target;$('#prog').style.width=(b.scrollTop/Math.max(1,b.scrollHeight-b.clientHeight)*100)+'%'});
-window.addEventListener('popstate',closeSheet);$('#aType').addEventListener('change',fcToggle);
+window.addEventListener('popstate',()=>{st.hs=Math.max(0,(st.hs||0)-1);closeSheet()});$('#aType').addEventListener('change',fcToggle);
 window.addEventListener('online',()=>{$('#off').style.display='none';load(CATS[st.cat].q,true)});
 window.addEventListener('offline',()=>{$('#off').style.display='block'});
 // Logo par 5 baar tap = admin
@@ -575,13 +640,13 @@ function renderCats(){
 // Auto refresh har 5 minute (sirf home par)
 setInterval(()=>{if(st.tab==='home'&&!document.hidden&&!$('.sheet.open'))load(CATS[st.cat].q,true)},3e5);
 
-// PWA: manifest (inline) taaki "Add to Home Screen" chale
-try{const m={name:'इंडियन न्यूज़',short_name:'न्यूज़',display:'standalone',start_url:location.href,background_color:'#f6f1e9',theme_color:'#c2410c'};
- const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l)}catch(e){}
 
 try{if(st.cfg.blog){const l=document.createElement('link');l.rel='preconnect';l.href=new URL(/^https?:/.test(st.cfg.blog)?st.cfg.blog:'https://'+st.cfg.blog).origin;document.head.appendChild(l)}}catch(e){}
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
-renderCats();renderTrend();setTab('home');
+const dm=/#a=([\w-]+)/.exec(location.hash);if(dm)st.deep=dm[1];
+$('#rSpeak').innerHTML=IC.sp;$('#rBm').innerHTML=IC.bm;$('[data-a=rshare]').innerHTML=IC.sh;
+$('#feed').addEventListener('scroll',e=>$('#up').classList.toggle('show',e.target.scrollTop>700),{passive:true});
+applyRemote(S.get('rem',null));renderCats();renderTrend();setTab('home');loadRemote();
 </script>
 </body>
 </html>
