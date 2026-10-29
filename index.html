@@ -33,7 +33,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .cats::-webkit-scrollbar{display:none}
 .cat{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;font-weight:700;font-size:15px;color:var(--mute);white-space:nowrap;min-height:44px}
 .cat[aria-selected=true]{color:var(--ink);border-color:var(--accent)}
-.feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:90px;} /* Ultra Pro Max: Bottom space for floating nav */
+.feed{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;padding-bottom:90px;}
 .ptr{height:0;overflow:hidden;text-align:center;font-size:13px;color:var(--mute);transition:height .2s}
 .card{background:var(--card);padding:14px;border-bottom:1px solid var(--line);margin-bottom:6px;content-visibility:auto;contain-intrinsic-size:120px}
 .card h3{margin:0;font-size:calc(var(--fs) + 1px);line-height:1.45;font-weight:800;cursor:pointer}
@@ -59,7 +59,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .empty b{display:block;font-size:17px;color:var(--ink);margin-bottom:6px}
 .btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 20px;font-weight:800;margin-top:14px;min-height:44px}
 
-/* ULTRA PRO MAX BOTTOM NAV */
 .nav {
   position: absolute;
   bottom: calc(15px + var(--sab));
@@ -195,7 +194,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   
   <div class="feed" id="feed"><div class="ptr" id="ptr">↓ रिफ्रेश के लिए खींचें</div><div id="list"></div></div>
   
-  <!-- ULTRA PRO MAX BOTTOM NAVIGATION -->
   <nav class="nav" role="tablist">
     <button class="nt" role="tab" aria-selected="true" data-tab="home">
       <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -284,7 +282,6 @@ const S={
   get(k,d){try{const v=localStorage.getItem('inp_'+k);return v?JSON.parse(v):d}catch(e){return d}},
   set(k,v){try{localStorage.setItem('inp_'+k,JSON.stringify(v))}catch(e){}}
 };
-// Text ko safe banata hai (XSS se bachav)
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeUrl=u=>/^https?:\/\//i.test(u||'')?u:'';
 const col=(c,d)=>/^#[0-9a-f]{6}$/i.test(c||'')?c:d;
@@ -552,8 +549,10 @@ async function runSearch(q){
 }
 
 // ---------- Admin (local only) ----------
-const DB='https://indian-news-d1559-default-rtdb.firebaseio.com';
-const FB_KEY=''; 
+// यहाँ मैंने आपकी API KEY और DB URL डाल दी है
+const DB='https://indian-news-d1559-default-rtdb.asia-southeast1.firebasedatabase.app';
+const FB_KEY='AIzaSyB72sw1fEuJcPja99c02ecAby6uA8uQKxo'; 
+
 let taps=0,tapT;
 const V=id=>$('#'+id).value.trim(),dv=(v,d)=>v.toLowerCase()===d?'':v;
 const cbtn=(a,i,v,t)=>'<button class="act" data-a="'+a+'" data-i="'+i+'" data-v="'+v+'">'+t+'</button>';
@@ -710,6 +709,26 @@ const dm=/#a=([\w-]+)/.exec(location.hash);if(dm)st.deep=dm[1];
 $('#rSpeak').innerHTML=IC.sp;$('#rBm').innerHTML=IC.bm;$('[data-a=rshare]').innerHTML=IC.sh;
 $('#feed').addEventListener('scroll',e=>$('#up').classList.toggle('show',e.target.scrollTop>700),{passive:true});
 applyRemote(S.get('rem',null));renderCats();renderTrend();setTab('home');loadRemote();
+</script>
+
+<!-- यहाँ नीचे मैंने आपका Firebase Analytics वाला कोड जोड़ दिया है -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-analytics.js";
+  
+  const firebaseConfig = {
+    apiKey: "AIzaSyB72sw1fEuJcPja99c02ecAby6uA8uQKxo",
+    authDomain: "indian-news-d1559.firebaseapp.com",
+    databaseURL: "https://indian-news-d1559-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "indian-news-d1559",
+    storageBucket: "indian-news-d1559.firebasestorage.app",
+    messagingSenderId: "183454992636",
+    appId: "1:183454992636:web:6aa1664e4e55b80357af79",
+    measurementId: "G-RE8B473YYM"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
 </script>
 </body>
 </html>
