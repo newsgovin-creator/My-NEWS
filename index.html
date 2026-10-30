@@ -186,6 +186,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 
 /* FULLSCREEN REEL / VIDEO OVERLAY */
 #reelBox{background:#000;z-index:85}
+.newwrap{position:sticky;top:8px;height:0;z-index:25;text-align:center;overflow:visible}
+.newbar{background:var(--accent);color:#fff;border:0;border-radius:20px;padding:8px 18px;font-weight:800;font-size:14px;min-height:40px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .r-top{position:absolute;top:calc(12px + var(--sat));left:12px;z-index:90}
 .r-back{background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.3);width:42px;height:42px;border-radius:50%;font-size:20px}
 .r-scroll{flex:1;height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none}
@@ -255,7 +257,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   </div>
   <div class="off" id="off">इंटरनेट नहीं है — पुरानी सेव की हुई खबरें दिख रही हैं</div>
   
-  <div class="feed" id="feed"><div class="ptr" id="ptr">↓ रिफ्रेश के लिए खींचें</div><div id="list"></div></div>
+  <div class="feed" id="feed"><div class="ptr" id="ptr">↓ रिफ्रेश के लिए खींचें</div><div class="newwrap"><button class="newbar" id="newBar" data-a="newnews" style="display:none"></button></div><div id="list"></div></div>
   
   <nav class="nav" id="mainNav" role="tablist">
     <button class="nt" role="tab" aria-selected="true" data-tab="home">
@@ -524,7 +526,7 @@ function searchPool(q){const ws=q.toLowerCase().split(/\s+/).filter(Boolean);ret
 
 // PAGINATION UPDATE: max-results=25
 function getBlog(label,start){const k=(label||'')+'|'+(start||1),c=st.bc&&st.bc[k];if(c&&Date.now()-c.t<6e4)return Promise.resolve(c.items);st.berr=0;return fetchBlog(st.cfg.blog,label,start).then(i=>{if(i.length){st.bc=st.bc||{};st.bc[k]={t:Date.now(),items:i}}return i})}
-function fetchBlog(url,label,start){
+function fetchBlog(url,label,start,max){
   return new Promise(res=>{
     let u=url.replace(/\/$/,'');if(!/^https?:/.test(u))u='https://'+u;
     const cb='bcb'+Date.now(),sc=document.createElement('script');
@@ -541,8 +543,8 @@ function fetchBlog(url,label,start){
       if(!o.img)o.img=im?safeUrl(im.u):'';if(!o.vid&&vd)o.vid='https://youtu.be/'+vd.id;if(!o.full)o.full=txt;
       o.blocks=bl;{const lk=(e.link||[]).find(x=>x.rel==='alternate');o.link=lk?safeUrl(lk.href):''}o.labels=labels;o.date=e.published?e.published.$t:'';o.id=hash('b'+(e.id?e.id.$t:t));return mk(o)}));
     // LOAD ONLY 25 ITEMS AT A TIME
-    sc.src=u+'/feeds/posts/default'+(label?'/-/'+encodeURIComponent(label):'')+'?alt=json-in-script&max-results=25'+(start?'&start-index='+start:'')+'&callback='+cb;
-    sc.onerror=()=>{st.berr=1;done([])};document.body.appendChild(sc);setTimeout(()=>{if(window[cb]){st.berr=1;done([])}},8000);
+    sc.src=u+'/feeds/posts/default'+(label?'/-/'+encodeURIComponent(label):'')+'?alt=json-in-script&max-results='+(max||15)+(start?'&start-index='+start:'')+'&callback='+cb;
+    sc.onerror=()=>{st.berr=1;done([])};document.body.appendChild(sc);setTimeout(()=>{if(window[cb]){st.berr=1;done([])}},12000);
   });
 }
 const lbl=c=>c.label||c.n.replace(/^[^\u0900-\u097F\w]+/,'');
@@ -565,19 +567,24 @@ async function load0(q,force){
   const cached=S.get(key,null);
   if(cached&&cached.items&&!force){show(cached.items)}else showSkel();
   let items=[],failed=false;
+  const slowT=(cached&&cached.items&&!force)?setTimeout(()=>{if(my===st.reqId)toast('नेट धीमा है, नई खबरें आ रही हैं…')},3000):0;
   try{
     const c=st.tab==='home'?CATS[st.cat]:null,mode=c?(onlyBlog()&&c.mode==='live'?'both':c.mode):'both';
-    const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?T(getBlog(c&&c!==CATS[0]?lbl(c):''),12000):[],mode==='own'||onlyBlog()?[]:T(fetchLive(q).catch(()=>[]),10000)]);
+    const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?T(getBlog(c&&c!==CATS[0]?lbl(c):''),14000):[],mode==='own'||onlyBlog()?[]:T(fetchLive(q).catch(()=>[]),12000)]);
     st.dbg=(st.cfg.blog||'-').replace(/^https?:\/\//,'')+' • मिली पोस्ट: '+own.length+(st.berr?' • फ़ीड नहीं खुली':'');
     items=[...[...st.local,...customList(),...own].filter(i=>!c||inCat(i,c)).map(mk),...live];
     items=items.filter(i=>!i.hide).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));
-    st.more=onlyBlog()&&own.length>=25; // 25 Logic Update
+    {const sn=new Set();items=items.filter(i=>sn.has(i.id)?false:(sn.add(i.id),true))} // DUPLICATE CHECK
+    if(!items.length&&((cached&&cached.items&&cached.items.length)||$('#list .card')))throw new Error('empty'); // NEVER REPLACE GOOD NEWS WITH EMPTY
+    st.more=onlyBlog()&&own.length>=15; // 15 Logic Update
     st.pg=1;
     $('#off').style.display='none';
-    S.set(key,{t:Date.now(),items:items.slice(0,25)}); // Cache only top 25
+    if(items.length)S.set(key,{t:Date.now(),items:items.slice(0,15)}); // Cache only top 15
   }catch(e){failed=true;}
+  clearTimeout(slowT);
   if(my!==st.reqId)return;
   if(failed){
+    if(force&&$('#list .card')){$('#off').style.display=navigator.onLine?'none':'block';toast('नेट धीमा है, पुरानी खबरें ही दिख रही हैं');return}
     $('#off').style.display=navigator.onLine?'none':'block';
     if(cached&&cached.items){cached.items.forEach(i=>st.byId[i.id]=i);show(cached.items);toast('ताज़ा खबरें नहीं मिलीं, सेव की हुई दिखा रहे हैं');return}
     $('#list').innerHTML='<div class="empty"><b>खबरें नहीं आ पाईं</b>इंटरनेट जाँचें और फिर कोशिश करें।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return;
@@ -598,7 +605,7 @@ function imgBox(it,cls){
 }
 const SV=(p,c)=>'<svg class="'+(c||'')+'" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
 const IC={bm:SV('<path d="M6 3.5h12v17.2l-6-4.6-6 4.6z"/>','bmk'),sh:SV('<line x1="22" y1="3" x2="9.2" y2="10.1"/><polygon points="11.7 20.3 22 3 2 3 9.2 10.1 11.7 20.3"/>'),sp:SV('<path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8.5 8.5 0 0 1 0 11"/>')};
-const MORE='<div class="morebox" style="padding:14px"><button class="btn" data-a="more" style="width:100%">⬇ और 25 खबरें देखें</button></div>';
+const MORE='<div class="morebox" style="padding:14px"><button class="btn" data-a="more" style="width:100%">⬇ और खबरें देखें</button></div>';
 function titleHTML(it){
   const fv=it.type==='fc'&&FV[it.verdict];
   return (it.pin?'📌 ':'')+(fv?'<span class="tag" style="background:'+fv[1]+';color:#fff">'+fv[0]+'</span>':it.badge?'<span class="tag" style="background:'+col(it.bg,'#dc2626')+';color:'+col(it.bt,'#ffffff')+'">'+esc(it.badge)+'</span>':'')
@@ -635,6 +642,7 @@ function show(items,into){
   st.items=into?st.items:items;
   box.innerHTML=items.map((it,i)=>card(it,it.type==='hero'||(i===0&&!it.type&&!into))).join('')+(!into&&st.more?MORE:'');
   if(!into){
+    st.seen=new Set(items.map(i=>i.id));newPend=[];hideNew();watchMore();
     $('#ticker').hidden=false;$('#tickTxt').textContent=st.cfg.tick||items.slice(0,6).map(i=>i.head).join('  ◆  ');
     $('#feed').scrollTop=0;const f0=box.querySelector('img');if(f0){f0.loading='eager';f0.fetchPriority='high'}
   }
@@ -786,6 +794,7 @@ function speak(id,btn){
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2200)}
 
 function setTab(t){
+  if(t!=='home')hideNew();
   if(t==='video'){openReels();return}
   st.tab=t;$$('.nt').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
   const catsOn=t==='home';$('#cats').style.display=catsOn?'flex':'none';$('#ticker').style.display=catsOn?'':'none';$('#trend').style.display=catsOn?'flex':'none';
@@ -970,10 +979,32 @@ function catDel(i){if(st.cats.length<2){toast('आख़िरी कैटे�
 function saveSet(){const b=V('aBlog');st.cfg.blog=/^https?:\/\//.test(b)?b.replace(/\/$/,''):BLOG;st.cfg.only=V('aMode')!=='mix';st.cfg.tick=V('aTick');
   st.trend=V('aTrend').split(',').map(x=>x.trim()).filter(Boolean);S.set('trend',st.trend);renderTrend();st.bc=null;dirty();pushConfig()}
   
-// SHOW NEXT 25 ITEMS
-async function showMore(){const c=CATS[st.cat],label=c&&c!==CATS[0]?lbl(c):'',raw=await getBlog(label,st.pg*25+1);st.pg++;
-  const r=raw.filter(i=>(!c||inCat(i,c))&&!i.hide),mb=$('#list .morebox');if(mb)mb.remove();
-  $('#list').insertAdjacentHTML('beforeend',r.map(i=>card(i)).join('')+(raw.length>=25?MORE:''))}
+// AUTO-SCROLL + DUPLICATE CHECKER
+let moreBusy=false,moreObs=null;
+function watchMore(){
+  if(moreObs)moreObs.disconnect();
+  const mb=$('#list .morebox');
+  if(!mb||!('IntersectionObserver' in window))return;
+  moreObs=new IntersectionObserver(es=>{if(es[0].isIntersecting)showMore()},{root:$('#feed'),rootMargin:'0px 0px 400px 0px'});
+  moreObs.observe(mb);
+}
+async function showMore(){
+  if(moreBusy)return;moreBusy=true;
+  const mb=$('#list .morebox'),btn=mb&&mb.querySelector('button');
+  if(btn)btn.textContent='⏳ लोड हो रहा है…';
+  try{
+    const c=CATS[st.cat],label=c&&c!==CATS[0]?lbl(c):'';
+    const raw=await getBlog(label,st.pg*15+1);
+    if(!raw.length&&st.berr)throw new Error('net');
+    st.pg++;
+    if(!st.seen)st.seen=new Set();
+    const r=raw.filter(i=>(!c||inCat(i,c))&&!i.hide&&!st.seen.has(i.id));
+    r.forEach(i=>st.seen.add(i.id));
+    if(mb)mb.remove();
+    $('#list').insertAdjacentHTML('beforeend',r.map(i=>card(i)).join('')+(raw.length>=15?MORE:''));
+    moreBusy=false;watchMore();
+  }catch(e){moreBusy=false;if(btn)btn.textContent='⚠ फिर कोशिश करें'}
+}
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a],[data-tab],.cat');if(!el)return;
@@ -1014,7 +1045,7 @@ document.addEventListener('click',e=>{
     case 'admin':adminGate();break;
     case 'ver':showVer(id);break;case 'vclose':$('#verBox').classList.remove('open');break;
     case 'yt':openReels(id,v);break;
-    case 'login':doLogin();break;case 'logout':st.auth=null;S.set('rt',null);showA(false);break;case 'rlist':renderList();break;case 'atog':ovSet(id,{ver:verOf(st.byId[id])==='v'?'u':'v'});break;case 'ahide':ovSet(id,{hide:!st.byId[id].hide});break;case 'apin':ovSet(id,{pin:!st.byId[id].pin});break;case 'adel':delPost(id);break;case 'aedit':editPost(id);break;case 'more':showMore();break;case 'top':$('#feed').scrollTo({top:0,behavior:'smooth'});break;case 'pub':adminPost();break;case 'atab':atab(v);break;case 'cadd':catSave();break;case 'cmv':catMove(+el.dataset.i,+v);break;case 'chide':catHide(+el.dataset.i);break;case 'cedit':catEdit(+el.dataset.i);break;case 'cdel':catDel(+el.dataset.i);break;case 'creset':if(confirm('डिफ़ॉल्ट कैटेगरी लौटाएँ?')){st.cats=JSON.parse(JSON.stringify(DEFCATS));saveCats()}break;case 'pedit':editPost(id);break;case 'pdel':delPost(id);break;case 'pcancel':clearForm();break;
+    case 'login':doLogin();break;case 'logout':st.auth=null;S.set('rt',null);showA(false);break;case 'rlist':renderList();break;case 'atog':ovSet(id,{ver:verOf(st.byId[id])==='v'?'u':'v'});break;case 'ahide':ovSet(id,{hide:!st.byId[id].hide});break;case 'apin':ovSet(id,{pin:!st.byId[id].pin});break;case 'adel':delPost(id);break;case 'aedit':editPost(id);break;case 'more':showMore();break;case 'newnews':showNew();break;case 'top':$('#feed').scrollTo({top:0,behavior:'smooth'});break;case 'pub':adminPost();break;case 'atab':atab(v);break;case 'cadd':catSave();break;case 'cmv':catMove(+el.dataset.i,+v);break;case 'chide':catHide(+el.dataset.i);break;case 'cedit':catEdit(+el.dataset.i);break;case 'cdel':catDel(+el.dataset.i);break;case 'creset':if(confirm('डिफ़ॉल्ट कैटेगरी लौटाएँ?')){st.cats=JSON.parse(JSON.stringify(DEFCATS));saveCats()}break;case 'pedit':editPost(id);break;case 'pdel':delPost(id);break;case 'pcancel':clearForm();break;
     case 'saveset':saveSet();break;
   }
 });
@@ -1038,7 +1069,27 @@ function renderCats(){
 }
 
 /* 2 MINUTE AUTO-REFRESH LOGIC (120000ms = 2 mins) */
-setInterval(()=>{if(st.tab==='home'&&!document.hidden&&!$('.sheet.open'))load(CATS[st.cat].q,true)},120000);
+// SMART REFRESH: every 2 min check only the 3 newest posts, no page reload, no scroll jump
+let newPend=[];
+function hideNew(){const b=$('#newBar');if(b)b.style.display='none'}
+async function checkNew(){
+  if(st.tab!=='home'||document.hidden||$('.sheet.open')||!navigator.onLine||moreBusy)return;
+  if(!onlyBlog()){load(CATS[st.cat].q,true);return}
+  const c=CATS[st.cat],label=c&&c!==CATS[0]?lbl(c):'',my=st.reqId;
+  let raw=[];try{raw=await fetchBlog(st.cfg.blog,label,0,3)}catch(e){return}
+  if(my!==st.reqId||!st.seen||st.tab!=='home')return;
+  const have=new Set(newPend.map(i=>i.id));
+  raw.filter(i=>(!c||inCat(i,c))&&!i.hide&&!st.seen.has(i.id)&&!have.has(i.id)).forEach(i=>newPend.push(i));
+  if(!newPend.length)return;
+  const b=$('#newBar');b.textContent='🔔 '+newPend.length+' नई खबरें — देखें';b.style.display='inline-block';
+}
+function showNew(){
+  const r=newPend.filter(i=>!st.seen.has(i.id));newPend=[];hideNew();if(!r.length)return;
+  r.forEach(i=>st.seen.add(i.id));
+  $('#list').insertAdjacentHTML('afterbegin',r.map(i=>card(i)).join(''));
+  $('#feed').scrollTo({top:0,behavior:'smooth'});
+}
+setInterval(checkNew,120000);
 
 try{if(st.cfg.blog){const l=document.createElement('link');l.rel='preconnect';l.href=new URL(/^https?:/.test(st.cfg.blog)?st.cfg.blog:'https://'+st.cfg.blog).origin;document.head.appendChild(l)}}catch(e){}
 
