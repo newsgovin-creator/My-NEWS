@@ -1,58 +1,26 @@
-```javascript
-const CACHE_NAME = 'indian-news-v1';
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
-];
+const CACHE='indian-news-v2';
+const ASSETS=['./','./index.html','./manifest.json','./icon-192.png'];
 
-// इंस्टॉल होने पर वेबसाइट के ढांचे को सेव करना
-self.addEventListener('install', (event) => {
+self.addEventListener('install',e=>{
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
+  e.waitUntil(caches.open(CACHE).then(c=>
+    Promise.all(ASSETS.map(a=>c.add(a).catch(()=>{})))));
 });
 
-// पुरानी कैश हटाना (अपडेट के समय)
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
-  );
-  self.clients.claim();
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys()
+    .then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+    .then(()=>self.clients.claim()));
 });
 
-// नेटवर्क फर्स्ट (Network First) - इंटरनेट होने पर ऑनलाइन, वरना ऑफलाइन
-self.addEventListener('fetch', (event) => {
-  // बाहरी API या न्यूज़ रिक्वेस्ट को इसमें न फंसाएं (ताकि हमेशा ताज़ा खबरें आएं)
-  if (event.request.url.includes('firebasedatabase') || event.request.url.includes('blogger') || event.request.url.includes('google')) {
-    return;
-  }
-
-  event.respondWith(
-    fetch(event.request)
-      .catch(() => {
-        return caches.match(event.request).then((response) => {
-          if (response) {
-            return response; // ऑफलाइन होने पर सेव की हुई फाइल दिखाएँ
-          }
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html'); // कुछ न मिले तो होमपेज खोलें
-          }
-        });
-      })
-  );
+self.addEventListener('fetch',e=>{
+  const r=e.request,u=new URL(r.url);
+  if(r.method!=='GET'||u.origin!==location.origin)return;
+  e.respondWith(caches.match(r,{ignoreSearch:true}).then(hit=>{
+    const net=fetch(r).then(res=>{
+      if(res.ok){const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp))}
+      return res;
+    }).catch(()=>hit||caches.match('./index.html'));
+    return hit||net;
+  }));
 });
-```
