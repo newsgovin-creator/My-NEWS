@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -6,6 +7,7 @@
 <meta name="theme-color" content="#fffaf3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>इंडियन न्यूज़</title>
+<!-- PWA MANIFEST & ICONS -->
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://blogger.googleusercontent.com" crossorigin>
@@ -269,7 +271,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
       <span>सेव</span>
     </button>
     <button class="nt" role="tab" aria-selected="false" data-tab="settings">
-      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       <span>सेटिंग</span>
     </button>
   </nav>
@@ -431,7 +433,7 @@ if(!Array.isArray(st.cats)||!st.cats.length){
 }
 
 if(!S.get('fcAdded',0)){
-  if(!st.cats.some(c=>c.id==='cfc')) st.cats.splice(2,0,FCCAT); // Insert at index 2 (after district)
+  if(!st.cats.some(c=>c.id==='cfc')) st.cats.splice(2,0,FCCAT); 
   S.set('cats',st.cats); S.set('fcAdded',1);
 }
 
@@ -519,6 +521,8 @@ function relHTML(it){
    .filter(a=>a[0]>=3).sort((a,b)=>b[0]-a[0]||new Date(b[1].date)-new Date(a[1].date)).slice(0,4);
   return sc.length?'<div class="hl2"></div><h4 style="margin:6px 0">📌 यह भी पढ़ें</h4>'+sc.map(a=>'<div class="rel" data-a="open" data-id="'+esc(a[1].id)+'" tabindex="0">'+(a[1].type==='3line'?esc(a[1].head):titleHTML(a[1]))+'<div class="src">'+esc(a[1].src)+(a[1].date?' • '+ago(a[1].date):'')+'</div></div>').join(''):''}
 function searchPool(q){const ws=q.toLowerCase().split(/\s+/).filter(Boolean);return Object.values(st.byId).filter(o=>o.own&&!o.hide).filter(o=>{const t=(o.kick+' '+o.head+' '+o.full+' '+(o.labels||[]).join(' ')+' '+o.loc).toLowerCase();return ws.every(x=>t.includes(x))})}
+
+// PAGINATION UPDATE: max-results=25
 function getBlog(label,start){const k=(label||'')+'|'+(start||1),c=st.bc&&st.bc[k];if(c&&Date.now()-c.t<6e4)return Promise.resolve(c.items);st.berr=0;return fetchBlog(st.cfg.blog,label,start).then(i=>{if(i.length){st.bc=st.bc||{};st.bc[k]={t:Date.now(),items:i}}return i})}
 function fetchBlog(url,label,start){
   return new Promise(res=>{
@@ -536,7 +540,8 @@ function fetchBlog(url,label,start){
       if(!o){const p=parseTitle(t);o={kick:p.kick,head:p.head,loc:labels[1]||labels[0]||'उत्तरप्रदेश',src:'हमारी खबर',own:1,ver:'u'}}
       if(!o.img)o.img=im?safeUrl(im.u):'';if(!o.vid&&vd)o.vid='https://youtu.be/'+vd.id;if(!o.full)o.full=txt;
       o.blocks=bl;{const lk=(e.link||[]).find(x=>x.rel==='alternate');o.link=lk?safeUrl(lk.href):''}o.labels=labels;o.date=e.published?e.published.$t:'';o.id=hash('b'+(e.id?e.id.$t:t));return mk(o)}));
-    sc.src=u+'/feeds/posts/default'+(label?'/-/'+encodeURIComponent(label):'')+'?alt=json-in-script&max-results=40'+(start?'&start-index='+start:'')+'&callback='+cb;
+    // LOAD ONLY 25 ITEMS AT A TIME
+    sc.src=u+'/feeds/posts/default'+(label?'/-/'+encodeURIComponent(label):'')+'?alt=json-in-script&max-results=25'+(start?'&start-index='+start:'')+'&callback='+cb;
     sc.onerror=()=>{st.berr=1;done([])};document.body.appendChild(sc);setTimeout(()=>{if(window[cb]){st.berr=1;done([])}},8000);
   });
 }
@@ -544,7 +549,7 @@ const lbl=c=>c.label||c.n.replace(/^[^\u0900-\u097F\w]+/,'');
 
 /* TOP NEWS (Index 0) WILL SHOW EVERYTHING */
 function inCat(i,c){
-  if(c===CATS[0]) return true; // TOP NEWS: Shows all news
+  if(c===CATS[0]) return true;
   if(i.cat&&st.cats.some(x=>x.id===i.cat))return i.cat===c.id;
   if(i.labels&&i.labels.length){
     if(i.labels.includes(lbl(c)))return true;
@@ -565,9 +570,11 @@ async function load0(q,force){
     const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?T(getBlog(c&&c!==CATS[0]?lbl(c):''),12000):[],mode==='own'||onlyBlog()?[]:T(fetchLive(q).catch(()=>[]),10000)]);
     st.dbg=(st.cfg.blog||'-').replace(/^https?:\/\//,'')+' • मिली पोस्ट: '+own.length+(st.berr?' • फ़ीड नहीं खुली':'');
     items=[...[...st.local,...customList(),...own].filter(i=>!c||inCat(i,c)).map(mk),...live];
-    items=items.filter(i=>!i.hide).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));st.more=onlyBlog()&&own.length>=40;st.pg=1;
+    items=items.filter(i=>!i.hide).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));
+    st.more=onlyBlog()&&own.length>=25; // 25 Logic Update
+    st.pg=1;
     $('#off').style.display='none';
-    S.set(key,{t:Date.now(),items:items.slice(0,25)});
+    S.set(key,{t:Date.now(),items:items.slice(0,25)}); // Cache only top 25
   }catch(e){failed=true;}
   if(my!==st.reqId)return;
   if(failed){
@@ -591,7 +598,7 @@ function imgBox(it,cls){
 }
 const SV=(p,c)=>'<svg class="'+(c||'')+'" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
 const IC={bm:SV('<path d="M6 3.5h12v17.2l-6-4.6-6 4.6z"/>','bmk'),sh:SV('<line x1="22" y1="3" x2="9.2" y2="10.1"/><polygon points="11.7 20.3 22 3 2 3 9.2 10.1 11.7 20.3"/>'),sp:SV('<path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8.5 8.5 0 0 1 0 11"/>')};
-const MORE='<div class="morebox" style="padding:14px"><button class="btn" data-a="more" style="width:100%">⬇ और खबरें देखें</button></div>';
+const MORE='<div class="morebox" style="padding:14px"><button class="btn" data-a="more" style="width:100%">⬇ और 25 खबरें देखें</button></div>';
 function titleHTML(it){
   const fv=it.type==='fc'&&FV[it.verdict];
   return (it.pin?'📌 ':'')+(fv?'<span class="tag" style="background:'+fv[1]+';color:#fff">'+fv[0]+'</span>':it.badge?'<span class="tag" style="background:'+col(it.bg,'#dc2626')+';color:'+col(it.bt,'#ffffff')+'">'+esc(it.badge)+'</span>':'')
@@ -855,7 +862,6 @@ function applyRemote(r){
     if(a.length)st.cats=a.map(x=>({id:String(x.id||'c'+x.n),n:String(x.n).slice(0,40),q:String(x.q||x.n),label:String(x.label||''),mode:['live','own','both'].includes(x.mode)?x.mode:'both',hide:!!x.hide}));
   }
   
-  // Ensure the dynamically saved district stays in index 1 after remote update
   let sd = S.get('myDist', 'कानपुर देहात');
   let distCat = st.cats.find(x => x.id === 'c1');
   if(distCat) { distCat.n = sd; distCat.q = sd; }
@@ -963,9 +969,11 @@ function catEdit(i){const c=st.cats[i];st.ec=i;$('#cName').value=c.n;$('#cQ').va
 function catDel(i){if(st.cats.length<2){toast('आख़िरी कैटेगरी नहीं हटा सकते');return}if(!confirm('"'+st.cats[i].n+'" हटाएँ?'))return;st.cats.splice(i,1);st.ec=null;saveCats()}
 function saveSet(){const b=V('aBlog');st.cfg.blog=/^https?:\/\//.test(b)?b.replace(/\/$/,''):BLOG;st.cfg.only=V('aMode')!=='mix';st.cfg.tick=V('aTick');
   st.trend=V('aTrend').split(',').map(x=>x.trim()).filter(Boolean);S.set('trend',st.trend);renderTrend();st.bc=null;dirty();pushConfig()}
-async function showMore(){const c=CATS[st.cat],label=c&&c!==CATS[0]?lbl(c):'',raw=await getBlog(label,st.pg*40+1);st.pg++;
+  
+// SHOW NEXT 25 ITEMS
+async function showMore(){const c=CATS[st.cat],label=c&&c!==CATS[0]?lbl(c):'',raw=await getBlog(label,st.pg*25+1);st.pg++;
   const r=raw.filter(i=>(!c||inCat(i,c))&&!i.hide),mb=$('#list .morebox');if(mb)mb.remove();
-  $('#list').insertAdjacentHTML('beforeend',r.map(i=>card(i)).join('')+(raw.length>=40?MORE:''))}
+  $('#list').insertAdjacentHTML('beforeend',r.map(i=>card(i)).join('')+(raw.length>=25?MORE:''))}
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-a],[data-tab],.cat');if(!el)return;
@@ -986,21 +994,13 @@ document.addEventListener('click',e=>{
     case 'search':openSearch();break;
     case 'districts':openDistricts();break;
     
-    // NEW LOGIC FOR DISTRICT SELECTION
     case 'pickDist':
-      closeSheet(); // Close the bottom sheet
+      closeSheet(); 
       let distName = (v === 'उत्तर प्रदेश') ? 'उत्तर प्रदेश' : v;
-      
-      // Save it locally
       S.set('myDist', distName);
-      
-      // Update the 2nd tab dynamically without pushing to everyone's Firebase
       let distCat = st.cats.find(c => c.id === 'c1');
       if(distCat) { distCat.n = distName; distCat.q = distName; }
-      
       syncCats();
-      
-      // Auto-Switch to that tab and load it
       st.cat = 1;
       renderCats();
       load(CATS[st.cat].q);
@@ -1036,10 +1036,15 @@ function renderCats(){
   $('#cats').innerHTML=CATS.map((c,i)=>'<button class="cat" role="tab" data-i="'+i+'" aria-selected="'+(i===st.cat)+'">'+esc(c.n)+'</button>').join('');
   const a=$('.cat[aria-selected=true]');a&&a.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
 }
-setInterval(()=>{if(st.tab==='home'&&!document.hidden&&!$('.sheet.open'))load(CATS[st.cat].q,true)},3e5);
+
+/* 2 MINUTE AUTO-REFRESH LOGIC (120000ms = 2 mins) */
+setInterval(()=>{if(st.tab==='home'&&!document.hidden&&!$('.sheet.open'))load(CATS[st.cat].q,true)},120000);
 
 try{if(st.cfg.blog){const l=document.createElement('link');l.rel='preconnect';l.href=new URL(/^https?:/.test(st.cfg.blog)?st.cfg.blog:'https://'+st.cfg.blog).origin;document.head.appendChild(l)}}catch(e){}
+
+// REGISTER SERVICE WORKER
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+
 const dm=/#a=([\w-]+)/.exec(location.hash);if(dm)st.deep=dm[1];
 $('#rSpeak').innerHTML=IC.sp;$('#rBm').innerHTML=IC.bm;$('[data-a=rshare]').innerHTML=IC.sh;
 $('#feed').addEventListener('scroll',e=>$('#up').classList.toggle('show',e.target.scrollTop>700),{passive:true});
