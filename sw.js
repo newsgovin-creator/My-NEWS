@@ -1,4 +1,4 @@
-const CACHE='indian-news-v2';
+const CACHE='indian-news-v2.1';
 const ASSETS=['./','./index.html','./manifest.json','./icon-192.png'];
 
 self.addEventListener('install',e=>{
