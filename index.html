@@ -138,8 +138,11 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .body h1{font-size:calc(var(--fs) + 5px);line-height:1.4;margin:8px 0}
 .body p{font-size:var(--fs);line-height:1.85;white-space:pre-line}
 
-/* SUB-HEADLINE CSS */
-.in-sub { font-size: 1.25em; font-weight: 800; margin: 20px 0 8px; line-height: 1.4; border-bottom: 2px solid var(--line); padding-bottom: 4px; }
+/* SAFE BLOGGER FORMATTING CSS */
+.in-p { margin: 0 0 16px 0; word-break: break-word; line-height: 1.85; }
+.in-p * { max-width: 100%; }
+.in-sub { word-break: break-word; font-size: 1.25em; font-weight: 800; margin: 20px 0 10px; line-height: 1.4; border-bottom: 2px solid var(--line); padding-bottom: 4px; }
+.in-sub * { font-size: inherit!important; color: inherit!important; background: transparent!important; }
 
 .meta{font-size:12.5px;color:var(--mute)}
 .search{flex:1;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:22px;padding:10px 16px;font:inherit;font-size:15px;min-height:44px}
@@ -183,7 +186,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .act.pop svg{animation:pop .32s ease}@keyframes pop{40%{transform:scale(1.4)}}
 .fab{position:absolute;right:14px;bottom:calc(95px + var(--sab));width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.3);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}.fab.show{opacity:1;pointer-events:auto}
 
-/* FULLSCREEN REEL / VIDEO OVERLAY */
+/* FULLSCREEN REEL / VIDEO OVERLAY (ULTRA PRO MAX) */
 #reelBox{background:#000;z-index:85}
 .newwrap{position:sticky;top:8px;height:0;z-index:25;text-align:center;overflow:visible}
 .newbar{background:var(--accent);color:#fff;border:0;border-radius:20px;padding:8px 18px;font-weight:800;font-size:14px;min-height:40px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
@@ -192,8 +195,10 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .r-scroll{flex:1;height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none}
 .r-scroll::-webkit-scrollbar{display:none}
 .r-slide{position:relative;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;background:#000;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.r-vid{position:absolute;inset:0;overflow:hidden;pointer-events:none;display:flex;align-items:center;justify-content:center}
-.r-vid iframe{width:100%;height:126%;border:0;transform:scale(1.05);pointer-events:none}
+/* SMART THUMBNAIL MASKING - NO BLACK SCREEN */
+.r-vid{position:absolute;inset:0;overflow:hidden;pointer-events:none;display:flex;align-items:center;justify-content:center; background-size:cover; background-position:center; background-repeat:no-repeat; transition: background 0.3s ease;}
+/* LOGO HIDER TRICK IS SAFE HERE */
+.r-vid iframe{width:100%;height:126%;border:0;transform:scale(1.05);pointer-events:none;background:transparent;}
 .r-mask{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(0,0,0,0.85) 0%,transparent 18%,transparent 65%,rgba(0,0,0,0.92) 100%)}
 .r-acts{position:absolute;right:14px;bottom:calc(95px + var(--sab));z-index:6;display:flex;flex-direction:column;gap:16px}
 .r-ab{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;width:46px;height:46px;border-radius:50%;font-size:19px;backdrop-filter:blur(8px)}
@@ -403,7 +408,7 @@ const hash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i)
 /* 75 DISTRICTS LIST */
 const UP_DISTS = ["आगरा","अलीगढ़","प्रयागराज","अंबेडकर नगर","अमेठी","अमरोहा","औरैया","अयोध्या","आज़मगढ़","बागपत","बहराइच","बलिया","बलरामपुर","बांदा","बाराबंकी","बरेली","बस्ती","भदोही","बिजनौर","बदायूं","बुलंदशहर","चंदौली","चित्रकूट","देवरिया","एटा","इटावा","फ़र्रूख़ाबाद","फ़तेहपुर","फ़िरोज़ाबाद","गौतम बुद्ध नगर","गाज़ियाबाद","ग़ाज़ीपुर","गोंडा","गोरखपुर","हमीरपुर","हापुड़","हरदोई","हाथरस","जालौन","जौनपुर","झांसी","कन्नौज","कानपुर देहात","कानपुर नगर","कासगंज","कौशाम्बी","कुशीनगर","लखीमपुर खीरी","ललितपुर","लखनऊ","महाराजगंज","महोबा","मैनपुरी","मथुरा","मऊ","मेरठ","मिर्ज़ापुर","मुरादाबाद","मुज़फ़्फ़रनगर","पीलीभीत","प्रतापगढ़","रायबरेली","रामपुर","सहारनपुर","सम्भल","संत कबीर नगर","शाहजहांपुर","शामली","श्रावस्ती","सिद्धार्थनगर","सीतापुर","सोनभद्र","सुल्तानपुर","उन्नाव","वाराणसी"];
 
-/* DYNAMIC CATEGORY & PERMANENT LABELS MAPPING (FIX #2) */
+/* DYNAMIC CATEGORY & PERMANENT LABELS MAPPING */
 let savedDist = S.get('myDist', 'कानपुर देहात');
 const DEFCATS=[
   ['टॉप न्यूज़','यूपी बड़ी खबरें',''], 
@@ -421,7 +426,6 @@ const st={tab:'home',cat:0,items:[],byId:{},bm:S.get('bm',{})||{},local:S.get('l
   cur:null,speakId:null,reqId:0};
 const FCCAT={id:'cfc',n:'🔍 फैक्ट चेक',q:'फैक्ट चेक',mode:'own',label:'FactCheck'};
 
-/* Initialize Categories */
 st.cats = S.get('cats', null);
 if(!Array.isArray(st.cats)||!st.cats.length){
   st.cats = JSON.parse(JSON.stringify(DEFCATS));
@@ -480,25 +484,42 @@ const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(u||
 const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
 const yt=(id,pid)=>'<div class="yt" data-a="reel" data-v="'+id+'" '+(pid?'data-id="'+esc(pid)+'"':'')+' role="button" aria-label="वीडियो चलाएँ"><img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" loading="lazy" alt=""><span class="play">▶</span></div>';
 
-const INL=/^(B|I|U|STRONG|EM|A|SPAN|FONT|SMALL|MARK)$/;
-function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/\s+/g,' ').trim();if(t)out.push({t:'p',x:t});buf=''};
-  const walk=n=>{for(const c of n.childNodes){
-    if(c.nodeType===3){buf+=c.textContent;continue}
-    if(c.nodeType!==1)continue;const tg=c.tagName;
-    if(tg==='BR'){fl();continue}
-    if(tg==='IMG'){fl();const u=safeUrl(c.getAttribute('src'));if(u)out.push({t:'i',u});continue}
-    if(tg==='IFRAME'){fl();const id=ytid(c.getAttribute('src'));if(id)out.push({t:'v',id});continue}
-    if(/^H[1-6]$/.test(tg)){fl();const txt=c.textContent.replace(/\s+/g,' ').trim();if(txt)out.push({t:'h',x:txt});continue}
-    if(tg==='SCRIPT'||tg==='STYLE')continue;
-    if(INL.test(tg)&&!c.querySelector('img,iframe')){buf+=c.textContent;continue}
-    fl();walk(c);fl()}};
-  walk(doc.body);fl();return out.slice(0,60)}
+/* SMART BLOGGER FORMATTING PARSER */
+function blocks(doc){
+  doc.querySelectorAll('script, style').forEach(e=>e.remove());
+  doc.querySelectorAll('a').forEach(a=>{a.setAttribute('target','_blank');a.setAttribute('rel','noopener noreferrer');a.style.color='var(--accent)';a.style.textDecoration='none';});
+  
+  const out=[];let buf='';
+  const fl=()=>{
+    const t=buf.replace(/\s+/g,' ').trim();
+    if(t)out.push({t:'p',x:t});
+    buf='';
+  };
+  const walk=n=>{
+    for(const c of n.childNodes){
+      if(c.nodeType===3){buf+=esc(c.textContent);continue}
+      if(c.nodeType!==1)continue;
+      const tg=c.tagName;
+      if(tg==='BR'){fl();continue}
+      if(tg==='IMG'){fl();const u=safeUrl(c.getAttribute('src'));if(u)out.push({t:'i',u});continue}
+      if(tg==='IFRAME'){fl();const id=ytid(c.getAttribute('src'));if(id)out.push({t:'v',id});continue}
+      if(/^H[1-6]$/.test(tg)){fl();const txt=c.innerHTML;if(txt.trim())out.push({t:'h',x:txt});continue}
+      if(/^(B|I|U|STRONG|EM|A|SPAN|FONT|SMALL|MARK)$/i.test(tg)){
+        if(c.querySelector('img,iframe')){ walk(c); continue; } 
+        buf+=c.outerHTML; 
+        continue;
+      }
+      fl();walk(c);fl();
+    }
+  };
+  walk(doc.body);fl();return out.slice(0,60);
+}
 
 function renderBlocks(bl, heroImg, heroVid, pid, subColor){
   let imDone=false, vdDone=false;
   return bl.map(b=>{
-    if(b.t==='p') return '<p>'+esc(b.x)+'</p>';
-    if(b.t==='h') return '<h3 class="in-sub" style="color:'+col(subColor,'var(--accent)')+'">'+esc(b.x)+'</h3>';
+    if(b.t==='p') return '<p class="in-p">'+b.x+'</p>';
+    if(b.t==='h') return '<h3 class="in-sub" style="color:'+col(subColor,'var(--accent)')+'">'+b.x+'</h3>';
     if(b.t==='i'){
       if(!imDone && heroImg && b.u===heroImg){ imDone=true; return ''; }
       if(heroVid && b.u && b.u.includes(heroVid)) return '';
@@ -511,7 +532,7 @@ function renderBlocks(bl, heroImg, heroVid, pid, subColor){
     return '';
   }).join('');
 }
-function bodyHTML(it){return it.blocks&&it.blocks.length?renderBlocks(it.blocks,it.img,ytid(it.vid),it.id,it.subColor):'<p>'+esc(it.full||it.head)+'</p>'}
+function bodyHTML(it){return it.blocks&&it.blocks.length?renderBlocks(it.blocks,it.img,ytid(it.vid),it.id,it.subColor):'<p class="in-p">'+esc(it.full||it.head)+'</p>'}
 
 function relHTML(it){
   const w=x=>new Set((x||'').split(/[\s,.:;|\-–()'"!?।]+/).filter(y=>y.length>3)),tw=w(it.kick+' '+it.head),tl=new Set(it.labels||[]);
@@ -520,7 +541,6 @@ function relHTML(it){
   return sc.length?'<div class="hl2"></div><h4 style="margin:6px 0">📌 यह भी पढ़ें</h4>'+sc.map(a=>'<div class="rel" data-a="open" data-id="'+esc(a[1].id)+'" tabindex="0">'+(a[1].type==='3line'?esc(a[1].head):titleHTML(a[1]))+'<div class="src">'+esc(a[1].src)+(a[1].date?' • '+ago(a[1].date):'')+'</div></div>').join(''):''}
 function searchPool(q){const ws=q.toLowerCase().split(/\s+/).filter(Boolean);return Object.values(st.byId).filter(o=>o.own&&!o.hide).filter(o=>{const t=(o.kick+' '+o.head+' '+o.full+' '+(o.labels||[]).join(' ')+' '+o.loc).toLowerCase();return ws.every(x=>t.includes(x))})}
 
-// PAGINATION UPDATE: max-results=15
 function getBlog(label,start){const k=(label||'')+'|'+(start||1),c=st.bc&&st.bc[k];if(c&&Date.now()-c.t<6e4)return Promise.resolve(c.items);st.berr=0;return fetchBlog(st.cfg.blog,label,start).then(i=>{if(i.length){st.bc=st.bc||{};st.bc[k]={t:Date.now(),items:i}}return i})}
 function fetchBlog(url,label,start,max){
   return new Promise(res=>{
@@ -544,7 +564,6 @@ function fetchBlog(url,label,start,max){
   });
 }
 
-/* STRICT CATEGORY LABEL MAPPING (FIX #2) */
 const lbl=c=>c.label?c.label:c.n.replace(/[^\w\s\u0900-\u097F-]/g,'').trim();
 
 function inCat(i,c){
@@ -557,7 +576,6 @@ function inCat(i,c){
   return c===CATS[0];
 }
 
-/* SILENT FALLBACK & ZERO POSTS FIX (FIX #1) */
 async function load(q,force){try{await load0(q,force)}catch(e){$('#list').innerHTML='<div class="empty"><b>कुछ गड़बड़ हुई</b><small class="meta">'+esc(String(e&&e.message||e))+'</small><br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>'}}
 async function load0(q,force){
   const my=++st.reqId;if(force)st.bc=null;
@@ -574,7 +592,6 @@ async function load0(q,force){
     items=items.filter(i=>!i.hide).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));
     {const sn=new Set();items=items.filter(i=>sn.has(i.id)?false:(sn.add(i.id),true))} 
     
-    // Check if truly zero posts exist
     if(!items.length){
        if(st.berr) throw new Error('net');
        else throw new Error('empty_cat');
@@ -591,13 +608,11 @@ async function load0(q,force){
   if(failed){
     $('#off').style.display=navigator.onLine?'none':'block';
     
-    // CLEAN 0 POSTS MESSAGE (No URL, No Error Code)
     if(errType === 'empty_cat') {
        $('#list').innerHTML='<div class="empty"><b>कोई खबर नहीं मिली</b><br>इस कैटेगरी में अभी तक कोई पोस्ट उपलब्ध नहीं है।</div>';
        return;
     }
 
-    // SILENT CACHE FALLBACK (No URL shown)
     if(cached&&cached.items&&cached.items.length){
         cached.items.forEach(i=>st.byId[i.id]=i);
         show(cached.items);
@@ -605,7 +620,6 @@ async function load0(q,force){
         return;
     }
     
-    // IF COMPLETELY OFFLINE AND NO CACHE
     $('#list').innerHTML='<div class="empty"><b>खबरें लोड नहीं हो पाईं</b><br>अपना इंटरनेट चेक करें और दोबारा कोशिश करें।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';
     return;
   }
@@ -658,7 +672,6 @@ function card(it,hero){
 function show(items,into){
   const box=into||$('#list');
   if(!items||!items.length){
-    // Clean Empty Fallback
     box.innerHTML='<div class="empty"><b>कुछ नहीं मिला</b><br>कोई दूसरी कैटेगरी या शब्द आज़माएँ।</div>';
     return;
   }
@@ -671,6 +684,7 @@ function show(items,into){
   }
 }
 
+/* 1G DATA-SAVER INSTAGRAM-STYLE REELS PLAYER (ZERO BLACK SCREEN) */
 let rObs=null;
 function openReels(pid, vidId){
   stopSpeak();
@@ -682,10 +696,12 @@ function openReels(pid, vidId){
   }
   if(!vids.length){toast('अभी कोई वीडियो खबर नहीं है');return}
   const box=$('#rScroll');
+  
   box.innerHTML=vids.map(it=>{
     const v=ytid(it.vid),sv=st.bm[it.id]?' on':'';
     return '<div class="r-slide" data-vid="'+v+'">'
-      +'<div class="r-vid"></div>'
+      // THUMBNAIL BACKGROUND FOR ZERO BLACK SCREEN & 1G SPEED
+      +'<div class="r-vid" style="background-image:url(https://i.ytimg.com/vi/'+v+'/hqdefault.jpg)"></div>'
       +'<div class="r-mask"></div>'
       +'<div class="r-acts">'
         +'<button class="r-ab'+sv+'" data-a="bm" data-id="'+esc(it.id)+'">🔖</button>'
@@ -698,24 +714,32 @@ function openReels(pid, vidId){
       +'</div>'
     +'</div>';
   }).join('');
+  
   $('#reelBox').classList.add('open');
   $('#mainNav').style.opacity='0';$('#mainNav').style.pointerEvents='none';
   pushS();
   box.scrollTop=0;
   if(rObs)rObs.disconnect();
+  
   if('IntersectionObserver' in window){
+    // Smart Load/Unload Logic - 50% Threshold
     rObs=new IntersectionObserver(es=>{
       es.forEach(en=>{
         const vw=en.target.querySelector('.r-vid'),v=en.target.dataset.vid;
         if(en.isIntersecting){
-          vw.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&loop=1&playlist='+encodeURIComponent(v)+'" allow="autoplay;encrypted-media" allowfullscreen></iframe>';
-        }else vw.innerHTML='';
+          if(!vw.innerHTML) {
+            vw.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&playsinline=1&loop=1&playlist='+encodeURIComponent(v)+'" allow="autoplay;fullscreen" allowfullscreen></iframe>';
+          }
+        }else{
+          // DATA & RAM SAVER: Instantly kills background video
+          vw.innerHTML=''; 
+        }
       });
-    },{root:box,threshold:0.6});
+    },{root:box,threshold:0.5});
     $$('#rScroll .r-slide').forEach(el=>rObs.observe(el));
   }else{
     const f=box.querySelector('.r-vid'),v=vids[0]&&ytid(vids[0].vid);
-    if(f&&v)f.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&controls=0&rel=0&playsinline=1" allow="autoplay;encrypted-media"></iframe>';
+    if(f&&v)f.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&mute=0&controls=0&rel=0&playsinline=1" allow="autoplay;fullscreen"></iframe>';
   }
 }
 
@@ -740,7 +764,7 @@ function ago(d){
   const m=(Date.now()-new Date(d))/6e4;if(isNaN(m))return '';
   if(m<60)return Math.max(1,Math.round(m))+' मिनट पहले';
   if(m<1440)return Math.round(m/60)+' घंटे पहले';
-  return Math.round(m/1440)+' दिन আগে';
+  return Math.round(m/1440)+' दिन पहले';
 }
 
 function openArticle(id){
@@ -836,7 +860,7 @@ function showSettings(){
    +[[14,'छोटा'],[16,'सामान्य'],[19,'बड़ा'],[22,'बहुत बड़ा']].map(a=>'<button data-a="fs" data-v="'+a[0]+'" aria-pressed="'+(p.fs==a[0])+'">'+a[1]+'</button>').join('')
    +'</div></div><div class="set"><h4>थीम</h4><div class="seg">'
    +[['auto','ऑटो'],['light','दिन'],['dark','रात']].map(a=>'<button data-a="th" data-v="'+a[0]+'" aria-pressed="'+(p.theme===a[0])+'">'+a[1]+'</button>').join('')
-   +'</div></div><div class="set"><h4>ऐप के बारे में</h4><p class="meta" style="margin:0">इंडियन न्यूज़ • आपके ज़िले और देश-दुनिया की हर खबर, सबसे पहले आपके फ़ोन पर।</p></div>';
+   +'</div></div><div class="set"><h4>ऐप के बारे बारे में</h4><p class="meta" style="margin:0">इंडियन न्यूज़ • आपके ज़िले और देश-दुनिया की हर खबर, सबसे पहले आपके फ़ोन पर।</p></div>';
 }
 
 function openSearch(){
@@ -854,7 +878,6 @@ async function runSearch(q){
   catch(e){$('#sRes').innerHTML='<div class="empty"><b>खोज नहीं हो पाई</b>इंटरनेट जाँचें।</div>'}
 }
 
-/* DISTRICT UI RENDER & FILTER */
 function openDistricts(){
   $('#distS').classList.add('open');pushS();
   renderDistricts('');
