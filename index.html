@@ -213,6 +213,11 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .l3-bot { border-top: 1.5px solid #78716c; border-bottom: 1.5px solid #78716c; padding: 5px 0; margin-top: 4px; font-size: 17px; font-weight: 800; line-height: 1.3; color: var(--ink); display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; }
 .l3-bot-box { background: #b91c1c; color: white; padding: 2px 6px; margin-right: 2px;}
 
+/* DISTRICT MENU (NEW) */
+#distList { display:grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap:8px; }
+#distList button { background: var(--bg); border: 1px solid var(--line); padding: 8px; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--ink); }
+#distList button:active, #distList button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
 @media (min-width: 768px) {
   body { background: #e5e5e5; display: flex; align-items: center; justify-content: center; }
   :root[data-theme=dark] body { background: #0a0a0a; }
@@ -236,6 +241,8 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     <div class="bar">
       <div class="logo">इंडियन न्यूज़<small>आपके ज़िले की हर खबर</small></div>
       <div class="ibtns">
+        <!-- NEW DISTRICT BUTTON -->
+        <button class="ib" data-a="districts" aria-label="ज़िला चुनें" style="font-size: 15px; width: auto; padding: 0 8px; border-radius: 8px; font-weight: 700; background: var(--line);">📍 ज़िला</button>
         <button class="ib" data-a="search" aria-label="खोजें">🔍</button>
         <button class="ib" data-a="theme" aria-label="डार्क मोड बदलें">🌓</button>
       </div>
@@ -273,7 +280,20 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   </div>
 
   <div class="sheet" id="reader"><div class="sh-head"><button class="ib" data-a="close" aria-label="वापस">←</button><span class="sp"></span><button class="ib" data-a="speak" id="rSpeak" aria-label="सुनें">🔊</button><button class="ib" data-a="rbm" id="rBm" aria-label="सेव करें">🔖</button><button class="ib" data-a="rshare" aria-label="शेयर">📤</button></div><div class="prog" id="prog"></div><div class="body" id="rBody"></div></div>
+  
+  <!-- SEARCH SHEET -->
   <div class="sheet" id="searchS"><div class="sh-head"><button class="ib" data-a="close" aria-label="वापस">←</button><input class="search" id="q" type="search" placeholder="खबर खोजें…" enterkeyhint="search"></div><div class="feed" id="sRes"><div class="chips" id="recent"></div></div></div>
+
+  <!-- DISTRICT SELECTION SHEET (NEW) -->
+  <div class="sheet" id="distS">
+    <div class="sh-head"><button class="ib" data-a="close" aria-label="वापस">←</button><b>उत्तर प्रदेश के ज़िले</b><span class="sp"></span></div>
+    <div style="padding:10px 16px; border-bottom:1px solid var(--line); background:var(--card)">
+      <input type="text" id="dSearch" placeholder="ज़िला खोजें..." class="search" style="width:100%; border-radius:12px; margin:0">
+    </div>
+    <div class="body" style="padding-top:16px;">
+      <div id="distList"></div>
+    </div>
+  </div>
 
   <!-- ADMIN PANEL -->
   <div class="sheet" id="admin"><div class="sh-head"><button class="ib" data-a="close" aria-label="बंद करें">✕</button><b>एडमिन पैनल</b><span class="sp"></span><button class="pill" id="aOut" data-a="logout" style="display:none">लॉग आउट</button></div>
@@ -300,7 +320,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
      </select>
      <select id="aCat"></select>
      
-     <!-- STANDARD HEADLINE FIELDS -->
      <div id="stdHeadBox">
        <span class="meta">बैज + पृष्ठभूमि रंग + अक्षर रंग</span>
        <div class="cg"><input id="aBadge" placeholder="बैज (जैसे: एक्सक्लूसिव)"><input type="color" id="aBg" value="#dc2626"><input type="color" id="aBt" value="#ffffff"></div>
@@ -310,7 +329,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
        <div class="cg"><input id="aTitle" placeholder="हेडलाइन"><input type="color" id="aHc" value="#111827"></div>
      </div>
 
-     <!-- 3-LINE BRUSH HEADLINE FIELDS -->
      <div id="line3Box" style="display:none; background:#f5efe6; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #e7e0d4">
        <span class="meta" style="color:#b91c1c;font-weight:bold">लाइन 1 (लाल, सबसे ऊपर)</span>
        <input id="aTopT" placeholder="उदा: यूपी में नर्सिंग छात्रा की">
@@ -326,7 +344,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
        </div>
      </div>
      
-     <!-- INNER SUB-HEADLINE COLOR PICKER (NEW) -->
      <span class="meta" style="color:var(--accent);font-weight:bold">खबर के अंदर की सब-हेडलाइन का रंग (Blogger से आने वाली हेडिंग)</span>
      <div class="cg" style="margin-bottom:12px;">
        <input type="color" id="aSubC" value="#c2410c" style="width:100%;height:35px;border-radius:4px;">
@@ -382,6 +399,10 @@ const FV={s:['✓ सही','#16a34a'],g:['✗ गलत','#dc2626'],b:['⚠ �
 const hash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return 'n'+(h>>>0).toString(36)};
 
 const DEFCATS=[['टॉप न्यूज़','उत्तर प्रदेश भारत बड़ी खबरें'],['कानपुर देहात','कानपुर देहात समाचार'],['उत्तरप्रदेश','उत्तर प्रदेश समाचार'],['देश','भारत देश समाचार'],['क्रिकेट','क्रिकेट समाचार'],['मनोरंजन','मनोरंजन बॉलीवुड समाचार'],['बिजनेस','बिजनेस समाचार भारत'],['रोजगार','रोजगार सरकारी नौकरी समाचार']].map((a,i)=>({id:'c'+i,n:a[0],q:a[1],mode:'both',label:''}));
+
+/* 75 DISTRICTS LIST */
+const UP_DISTS = ["आगरा","अलीगढ़","प्रयागराज","अंबेडकर नगर","अमेठी","अमरोहा","औरैया","अयोध्या","आज़मगढ़","बागपत","बहराइच","बलिया","बलरामपुर","बांदा","बाराबंकी","बरेली","बस्ती","भदोही","बिजनौर","बदायूं","बुलंदशहर","चंदौली","चित्रकूट","देवरिया","एटा","इटावा","फ़र्रूख़ाबाद","फ़तेहपुर","फ़िरोज़ाबाद","गौतम बुद्ध नगर","गाज़ियाबाद","ग़ाज़ीपुर","गोंडा","गोरखपुर","हमीरपुर","हापुड़","हरदोई","हाथरस","जालौन","जौनपुर","झांसी","कन्नौज","कानपुर देहात","कानपुर नगर","कासगंज","कौशाम्बी","कुशीनगर","लखीमपुर खीरी","ललितपुर","लखनऊ","महाराजगंज","महोबा","मैनपुरी","मथुरा","मऊ","मेरठ","मिर्ज़ापुर","मुरादाबाद","मुज़फ़्फ़रनगर","पीलीभीत","प्रतापगढ़","रायबरेली","रामपुर","सहारनपुर","सम्भल","संत कबीर नगर","शाहजहांपुर","शामली","श्रावस्ती","सिद्धार्थनगर","सीतापुर","सोनभद्र","सुल्तानपुर","उन्नाव","वाराणसी"];
+
 const st={tab:'home',cat:0,items:[],byId:{},bm:S.get('bm',{})||{},local:S.get('local',[])||[],
   cfg:S.get('cfg',{blog:'',pin:''})||{blog:''},prefs:S.get('prefs',{fs:16,theme:'auto'})||{fs:16,theme:'auto'},recent:S.get('recent',[])||[],
   cur:null,speakId:null,reqId:0};
@@ -433,7 +454,6 @@ const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(u||
 const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
 const yt=(id,pid)=>'<div class="yt" data-a="reel" data-v="'+id+'" '+(pid?'data-id="'+esc(pid)+'"':'')+' role="button" aria-label="वीडियो चलाएँ"><img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" loading="lazy" alt=""><span class="play">▶</span></div>';
 
-/* NEW BLOGGER HEADING PARSER (H1-H6 Catching) */
 const INL=/^(B|I|U|STRONG|EM|A|SPAN|FONT|SMALL|MARK)$/;
 function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/\s+/g,' ').trim();if(t)out.push({t:'p',x:t});buf=''};
   const walk=n=>{for(const c of n.childNodes){
@@ -442,7 +462,6 @@ function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/
     if(tg==='BR'){fl();continue}
     if(tg==='IMG'){fl();const u=safeUrl(c.getAttribute('src'));if(u)out.push({t:'i',u});continue}
     if(tg==='IFRAME'){fl();const id=ytid(c.getAttribute('src'));if(id)out.push({t:'v',id});continue}
-    /* Catch H2, H3, etc. as sub-headlines */
     if(/^H[1-6]$/.test(tg)){fl();const txt=c.textContent.replace(/\s+/g,' ').trim();if(txt)out.push({t:'h',x:txt});continue}
     if(tg==='SCRIPT'||tg==='STYLE')continue;
     if(INL.test(tg)&&!c.querySelector('img,iframe')){buf+=c.textContent;continue}
@@ -760,6 +779,17 @@ async function runSearch(q){
   catch(e){$('#sRes').innerHTML='<div class="empty"><b>खोज नहीं हो पाई</b>इंटरनेट जाँचें।</div>'}
 }
 
+/* DISTRICT UI RENDER & FILTER */
+function openDistricts(){
+  $('#distS').classList.add('open');pushS();
+  renderDistricts('');
+}
+function renderDistricts(q){
+  const f = UP_DISTS.filter(d=>d.includes(q.trim()));
+  $('#distList').innerHTML = f.map(d=>'<button data-a="rq" data-v="'+esc(d)+'">'+esc(d)+'</button>').join('');
+}
+$('#dSearch').addEventListener('input', e=>renderDistricts(e.target.value));
+
 // ---------- Admin ----------
 const DB='https://indian-news-d1559-default-rtdb.asia-southeast1.firebasedatabase.app';
 const FB_KEY='AIzaSyB72sw1fEuJcPja99c02ecAby6uA8uQKxo'; 
@@ -907,8 +937,9 @@ document.addEventListener('click',e=>{
     case 'rshare':if(st.cur)share(st.cur.id);break;
     case 'close':closeUI();break;
     case 'search':openSearch();break;
+    case 'districts':openDistricts();break;
     case 'theme':st.prefs.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';S.set('prefs',st.prefs);applyPrefs();break;
-    case 'loc':case 'rq':openSearch();$('#q').value=v;runSearch(v);break;
+    case 'loc':case 'rq':closeSheet();openSearch();$('#q').value=v;runSearch(v);break;
     case 'retry':load(CATS[st.cat].q,true);break;
     case 'fs':st.prefs.fs=+v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
     case 'th':st.prefs.theme=v;S.set('prefs',st.prefs);applyPrefs();showSettings();break;
