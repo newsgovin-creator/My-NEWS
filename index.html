@@ -178,7 +178,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .act.pop svg{animation:pop .32s ease}@keyframes pop{40%{transform:scale(1.4)}}
 .fab{position:absolute;right:14px;bottom:calc(95px + var(--sab));width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.3);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}.fab.show{opacity:1;pointer-events:auto}
 
-/* FULLSCREEN REEL / VIDEO OVERLAY (NO YOUTUBE LOGO / NO TIMELINE TOUCH) */
+/* FULLSCREEN REEL / VIDEO OVERLAY */
 #reelBox{background:#000;z-index:85}
 .r-top{position:absolute;top:calc(12px + var(--sat));left:12px;z-index:90}
 .r-back{background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.3);width:42px;height:42px;border-radius:50%;font-size:20px}
@@ -194,6 +194,20 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .r-bot{position:absolute;left:14px;right:74px;bottom:calc(26px + var(--sab));z-index:6;color:#fff;pointer-events:none}
 .r-bot h3{margin:6px 0 10px;font-size:16px;line-height:1.4;text-shadow:0 2px 5px #000}
 .r-open{pointer-events:auto;background:var(--accent);color:#fff;border:0;padding:7px 14px;border-radius:18px;font-size:12px;font-weight:800}
+
+/* 3-LINE POSTER HEADLINE (BRUSH CSS) */
+.card.line3 { text-align: center; background: transparent; padding: 0; border: 0; margin-bottom: 12px; cursor: pointer; }
+.l3-top { color: #b91c1c; font-size: 22px; font-weight: 800; margin-bottom: 4px; line-height: 1.2; }
+.l3-brush {
+  background: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M2,10 C30,0 70,5 98,15 L97,85 C70,95 30,90 3,85 Z' fill='%23991b1b'/%3E%3C/svg%3E") no-repeat center center;
+  background-size: 100% 100%;
+  color: white; padding: 6px 14px; font-size: 25px; font-weight: 800; display: inline-block; margin-bottom: 8px; line-height: 1.2;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.l3-brush .y { color: #facc15; text-shadow: 1px 1px 2px #000; }
+.l3-brush .w { color: #ffffff; text-shadow: 1px 1px 2px #000; }
+.l3-bot { border-top: 1.5px solid #78716c; border-bottom: 1.5px solid #78716c; padding: 5px 0; margin-top: 4px; font-size: 17px; font-weight: 800; line-height: 1.3; color: var(--ink); display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; }
+.l3-bot-box { background: #b91c1c; color: white; padding: 2px 6px; margin-right: 2px;}
 
 @media (min-width: 768px) {
   body { background: #e5e5e5; display: flex; align-items: center; justify-content: center; }
@@ -249,7 +263,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
     </button>
   </nav>
 
-  <!-- FULLSCREEN REELS SHEET -->
   <div class="sheet" id="reelBox">
     <div class="r-top"><button class="r-back" data-a="close" aria-label="वापस">←</button></div>
     <div class="r-scroll" id="rScroll"></div>
@@ -272,16 +285,43 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
    <div class="body form" id="aBody">
     <div id="aList"><button class="btn" data-a="rlist" style="width:100%;margin:0 0 8px">🔄 सूची ताज़ा करें</button>
      <p class="meta">✓/⚠ दबाकर सत्यापन बदलें • ✏️ बदलें • 👁 छिपाएँ • 📌 ऊपर टिकाएँ • 🗑 हटाएँ (सिर्फ़ ऐप में लिखी खबर)</p><div id="aListBox"></div></div>
+    
     <div id="aPost" style="display:none">
      <p class="meta" id="aNote" style="display:none">Blogger की खबर: यहाँ सिर्फ़ दिखावट और स्थिति बदलती है। जो फ़ील्ड बदलेंगे सिर्फ़ वही सेव होगा। असली पोस्ट Blogger में रहती है।</p>
-     <select id="aType"><option value="compact">📰 छोटा कार्ड</option><option value="hero">🔥 बड़ा कार्ड</option><option value="fc">🔍 फैक्ट चेक कार्ड</option></select>
+     <select id="aType" style="background:#fef3c7;font-weight:bold" onchange="fcToggle()">
+       <option value="compact">📰 छोटा कार्ड</option>
+       <option value="hero">🔥 बड़ा कार्ड</option>
+       <option value="3line">🖌️ 3-लाइन पोस्टर हेडलाइन (न्यू)</option>
+       <option value="fc">🔍 फैक्ट चेक कार्ड</option>
+     </select>
      <select id="aCat"></select>
-     <span class="meta">बैज + पृष्ठभूमि रंग + अक्षर रंग</span>
-     <div class="cg"><input id="aBadge" placeholder="बैज (जैसे: एक्सक्लूसिव)"><input type="color" id="aBg" value="#dc2626"><input type="color" id="aBt" value="#ffffff"></div>
-     <span class="meta">रंगीन शुरुआती लाइन + रंग</span>
-     <div class="cg"><input id="aKick" placeholder="शुरुआती लाइन"><input type="color" id="aKc" value="#c2410c"></div>
-     <span class="meta">मुख्य हेडलाइन + रंग</span>
-     <div class="cg"><input id="aTitle" placeholder="हेडलाइन"><input type="color" id="aHc" value="#111827"></div>
+     
+     <!-- STANDARD HEADLINE FIELDS -->
+     <div id="stdHeadBox">
+       <span class="meta">बैज + पृष्ठभूमि रंग + अक्षर रंग</span>
+       <div class="cg"><input id="aBadge" placeholder="बैज (जैसे: एक्सक्लूसिव)"><input type="color" id="aBg" value="#dc2626"><input type="color" id="aBt" value="#ffffff"></div>
+       <span class="meta">रंगीन शुरुआती लाइन + रंग</span>
+       <div class="cg"><input id="aKick" placeholder="शुरुआती लाइन"><input type="color" id="aKc" value="#c2410c"></div>
+       <span class="meta">मुख्य हेडलाइन + रंग</span>
+       <div class="cg"><input id="aTitle" placeholder="हेडलाइन"><input type="color" id="aHc" value="#111827"></div>
+     </div>
+
+     <!-- 3-LINE BRUSH HEADLINE FIELDS -->
+     <div id="line3Box" style="display:none; background:#f5efe6; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #e7e0d4">
+       <span class="meta" style="color:#b91c1c;font-weight:bold">लाइन 1 (लाल, सबसे ऊपर)</span>
+       <input id="aTopT" placeholder="उदा: यूपी में नर्सिंग छात्रा की">
+       <span class="meta" style="color:#b91c1c;font-weight:bold">लाइन 2 (ब्रश बैकग्राउंड)</span>
+       <div style="display:flex;gap:6px">
+         <input id="aBrY" placeholder="पीले शब्द (उदा: लाश)" style="border-left:4px solid #facc15">
+         <input id="aBrW" placeholder="सफेद शब्द (उदा: रेलवे ट्रैक पर मिली)" style="border-left:4px solid #d4d4d4">
+       </div>
+       <span class="meta" style="color:#b91c1c;font-weight:bold">लाइन 3 (नीचे का विवरण)</span>
+       <div style="display:flex;gap:6px">
+         <input id="aBotBox" placeholder="लाल बॉक्स (उदा: भाई का आरोप:)" style="flex:1; border-left:4px solid #b91c1c">
+         <input id="aBotT" placeholder="काली लाइन (उदा: प्रिंसिपल ने हत्या की)" style="flex:2; border-left:4px solid #1c1917">
+       </div>
+     </div>
+
      <input id="aLoc" placeholder="ज़िला / इलाका" value="कानपुर देहात">
      <input id="aImg" placeholder="फोटो लिंक (Blogger की फोटो का)">
      <div class="cg"><input id="aVid" placeholder="YouTube या Shorts लिंक (वैकल्पिक)" style="flex:2"><input id="aDur" placeholder="3:20" style="flex:1"></div>
@@ -294,6 +334,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
      <button class="btn" id="aPubBtn" data-a="pub" style="width:100%">🚀 पब्लिश करें (सबके ऐप में)</button>
      <button class="btn" data-a="pcancel" style="width:100%;background:#78716c">फ़ॉर्म खाली करें</button>
     </div>
+
     <div id="aCats" style="display:none">
      <h4>कैटेगरी जोड़ें / बदलें</h4>
      <input id="cName" placeholder="नाम (इमोजी भी लगा सकते हैं)">
@@ -373,7 +414,9 @@ async function fetchLive(q){
   });
 }
 function norm(o){const s=(x,n)=>String(x==null?'':x).slice(0,n);
-  return {type:o.type==='hero'||o.type==='fc'?o.type:'compact',cat:s(o.cat,20),badge:s(o.badge,20),bg:col(o.bg,'#dc2626'),bt:col(o.bt,'#ffffff'),kick:s(o.kick,80),kc:col(o.kc,''),head:s(o.head,300),hc:col(o.hc,''),loc:s(o.loc,40)||'उत्तरप्रदेश',img:safeUrl(o.img),vid:safeUrl(o.vid),dur:s(o.dur,8),full:s(o.full,20000),ver:o.ver==='v'?'v':'u',vsrc:(Array.isArray(o.vsrc)?o.vsrc:[]).map(safeUrl).filter(Boolean).slice(0,5),vnote:s(o.vnote,120),claim:s(o.claim,400),verdict:FV[o.verdict]?o.verdict:'',how:s(o.how,2000),src:'हमारी खबर',own:1}}
+  return {type:['hero','compact','fc','3line'].includes(o.type)?o.type:'compact',cat:s(o.cat,20),badge:s(o.badge,20),bg:col(o.bg,'#dc2626'),bt:col(o.bt,'#ffffff'),kick:s(o.kick,80),kc:col(o.kc,''),head:s(o.head,300),hc:col(o.hc,''),
+  topT:s(o.topT,100),brY:s(o.brY,100),brW:s(o.brW,100),botBox:s(o.botBox,100),botT:s(o.botT,200),
+  loc:s(o.loc,40)||'उत्तरप्रदेश',img:safeUrl(o.img),vid:safeUrl(o.vid),dur:s(o.dur,8),full:s(o.full,20000),ver:o.ver==='v'?'v':'u',vsrc:(Array.isArray(o.vsrc)?o.vsrc:[]).map(safeUrl).filter(Boolean).slice(0,5),vnote:s(o.vnote,120),claim:s(o.claim,400),verdict:FV[o.verdict]?o.verdict:'',how:s(o.how,2000),src:'हमारी खबर',own:1}}
 const T=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r([]),ms))]);
 const onlyBlog=()=>st.cfg.only!==false&&!!st.cfg.blog;
 const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
@@ -392,7 +435,6 @@ function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/
     fl();walk(c);fl()}};
   walk(doc.body);fl();return out.slice(0,60)}
 
-/* Fix Duplicate Photo/Video in Article */
 function renderBlocks(bl, heroImg, heroVid, pid){
   let imDone=false, vdDone=false;
   return bl.map(b=>{
@@ -414,7 +456,7 @@ function relHTML(it){
   const w=x=>new Set((x||'').split(/[\s,.:;|\-–()'"!?।]+/).filter(y=>y.length>3)),tw=w(it.kick+' '+it.head),tl=new Set(it.labels||[]);
   const sc=Object.values(st.byId).filter(o=>o.id!==it.id&&(!onlyBlog()||o.own)&&!o.hide).map(o=>{let n=0;(o.labels||[]).forEach(l=>{if(tl.has(l))n+=3});if(o.loc&&o.loc===it.loc)n+=2;w(o.kick+' '+o.head).forEach(x=>{if(tw.has(x))n++});return [n,o]})
    .filter(a=>a[0]>=3).sort((a,b)=>b[0]-a[0]||new Date(b[1].date)-new Date(a[1].date)).slice(0,4);
-  return sc.length?'<div class="hl2"></div><h4 style="margin:6px 0">📌 यह भी पढ़ें</h4>'+sc.map(a=>'<div class="rel" data-a="open" data-id="'+esc(a[1].id)+'" tabindex="0">'+titleHTML(a[1])+'<div class="src">'+esc(a[1].src)+(a[1].date?' • '+ago(a[1].date):'')+'</div></div>').join(''):''}
+  return sc.length?'<div class="hl2"></div><h4 style="margin:6px 0">📌 यह भी पढ़ें</h4>'+sc.map(a=>'<div class="rel" data-a="open" data-id="'+esc(a[1].id)+'" tabindex="0">'+(a[1].type==='3line'?esc(a[1].head):titleHTML(a[1]))+'<div class="src">'+esc(a[1].src)+(a[1].date?' • '+ago(a[1].date):'')+'</div></div>').join(''):''}
 function searchPool(q){const ws=q.toLowerCase().split(/\s+/).filter(Boolean);return Object.values(st.byId).filter(o=>o.own&&!o.hide).filter(o=>{const t=(o.kick+' '+o.head+' '+o.full+' '+(o.labels||[]).join(' ')+' '+o.loc).toLowerCase();return ws.every(x=>t.includes(x))})}
 function getBlog(label,start){const k=(label||'')+'|'+(start||1),c=st.bc&&st.bc[k];if(c&&Date.now()-c.t<6e4)return Promise.resolve(c.items);st.berr=0;return fetchBlog(st.cfg.blog,label,start).then(i=>{if(i.length){st.bc=st.bc||{};st.bc[k]={t:Date.now(),items:i}}return i})}
 function fetchBlog(url,label,start){
@@ -486,15 +528,28 @@ function titleHTML(it){
    +'<span'+(it.hc?' style="color:'+col(it.hc,'#111827')+'"':'')+'>'+esc(it.head)+'</span>';
 }
 function media(it){const id=ytid(it.vid);return id?yt(id,it.id):imgBox(it,'big')}
+
 function card(it,hero){
-  const saved=st.bm[it.id]?' on':'',title=titleHTML(it),more='<button class="more" data-a="open" data-id="'+it.id+'">पूरी खबर पढ़ें ›</button>';
+  const saved=st.bm[it.id]?' on':'',more='<button class="more" data-a="open" data-id="'+it.id+'">पूरी खबर पढ़ें ›</button>';
   const foot='<div class="foot"><div class="acts"><button class="act" data-a="share" data-id="'+it.id+'" aria-label="शेयर">'+IC.sh+'</button>'
    +'<button class="act" data-a="speakc" data-id="'+it.id+'" aria-label="सुनें">'+IC.sp+'</button>'
    +'<button class="pill" data-a="loc" data-v="'+esc(it.loc)+'">'+esc(it.loc)+' ›</button></div>'
    +'<button class="act'+saved+'" data-a="bm" data-id="'+it.id+'" aria-label="सेव करें">'+IC.bm+'</button></div>';
   const meta='<div class="src">'+vchip(it)+' '+esc(it.src)+(it.date?' • '+ago(it.date):'')+'</div>';
-  if(hero)return '<article class="card hero"><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+imgBox(it,'big')+meta+more+foot+'</article>';
-  return '<article class="card"><div class="row"><div><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+meta+'</div>'+imgBox(it,'thumb')+'</div>'+more+foot+'</article>';
+  
+  let titleBlock = '';
+  if(it.type === '3line') {
+    titleBlock = '<div data-a="open" data-id="'+it.id+'" tabindex="0" class="card line3">';
+    if(it.topT) titleBlock += '<div class="l3-top">'+esc(it.topT)+'</div>';
+    if(it.brY || it.brW) titleBlock += '<div class="l3-brush"><span class="y">'+esc(it.brY)+'</span> <span class="w">'+esc(it.brW)+'</span></div>';
+    if(it.botBox || it.botT) titleBlock += '<div class="l3-bot">' + (it.botBox?'<span class="l3-bot-box">'+esc(it.botBox)+'</span>':'') + '<span>'+esc(it.botT)+'</span></div>';
+    titleBlock += '</div>';
+  } else {
+    titleBlock = '<h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+titleHTML(it)+'</h3>';
+  }
+
+  if(hero || it.type === '3line') return '<article class="card hero">'+titleBlock+imgBox(it,'big')+meta+more+foot+'</article>';
+  return '<article class="card"><div class="row"><div>'+titleBlock+meta+'</div>'+imgBox(it,'thumb')+'</div>'+more+foot+'</article>';
 }
 function show(items,into){
   const box=into||$('#list');
@@ -507,7 +562,6 @@ function show(items,into){
   }
 }
 
-/* FULL-SCREEN REELS PLAYER FUNCTION */
 let rObs=null;
 function openReels(pid, vidId){
   stopSpeak();
@@ -583,7 +637,19 @@ function ago(d){
 function openArticle(id){
   const it=st.byId[id];if(!it)return;st.cur=it;
   const words=(it.full||'').split(/\s+/).length;
-  $('#rBody').innerHTML='<span class="pill">'+esc(it.loc)+'</span> '+vchip(it)+'<h1>'+titleHTML(it)+'</h1><div class="hl"></div>'
+  
+  let titleBlock = '';
+  if(it.type === '3line') {
+    titleBlock = '<div class="card line3" style="padding:10px 0; border:0; background:transparent; margin-bottom:16px;">';
+    if(it.topT) titleBlock += '<div class="l3-top">'+esc(it.topT)+'</div>';
+    if(it.brY || it.brW) titleBlock += '<div class="l3-brush"><span class="y">'+esc(it.brY)+'</span> <span class="w">'+esc(it.brW)+'</span></div>';
+    if(it.botBox || it.botT) titleBlock += '<div class="l3-bot">' + (it.botBox?'<span class="l3-bot-box">'+esc(it.botBox)+'</span>':'') + '<span>'+esc(it.botT)+'</span></div>';
+    titleBlock += '</div>';
+  } else {
+    titleBlock = '<h1>'+titleHTML(it)+'</h1><div class="hl"></div>';
+  }
+
+  $('#rBody').innerHTML='<span class="pill">'+esc(it.loc)+'</span> '+vchip(it) + titleBlock
    +'<div class="meta">'+esc(it.src)+(it.date?' • '+ago(it.date):'')+' • पढ़ने में '+Math.max(1,Math.round(words/120))+' मिनट</div>'
    +fcHTML(it)+(verOf(it)==='u'?'<div class="vwarn">⚠ यह खबर असत्यापित है। आगे शेयर करने से पहले खुद जाँच लें।</div>':'')+'<div style="margin:12px 0">'+media(it)+'</div>'
    +bodyHTML(it)
@@ -688,12 +754,12 @@ const cbtn=(a,i,v,t)=>'<button class="act" data-a="'+a+'" data-i="'+i+'" data-v=
 const cb2=(a,id,t)=>'<button class="act" data-a="'+a+'" data-id="'+esc(id)+'">'+t+'</button>';
 function ovClean(v){const s=(x,n)=>String(x==null?'':x).slice(0,n),o={};
   if('ver' in v)o.ver=v.ver==='v'?'v':'u';
-  ['vnote','head','kick','badge','loc','claim'].forEach(k=>{if(v[k]!=null)o[k]=s(v[k],300)});
+  ['vnote','head','kick','badge','loc','claim','topT','brY','brW','botBox','botT'].forEach(k=>{if(v[k]!=null)o[k]=s(v[k],300)});
   ['how','full'].forEach(k=>{if(v[k]!=null)o[k]=s(v[k],20000)});
   ['kc','hc','bg','bt'].forEach(k=>{if(v[k]!=null)o[k]=col(v[k],'')});
   ['img','vid'].forEach(k=>{if(v[k]!=null)o[k]=safeUrl(v[k])});
   if(v.dur!=null)o.dur=s(v.dur,8);if(v.cat!=null)o.cat=s(v.cat,20);
-  if(v.type!=null)o.type=['hero','compact','fc'].includes(v.type)?v.type:'compact';
+  if(v.type!=null)o.type=['hero','compact','fc','3line'].includes(v.type)?v.type:'compact';
   if(v.verdict!=null)o.verdict=FV[v.verdict]?v.verdict:'';
   if('hide' in v)o.hide=!!v.hide;if('pin' in v)o.pin=!!v.pin;return o}
 function customList(){return Object.entries(st.rem.custom||{}).filter(a=>a[1]&&a[1].head).map(a=>{const o=norm(a[1]);o.id=a[0];o.date=String(a[1].date||'');return o})}
@@ -736,7 +802,13 @@ async function doLogin(){const e=V('aEm'),p=$('#aPw').value;if(!e||!p){toast('�
 function atab(v){['aList','aPost','aCats','aSet'].forEach(x=>$('#'+x).style.display=x===v?'block':'none');$$('.atabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));$('#aBody').scrollTop=0}
 function fillCatSel(){$('#aCat').innerHTML='<option value="">अपने आप (लेबल से)</option>'+st.cats.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.n)+'</option>').join('')}
 function dirty(){st.dirty=1}
-function fcToggle(){const f=$('#aType').value==='fc';$('#fcBox').style.display=f?'block':'none';if(f&&st.cats.some(c=>c.id==='cfc')&&!st.editId&&!st.editOv)$('#aCat').value='cfc'}
+function fcToggle(){
+  const t = $('#aType').value;
+  $('#fcBox').style.display = (t==='fc') ? 'block' : 'none';
+  $('#line3Box').style.display = (t==='3line') ? 'block' : 'none';
+  $('#stdHeadBox').style.display = (t!=='3line') ? 'block' : 'none';
+  if(t==='fc' && st.cats.some(c=>c.id==='cfc')&&!st.editId&&!st.editOv)$('#aCat').value='cfc';
+}
 async function renderList(){
   const box=$('#aListBox');box.innerHTML='<p class="meta">लोड हो रहा है…</p>';
   let bl=[];try{bl=await getBlog('')}catch(e){}
@@ -747,15 +819,26 @@ async function renderList(){
 async function delPost(id){if(!confirm('यह खबर सबके ऐप से हटाएँ?'))return;
   try{await fbWrite('/pub/custom/'+id);delete st.rem.custom[id];delete st.byId[id];S.set('rem',st.rem);st.bc=null;toast('हटा दी');renderList();dirty()}catch(e){toast('नहीं हट पाई: '+e.message)}}
 
-const FLDS=['type','cat','badge','bg','bt','kick','kc','head','hc','loc','img','vid','dur','full','ver','vnote','claim','verdict','how'];
-function readPost(){return {type:V('aType'),cat:V('aCat'),badge:V('aBadge'),bg:V('aBg'),bt:V('aBt'),kick:V('aKick'),kc:dv(V('aKc'),'#c2410c'),head:V('aTitle'),hc:dv(V('aHc'),'#111827'),loc:V('aLoc')||'उत्तरप्रदेश',img:safeUrl(V('aImg')),vid:safeUrl(V('aVid')),dur:V('aDur'),full:V('aFull'),ver:V('aVer'),vnote:V('aVnote'),claim:V('aClaim'),verdict:V('aVerdict'),how:V('aHow')}}
-function clearForm(){st.editId=st.editOv=null;['aBadge','aKick','aTitle','aImg','aVid','aDur','aFull','aVnote','aClaim','aHow'].forEach(i=>$('#'+i).value='');
+const FLDS=['type','cat','badge','bg','bt','kick','kc','head','hc','loc','img','vid','dur','full','ver','vnote','claim','verdict','how', 'topT', 'brY', 'brW', 'botBox', 'botT'];
+function readPost(){
+  return {type:V('aType'),cat:V('aCat'),
+    topT:V('aTopT'), brY:V('aBrY'), brW:V('aBrW'), botBox:V('aBotBox'), botT:V('aBotT'),
+    badge:V('aBadge'),bg:V('aBg'),bt:V('aBt'),kick:V('aKick'),kc:dv(V('aKc'),'#c2410c'),head:V('aTitle'),hc:dv(V('aHc'),'#111827'),loc:V('aLoc')||'उत्तरप्रदेश',img:safeUrl(V('aImg')),vid:safeUrl(V('aVid')),dur:V('aDur'),full:V('aFull'),ver:V('aVer'),vnote:V('aVnote'),claim:V('aClaim'),verdict:V('aVerdict'),how:V('aHow')}
+}
+function clearForm(){st.editId=st.editOv=null;['aBadge','aKick','aTitle','aImg','aVid','aDur','aFull','aVnote','aClaim','aHow','aTopT','aBrY','aBrW','aBotBox','aBotT'].forEach(i=>$('#'+i).value='');
   $('#aVer').value='u';$('#aVerdict').value='';$('#aBg').value='#dc2626';$('#aBt').value='#ffffff';$('#aKc').value='#c2410c';$('#aHc').value='#111827';
   $('#aPubBtn').textContent='🚀 पब्लिश करें (सबके ऐप में)';$('#aNote').style.display='none';fcToggle()}
 async function adminPost(){
-  const o=readPost();if(!o.head){toast('हेडलाइन लिखें');return}
+  const o=readPost();
+  if(o.type === '3line') {
+    if(!o.brY && !o.brW) { toast('ब्रश वाले शब्द लिखें'); return; }
+    o.head = [o.topT, o.brY, o.brW, o.botBox, o.botT].filter(Boolean).join(' ').trim();
+  } else {
+    if(!o.head){toast('हेडलाइन लिखें');return}
+    if(!o.kick&&(o.head.includes(':')||o.head.includes('|'))){const p=parseTitle(o.head);o.kick=p.kick;o.head=p.head}
+  }
   if(o.type==='fc'){if(!o.claim||!o.verdict){toast('दावा और नतीजा चुनें');return}o.ver='v'}
-  if(!o.kick&&(o.head.includes(':')||o.head.includes('|'))){const p=parseTitle(o.head);o.kick=p.kick;o.head=p.head}
+  
   try{
     if(st.editOv){const it=st.byId[st.editOv],p={};
       FLDS.forEach(k=>{let n=o[k]||'';if(k==='bg'&&n==='#dc2626')n='';if(k==='bt'&&n==='#ffffff')n='';
@@ -766,7 +849,9 @@ async function adminPost(){
   }catch(e){toast('नहीं हो पाया: '+e.message)}
 }
 function editPost(id){const o=st.byId[id];if(!o)return;const cu=!!st.rem.custom[id];st.editId=cu?id:null;st.editOv=cu?null:id;
-  const m={aType:o.type||'compact',aCat:o.cat||'',aBadge:o.badge,aBg:col(o.bg,'#dc2626'),aBt:col(o.bt,'#ffffff'),aKick:o.kick,aKc:col(o.kc,'#c2410c'),aTitle:o.head,aHc:col(o.hc,'#111827'),aLoc:o.loc,aImg:o.img,aVid:o.vid,aDur:o.dur,aFull:o.full,aVer:verOf(o),aVnote:o.vnote,aClaim:o.claim,aVerdict:o.verdict,aHow:o.how};
+  const m={aType:['hero','compact','fc','3line'].includes(o.type)?o.type:'compact',aCat:o.cat||'',aBadge:o.badge,aBg:col(o.bg,'#dc2626'),aBt:col(o.bt,'#ffffff'),aKick:o.kick,aKc:col(o.kc,'#c2410c'),aTitle:o.head,aHc:col(o.hc,'#111827'),
+    aTopT:o.topT, aBrY:o.brY, aBrW:o.brW, aBotBox:o.botBox, aBotT:o.botT,
+    aLoc:o.loc,aImg:o.img,aVid:o.vid,aDur:o.dur,aFull:o.full,aVer:verOf(o),aVnote:o.vnote,aClaim:o.claim,aVerdict:o.verdict,aHow:o.how};
   atab('aPost');for(const k in m)$('#'+k).value=m[k]||'';fcToggle();
   $('#aPubBtn').textContent=cu?'💾 बदलाव सेव करें':'💾 दिखावट के बदलाव सेव करें';$('#aNote').style.display=cu?'none':'block'}
 function saveCats(){S.set('cats',st.cats);syncCats();renderCats();fillCatSel();renderAC();dirty();pushConfig()}
@@ -820,10 +905,10 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.a==='open')openArticle(e.target.dataset.id)});
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch(e.target.value)});
 $('#rBody').addEventListener('scroll',e=>{const b=e.target;$('#prog').style.width=(b.scrollTop/Math.max(1,b.scrollHeight-b.clientHeight)*100)+'%'});
-window.addEventListener('popstate',()=>{st.hs=Math.max(0,(st.hs||0)-1);closeSheet()});$('#aType').addEventListener('change',fcToggle);
+window.addEventListener('popstate',()=>{st.hs=Math.max(0,(st.hs||0)-1);closeSheet()});
 window.addEventListener('online',()=>{$('#off').style.display='none';load(CATS[st.cat].q,true)});
 window.addEventListener('offline',()=>{$('#off').style.display='block'});
-// Logo par 5 baar tap = admin
+
 $('.logo').addEventListener('click',()=>{taps++;clearTimeout(tapT);tapT=setTimeout(()=>taps=0,1600);if(taps>=5){taps=0;adminGate()}});
 
 (()=>{const f=$('#feed'),p=$('#ptr');let y0=0,d=0,on=false;
