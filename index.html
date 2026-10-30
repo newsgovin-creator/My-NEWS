@@ -62,7 +62,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .empty b{display:block;font-size:17px;color:var(--ink);margin-bottom:6px}
 .btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 20px;font-weight:800;margin-top:14px;min-height:44px}
 
-/* नीचे का पारदर्शी बार — कोई सफ़ेद पट्टी नहीं */
+/* नीचे का पारदर्शी बार */
 .nav{position:absolute;bottom:calc(15px + var(--sab));left:15px;right:15px;display:flex;background:rgba(255,255,255,.15);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(0,0,0,.05);border-radius:24px;padding:8px;box-shadow:0 12px 36px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.05);z-index:50;gap:4px;transition:opacity .25s ease}
 :root[data-theme=dark] .nav{background:rgba(30,27,24,.15);border-color:rgba(255,255,255,.1);box-shadow:0 12px 36px rgba(0,0,0,.6)}
 .sheetOpen .nav{opacity:0;pointer-events:none}
@@ -125,7 +125,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .act.pop svg{animation:pop .32s ease}@keyframes pop{40%{transform:scale(1.4)}}
 .fab{position:absolute;right:14px;bottom:calc(95px + var(--sab));width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.3);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}.fab.show{opacity:1;pointer-events:auto}
 
-/* ===== रील्स / फुल-स्क्रीन वीडियो — ULTRA PRO MAX ===== */
+/* ===== रील्स / फुल-स्क्रीन वीडियो — ULTRA PRO MAX (Fixed Masking & Audio State) ===== */
 #reelBox{background:#000;z-index:85;touch-action:pan-y}
 .r-top{position:absolute;top:calc(12px + var(--sat));left:12px;z-index:90;display:flex;gap:8px;pointer-events:auto}
 .r-back{background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.3);width:44px;height:44px;border-radius:50%;font-size:20px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .15s}
@@ -135,11 +135,11 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .r-slide{position:relative;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;background:#000;overflow:hidden}
 .r-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.65;filter:blur(4px);transition:opacity .55s ease;z-index:0}
 .r-slide.playing .r-thumb{opacity:0;transition:opacity .35s ease}
-.r-vid{position:absolute;inset:0;pointer-events:none;z-index:1;background:#000}
-.r-vid iframe{width:100%;height:100%;border:0;pointer-events:none;user-select:none}
-/* मास्क दिखावट के लिए — पर क्लिक को नीचे जाने नहीं देता (डिफेंसिव) */
-.r-mask{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.82) 0%,transparent 20%,transparent 60%,rgba(0,0,0,.94) 100%)}
-/* असली क्लिक-ब्लॉकर — यह पूरी सतह पर बटन है, YouTube को कोई टच नहीं मिलता */
+.r-vid{position:absolute;inset:0;pointer-events:none;z-index:1;background:#000;overflow:hidden}
+/* परफेक्ट ज़ूम (Scale 1.35) ताकि YouTube का ऊपर का टाइटल और नीचे का 'Shorts' वॉटरमार्क पूरी तरह छुप जाए[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span) */
+.r-vid iframe{width:100%;height:140%;margin-top:-20%;border:0;pointer-events:none;user-select:none}
+/* मजबूत डार्क मास्क (Gradient) ताकि कोई भी लोगो बाहर न झांके */
+.r-mask{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.25) 12%,transparent 25%,transparent 55%,rgba(0,0,0,.4) 75%,rgba(0,0,0,.96) 100%)}
 .r-tap{position:absolute;inset:0;z-index:4;background:transparent;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;touch-action:manipulation}
 .r-pp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.75);z-index:5;font-size:52px;color:#fff;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;width:86px;height:86px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);text-shadow:0 2px 12px #000}
 .r-pp.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
@@ -150,7 +150,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .r-bot{position:absolute;left:14px;right:72px;bottom:calc(30px + var(--sab));z-index:6;color:#fff;pointer-events:none}
 .r-bot h3{margin:8px 0 12px;font-size:15.5px;line-height:1.4;text-shadow:0 2px 8px rgba(0,0,0,.85);font-weight:700;max-height:6.2em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical}
 .r-open{pointer-events:auto;background:var(--accent);color:#fff;border:0;padding:8px 16px;border-radius:20px;font-size:12.5px;font-weight:800;box-shadow:0 4px 14px rgba(194,65,12,.45);pointer-events:auto}
-/* म्यूट हिंट — पहले वीडियो पर 3 सेकंड */
 .r-hint{position:absolute;left:50%;bottom:calc(200px + var(--sab));transform:translateX(-50%);background:rgba(0,0,0,.78);color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .4s;z-index:7;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;white-space:nowrap}
 .r-hint.show{opacity:1}
 
@@ -292,7 +291,7 @@ const slim=i=>Object.assign({},i,{full:(i.full||'').slice(0,4000),blocks:(i.bloc
 const DEFCATS=[['टॉप न्यूज़','उत्तर प्रदेश भारत बड़ी खबरें'],['कानपुर देहात','कानपुर देहात समाचार'],['उत्तरप्रदेश','उत्तर प्रदेश समाचार'],['देश','भारत देश समाचार'],['क्रिकेट','क्रिकेट समाचार'],['मनोरंजन','मनोरंजन बॉलीवुड समाचार'],['बिजनेस','बिजनेस समाचार भारत'],['रोजगार','रोजगार सरकारी नौकरी समाचार']].map((a,i)=>({id:'c'+i,n:a[0],q:a[1],mode:'both',label:''}));
 const st={tab:'home',cat:0,items:[],byId:{},bm:S.get('bm',{})||{},local:S.get('local',[])||[],
   cfg:S.get('cfg',{blog:''})||{blog:''},prefs:S.get('prefs',{fs:16,theme:'auto'})||{fs:16,theme:'auto'},recent:S.get('recent',[])||[],
-  cur:null,speakId:null,reqId:0,hs:0,muted:true,muteHintShown:false};
+  cur:null,speakId:null,reqId:0,hs:0,muted:false,muteHintShown:false};
 const FCCAT={id:'cfc',n:'🔍 फैक्ट चेक',q:'फैक्ट चेक',mode:'own',label:'FactCheck'};
 st.cats=S.get('cats',DEFCATS);if(!Array.isArray(st.cats)||!st.cats.length)st.cats=DEFCATS;
 if(!S.get('fcAdded',0)){if(!st.cats.some(c=>c.id==='cfc'))st.cats.splice(2,0,FCCAT);S.set('cats',st.cats);S.set('fcAdded',1)}
@@ -353,7 +352,6 @@ function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/
     fl();walk(c);fl()}};
   walk(doc.body);fl();return out.slice(0,60)}
 
-/* खबर के अंदर: फोटो और वीडियो अपनी-अपनी जगह, कुछ भी गायब नहीं */
 function renderBlocks(bl,pid){return bl.map(b=>b.t==='p'?'<p>'+esc(b.x)+'</p>':b.t==='i'?'<img class="pim" src="'+esc(bimg(b.u,720))+'" loading="lazy" decoding="async" alt="" referrerpolicy="no-referrer" onerror="this.remove()">':yt(b.id,pid)).join('')}
 function bodyHTML(it){return it.blocks&&it.blocks.length?renderBlocks(it.blocks,it.id):'<p>'+esc(it.full||it.head)+'</p>'}
 function photoBox(it){return '<div class="img big pho"><img src="'+esc(bimg(it.img,720))+'" decoding="async" alt="'+esc(it.head)+'" referrerpolicy="no-referrer" onerror="this.remove()"></div>'}
@@ -428,7 +426,6 @@ function imgBox(it,cls){
   const act=id?' data-a="reel" data-v="'+id+'" data-id="'+esc(it.id)+'"':' data-a="open" data-id="'+esc(it.id)+'"';
   return '<div class="img '+cls+'"'+act+'>'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="'+esc(it.head)+'" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+(id?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
 }
-/* इंस्टाग्राम जैसे आइकन */
 const SV=(p,c,w)=>'<svg class="'+(c||'')+'" viewBox="0 0 24 24" width="'+(w||24)+'" height="'+(w||24)+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
 const SPK='<path d="M11 5 6.5 9H3v6h3.5L11 19z"/>';
 const IC={bm:SV('<polygon points="20 21 12 13.44 4 21 4 3 20 3 20 21"/>','bmk'),sh:SV('<line x1="22" y1="3" x2="9.218" y2="10.083"/><polygon points="11.698 20.334 22 3.001 2 3.001 9.218 10.084 11.698 20.334"/>'),sp:SV(SPK+'<path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8.5 8.5 0 0 1 0 11"/>'),
@@ -447,8 +444,8 @@ function card(it,hero){
    +'<button class="pill" data-a="loc" data-v="'+esc(it.loc)+'">'+esc(it.loc)+' ›</button></div>'
    +'<button class="act'+saved+'" data-a="bm" data-id="'+esc(it.id)+'" aria-label="सेव करें">'+IC.bm+'</button></div>';
   const meta='<div class="src">'+vchip(it)+' '+esc(it.src)+(it.date?' • '+ago(it.date):'')+'</div>';
-  if(hero)return '<article class="card hero"><h3 data-a="open" data-id="'+esc(it.id)+'" tabindex="0">'+title+'</h3>'+imgBox(it,'big')+meta+more+foot+'</article>';
-  return '<article class="card"><div class="row"><div><h3 data-a="open" data-id="'+esc(it.id)+'" tabindex="0">'+title+'</h3>'+meta+'</div>'+imgBox(it,'thumb')+'</div>'+more+foot+'</article>';
+  if(hero)return '<article class="card hero"><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+imgBox(it,'big')+meta+more+foot+'</article>';
+  return '<article class="card"><div class="row"><div><h3 data-a="open" data-id="'+it.id+'" tabindex="0">'+title+'</h3>'+meta+'</div>'+imgBox(it,'thumb')+'</div>'+more+foot+'</article>';
 }
 function show(items,into){
   const box=into||$('#list');
@@ -461,14 +458,7 @@ function show(items,into){
   }
 }
 
-/* ========== रील्स: फुल-स्क्रीन वीडियो, स्मूथ स्क्रॉल, खत्म होते ही अगला ==========
-   ULTRA PRO MAX फिक्स:
-   1. .r-tap पूरी सतह पर बटन = YouTube को कोई क्लिक नहीं जाता
-   2. रील शुरू होते ही म्यूट ऑटोप्ले (मोबाइल ऑटोप्ले पॉलिसी से बचने के लिए)
-   3. onStateChange + infoDelivery दोनों से state ट्रैक → पक्का ऑटो-नेक्स्ट
-   4. थंबनेल 3 सेकंड में हर हाल में फेड (अटकता नहीं)
-   5. सेफ-एरिया के हिसाब से बटन की जगह (छोटे-बड़े सभी फोन)
-=============================================================== */
+/* ========== रील्स: फुल-स्क्रीन वीडियो, स्मूथ स्क्रॉल, फिक्स्ड ऑडियो मेमोरी, परफेक्ट मास्किंग ========== */
 let rObs=null;
 const rIframes=()=>$$('#rScroll iframe');
 function rCmd(sl,fn,args){const f=sl&&sl.querySelector('iframe');if(f&&f.contentWindow){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*')}catch(e){}}}
@@ -477,12 +467,12 @@ function rPlay(sl){$$('#rScroll .r-slide').forEach(s=>{if(s!==sl)rCmd(s,'pauseVi
 function rStart(sl){
   const v=sl.dataset.vid,vw=sl.querySelector('.r-vid');
   const org=location.origin&&location.origin!=='null'?'&origin='+encodeURIComponent(location.origin):'';
-  vw.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&disablekb=1&iv_load_policy=3&enablejsapi=1&loop=0'+org+'" allow="autoplay;encrypted-media" title="वीडियो"></iframe>';
+  const mInit=st.muted?1:0;
+  vw.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&mute='+mInit+'&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&disablekb=1&iv_load_policy=3&enablejsapi=1&loop=0'+org+'" allow="autoplay;encrypted-media" title="वीडियो"></iframe>';
   const f=vw.firstChild;sl.dataset.ps='';
   f.addEventListener('load',()=>{
     try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:v}),'*')}catch(e){}
-    setTimeout(()=>{try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:'mute'}),'*')}catch(e){}},100);
-    // Fallback: अगर 3 सेकंड में state नहीं आया तो थंबनेल हटा दो (ब्लर अटके नहीं)
+    setTimeout(()=>{try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:st.muted?'mute':'unMute'}),'*')}catch(e){}},100);
     clearTimeout(sl._fadeT);
     sl._fadeT=setTimeout(()=>{if(!sl.classList.contains('playing'))sl.classList.add('playing')},3000);
   });
@@ -495,7 +485,6 @@ function rNext(sl){
   if(nx){
     nx.scrollIntoView({behavior:'smooth',block:'start'});
   }else{
-    // आख़िरी वीडियो — फिर से शुरू
     rCmd(sl,'seekTo',[0,true]);
     setTimeout(()=>rCmd(sl,'playVideo'),250);
     setTimeout(()=>{delete sl.dataset.ended;delete sl.dataset.ps;},1500);
@@ -571,7 +560,6 @@ async function openReels(pid,vidId){
     }),{root:box,threshold:.6});
     slides.forEach(s=>rObs.observe(s));
   }else if(slides[0])rStart(slides[0]);
-  // म्यूट हिंट 3 सेकंड बाद हटाओ
   if(st.muted&&!st.muteHintShown){
     setTimeout(()=>{const h=$('#rScroll .r-hint');if(h)h.classList.remove('show');st.muteHintShown=true},3500);
   }
@@ -874,7 +862,7 @@ window.addEventListener('online',()=>{$('#off').style.display='none';load(CATS[s
 window.addEventListener('offline',()=>{$('#off').style.display='block'});
 $('.logo').addEventListener('click',()=>{taps++;clearTimeout(tapT);tapT=setTimeout(()=>taps=0,1600);if(taps>=5){taps=0;adminGate()}});
 
-(()=>{const f=$('#feed'),p=$('#ptr');let y0=0,d=0,on=false;
+(()=>{const f=$('#feed`,p=$('#ptr');let y0=0,d=0,on=false;
  f.addEventListener('touchstart',e=>{if(f.scrollTop===0){y0=e.touches[0].clientY;on=true}},{passive:true});
  f.addEventListener('touchmove',e=>{if(!on)return;d=e.touches[0].clientY-y0;if(d>0)p.style.height=Math.min(d/2,56)+'px';p.textContent=d>110?'↻ छोड़ें':'↓ रिफ्रेश के लिए खींचें'},{passive:true});
  f.addEventListener('touchend',()=>{if(on&&d>110&&st.tab==='home')load(CATS[st.cat].q,true);p.style.height='0';on=false;d=0});})();
@@ -893,7 +881,7 @@ $('#feed').addEventListener('scroll',e=>$('#up').classList.toggle('show',e.targe
 try{applyRemote(S.get('rem',null))}catch(e){}
 renderCats();renderTrend();setTab('home');loadRemote();
 
-/* Firebase Analytics — पेज खुलने के बाद चुपचाप लोड होता है, ऐप को धीमा नहीं करता */
+/* Firebase Analytics */
 window.addEventListener('load',()=>setTimeout(async()=>{try{
   const {initializeApp}=await import('https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js');
   const {getAnalytics}=await import('https://www.gstatic.com/firebasejs/13.1.0/firebase-analytics.js');
