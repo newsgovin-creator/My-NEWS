@@ -125,27 +125,34 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .act.pop svg{animation:pop .32s ease}@keyframes pop{40%{transform:scale(1.4)}}
 .fab{position:absolute;right:14px;bottom:calc(95px + var(--sab));width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.3);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}.fab.show{opacity:1;pointer-events:auto}
 
-/* रील्स / फुल-स्क्रीन वीडियो */
-#reelBox{background:#000;z-index:85}
-.r-top{position:absolute;top:calc(12px + var(--sat));left:12px;z-index:90}
-.r-back{background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.3);width:42px;height:42px;border-radius:50%;font-size:20px}
-.r-scroll{flex:1;height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
+/* ===== रील्स / फुल-स्क्रीन वीडियो — ULTRA PRO MAX ===== */
+#reelBox{background:#000;z-index:85;touch-action:pan-y}
+.r-top{position:absolute;top:calc(12px + var(--sat));left:12px;z-index:90;display:flex;gap:8px;pointer-events:auto}
+.r-back{background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.3);width:44px;height:44px;border-radius:50%;font-size:20px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .15s}
+.r-back:active{transform:scale(.9);background:rgba(0,0,0,.75)}
+.r-scroll{flex:1;height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none;touch-action:pan-y}
 .r-scroll::-webkit-scrollbar{display:none}
 .r-slide{position:relative;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;background:#000;overflow:hidden}
-.r-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5;filter:blur(3px);transition:opacity .4s}
-.playing .r-thumb{opacity:0}
-.r-vid{position:absolute;inset:0;pointer-events:none}
-.r-vid iframe{width:100%;height:100%;border:0;pointer-events:none}
-.r-mask{position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.85) 0%,transparent 18%,transparent 62%,rgba(0,0,0,.92) 100%)}
-.r-tap{position:absolute;inset:0;z-index:4;background:none;border:0}
-.r-pp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.8);z-index:5;font-size:54px;color:#fff;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;text-shadow:0 2px 12px #000}
-.r-pp.show{opacity:.95;transform:translate(-50%,-50%) scale(1)}
-.r-acts{position:absolute;right:14px;bottom:calc(95px + var(--sab));z-index:6;display:flex;flex-direction:column;gap:16px}
-.r-ab{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;width:46px;height:46px;border-radius:50%;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.r-ab.on{background:var(--accent)}
-.r-bot{position:absolute;left:14px;right:74px;bottom:calc(26px + var(--sab));z-index:6;color:#fff;pointer-events:none}
-.r-bot h3{margin:6px 0 10px;font-size:16px;line-height:1.4;text-shadow:0 2px 5px #000}
-.r-open{pointer-events:auto;background:var(--accent);color:#fff;border:0;padding:7px 14px;border-radius:18px;font-size:12px;font-weight:800}
+.r-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.65;filter:blur(4px);transition:opacity .55s ease;z-index:0}
+.r-slide.playing .r-thumb{opacity:0;transition:opacity .35s ease}
+.r-vid{position:absolute;inset:0;pointer-events:none;z-index:1;background:#000}
+.r-vid iframe{width:100%;height:100%;border:0;pointer-events:none;user-select:none}
+/* मास्क दिखावट के लिए — पर क्लिक को नीचे जाने नहीं देता (डिफेंसिव) */
+.r-mask{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.82) 0%,transparent 20%,transparent 60%,rgba(0,0,0,.94) 100%)}
+/* असली क्लिक-ब्लॉकर — यह पूरी सतह पर बटन है, YouTube को कोई टच नहीं मिलता */
+.r-tap{position:absolute;inset:0;z-index:4;background:transparent;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;touch-action:manipulation}
+.r-pp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.75);z-index:5;font-size:52px;color:#fff;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;width:86px;height:86px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);text-shadow:0 2px 12px #000}
+.r-pp.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.r-acts{position:absolute;right:10px;bottom:calc(115px + var(--sab));z-index:6;display:flex;flex-direction:column;gap:20px;pointer-events:auto}
+.r-ab{background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.28);color:#fff;width:48px;height:48px;border-radius:50%;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;transition:transform .18s,background .18s;pointer-events:auto}
+.r-ab:active{transform:scale(.88)}
+.r-ab.on{background:var(--accent);border-color:var(--accent);box-shadow:0 0 20px rgba(194,65,12,.55)}
+.r-bot{position:absolute;left:14px;right:72px;bottom:calc(30px + var(--sab));z-index:6;color:#fff;pointer-events:none}
+.r-bot h3{margin:8px 0 12px;font-size:15.5px;line-height:1.4;text-shadow:0 2px 8px rgba(0,0,0,.85);font-weight:700;max-height:6.2em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical}
+.r-open{pointer-events:auto;background:var(--accent);color:#fff;border:0;padding:8px 16px;border-radius:20px;font-size:12.5px;font-weight:800;box-shadow:0 4px 14px rgba(194,65,12,.45);pointer-events:auto}
+/* म्यूट हिंट — पहले वीडियो पर 3 सेकंड */
+.r-hint{position:absolute;left:50%;bottom:calc(200px + var(--sab));transform:translateX(-50%);background:rgba(0,0,0,.78);color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .4s;z-index:7;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;white-space:nowrap}
+.r-hint.show{opacity:1}
 
 @media (min-width:768px){
   body{background:#e5e5e5;display:flex;align-items:center;justify-content:center}
@@ -160,6 +167,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
   .card .foot{margin-top:auto;padding-top:10px}
   .row{flex-direction:column-reverse}
   .thumb{width:100%;height:auto;aspect-ratio:16/9;margin-bottom:10px}
+  .r-slide{max-width:520px;margin:0 auto}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -284,7 +292,7 @@ const slim=i=>Object.assign({},i,{full:(i.full||'').slice(0,4000),blocks:(i.bloc
 const DEFCATS=[['टॉप न्यूज़','उत्तर प्रदेश भारत बड़ी खबरें'],['कानपुर देहात','कानपुर देहात समाचार'],['उत्तरप्रदेश','उत्तर प्रदेश समाचार'],['देश','भारत देश समाचार'],['क्रिकेट','क्रिकेट समाचार'],['मनोरंजन','मनोरंजन बॉलीवुड समाचार'],['बिजनेस','बिजनेस समाचार भारत'],['रोजगार','रोजगार सरकारी नौकरी समाचार']].map((a,i)=>({id:'c'+i,n:a[0],q:a[1],mode:'both',label:''}));
 const st={tab:'home',cat:0,items:[],byId:{},bm:S.get('bm',{})||{},local:S.get('local',[])||[],
   cfg:S.get('cfg',{blog:''})||{blog:''},prefs:S.get('prefs',{fs:16,theme:'auto'})||{fs:16,theme:'auto'},recent:S.get('recent',[])||[],
-  cur:null,speakId:null,reqId:0,hs:0,muted:false};
+  cur:null,speakId:null,reqId:0,hs:0,muted:true,muteHintShown:false};
 const FCCAT={id:'cfc',n:'🔍 फैक्ट चेक',q:'फैक्ट चेक',mode:'own',label:'FactCheck'};
 st.cats=S.get('cats',DEFCATS);if(!Array.isArray(st.cats)||!st.cats.length)st.cats=DEFCATS;
 if(!S.get('fcAdded',0)){if(!st.cats.some(c=>c.id==='cfc'))st.cats.splice(2,0,FCCAT);S.set('cats',st.cats);S.set('fcAdded',1)}
@@ -453,27 +461,68 @@ function show(items,into){
   }
 }
 
-/* ---------- रील्स: फुल-स्क्रीन वीडियो, स्मूथ स्क्रॉल, खत्म होते ही अगला ---------- */
+/* ========== रील्स: फुल-स्क्रीन वीडियो, स्मूथ स्क्रॉल, खत्म होते ही अगला ==========
+   ULTRA PRO MAX फिक्स:
+   1. .r-tap पूरी सतह पर बटन = YouTube को कोई क्लिक नहीं जाता
+   2. रील शुरू होते ही म्यूट ऑटोप्ले (मोबाइल ऑटोप्ले पॉलिसी से बचने के लिए)
+   3. onStateChange + infoDelivery दोनों से state ट्रैक → पक्का ऑटो-नेक्स्ट
+   4. थंबनेल 3 सेकंड में हर हाल में फेड (अटकता नहीं)
+   5. सेफ-एरिया के हिसाब से बटन की जगह (छोटे-बड़े सभी फोन)
+=============================================================== */
 let rObs=null;
 const rIframes=()=>$$('#rScroll iframe');
 function rCmd(sl,fn,args){const f=sl&&sl.querySelector('iframe');if(f&&f.contentWindow){try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:fn,args:args||[]}),'*')}catch(e){}}}
+function rPlay(sl){$$('#rScroll .r-slide').forEach(s=>{if(s!==sl)rCmd(s,'pauseVideo')});rCmd(sl,'playVideo')}
+
 function rStart(sl){
   const v=sl.dataset.vid,vw=sl.querySelector('.r-vid');
   const org=location.origin&&location.origin!=='null'?'&origin='+encodeURIComponent(location.origin):'';
-  vw.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&disablekb=1&iv_load_policy=3&enablejsapi=1'+org+'" allow="autoplay;encrypted-media" title="वीडियो"></iframe>';
+  vw.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&playsinline=1&fs=0&disablekb=1&iv_load_policy=3&enablejsapi=1&loop=0'+org+'" allow="autoplay;encrypted-media" title="वीडियो"></iframe>';
   const f=vw.firstChild;sl.dataset.ps='';
-  f.addEventListener('load',()=>{try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:v}),'*')}catch(e){}if(st.muted)rCmd(sl,'mute')});
+  f.addEventListener('load',()=>{
+    try{f.contentWindow.postMessage(JSON.stringify({event:'listening',id:v}),'*')}catch(e){}
+    setTimeout(()=>{try{f.contentWindow.postMessage(JSON.stringify({event:'command',func:'mute'}),'*')}catch(e){}},100);
+    // Fallback: अगर 3 सेकंड में state नहीं आया तो थंबनेल हटा दो (ब्लर अटके नहीं)
+    clearTimeout(sl._fadeT);
+    sl._fadeT=setTimeout(()=>{if(!sl.classList.contains('playing'))sl.classList.add('playing')},3000);
+  });
 }
-function rNext(sl){const nx=sl.nextElementSibling;if(nx)$('#rScroll').scrollTo({top:nx.offsetTop,behavior:'smooth'});else{rCmd(sl,'seekTo',[0,true]);rCmd(sl,'playVideo')}}
+
+function rNext(sl){
+  if(sl.dataset.ended==='1')return;
+  sl.dataset.ended='1';
+  const nx=sl.nextElementSibling;
+  if(nx){
+    nx.scrollIntoView({behavior:'smooth',block:'start'});
+  }else{
+    // आख़िरी वीडियो — फिर से शुरू
+    rCmd(sl,'seekTo',[0,true]);
+    setTimeout(()=>rCmd(sl,'playVideo'),250);
+    setTimeout(()=>{delete sl.dataset.ended;delete sl.dataset.ps;},1500);
+  }
+}
+
 window.addEventListener('message',e=>{
   let h='';try{h=new URL(e.origin).hostname}catch(x){return}
   if(!/(^|\.)youtube(-nocookie)?\.com$/.test(h)||typeof e.data!=='string')return;
   let d;try{d=JSON.parse(e.data)}catch(x){return}
-  const f=rIframes().find(x=>x.contentWindow===e.source);if(!f)return;const sl=f.closest('.r-slide');
-  const ps=d.event==='onStateChange'?d.info:(d.event==='infoDelivery'&&d.info&&d.info.playerState!=null?d.info.playerState:null);
-  if(ps!=null){sl.dataset.ps=ps;if(ps===1)sl.classList.add('playing');if(ps===0)rNext(sl)}
-  if(d.event==='onError')setTimeout(()=>rNext(sl),800);
+  const f=rIframes().find(x=>x.contentWindow===e.source);if(!f)return;
+  const sl=f.closest('.r-slide');if(!sl)return;
+  let ps=null;
+  if(d.event==='onStateChange'&&d.info!=null)ps=d.info;
+  else if(d.event==='infoDelivery'&&d.info&&d.info.playerState!=null)ps=d.info.playerState;
+  if(ps!=null){
+    sl.dataset.ps=String(ps);
+    if(ps===1){sl.classList.add('playing');delete sl.dataset.ended;clearTimeout(sl._fadeT)}
+    else if(ps===0){rNext(sl)}
+  }
+  if(d.event==='onError'){
+    sl.classList.add('playing');
+    clearTimeout(sl._fadeT);
+    setTimeout(()=>rNext(sl),1000);
+  }
 });
+
 async function openReels(pid,vidId){
   stopSpeak();
   let pool=Object.values(st.byId);
@@ -487,12 +536,15 @@ async function openReels(pid,vidId){
   }
   if(!vids.length){toast('अभी कोई वीडियो खबर नहीं है');return}
   const box=$('#rScroll');
-  box.innerHTML=vids.map(it=>{
+  box.innerHTML=vids.map((it,ix)=>{
     const v=ytid(it.vid),sv=st.bm[it.id]?' on':'',real=st.byId[it.id]&&!String(it.id).startsWith('v_');
     return '<div class="r-slide" data-vid="'+v+'">'
-      +'<img class="r-thumb" src="https://i.ytimg.com/vi/'+v+'/hqdefault.jpg" alt="">'
-      +'<div class="r-vid"></div><div class="r-mask"></div>'
-      +'<button class="r-tap" data-a="rtap" aria-label="रोकें या चलाएँ"></button><div class="r-pp"></div>'
+      +'<img class="r-thumb" src="https://i.ytimg.com/vi/'+v+'/hqdefault.jpg" alt="" loading="'+(ix<2?'eager':'lazy')+'" decoding="async">'
+      +'<div class="r-vid"></div>'
+      +'<div class="r-mask"></div>'
+      +'<button class="r-tap" data-a="rtap" aria-label="रोकें या चलाएँ"></button>'
+      +'<div class="r-pp"></div>'
+      +(ix===0&&st.muted&&!st.muteHintShown?'<div class="r-hint">🔇 आवाज़ के लिए स्पीकर दबाएँ</div>':'')
       +'<div class="r-acts">'
         +'<button class="r-ab'+sv+'" data-a="bm" data-id="'+esc(it.id)+'" aria-label="सेव करें">'+IC.bm+'</button>'
         +'<button class="r-ab" data-a="share" data-id="'+esc(it.id)+'" aria-label="शेयर">'+IC.sh+'</button>'
@@ -511,10 +563,18 @@ async function openReels(pid,vidId){
     rObs=new IntersectionObserver(es=>es.forEach(en=>{
       const sl=en.target;
       if(en.isIntersecting){if(!sl.querySelector('iframe'))rStart(sl)}
-      else{sl.querySelector('.r-vid').innerHTML='';sl.classList.remove('playing')}
+      else{
+        sl.querySelector('.r-vid').innerHTML='';
+        sl.classList.remove('playing');
+        delete sl.dataset.ps;delete sl.dataset.ended;clearTimeout(sl._fadeT);
+      }
     }),{root:box,threshold:.6});
     slides.forEach(s=>rObs.observe(s));
   }else if(slides[0])rStart(slides[0]);
+  // म्यूट हिंट 3 सेकंड बाद हटाओ
+  if(st.muted&&!st.muteHintShown){
+    setTimeout(()=>{const h=$('#rScroll .r-hint');if(h)h.classList.remove('show');st.muteHintShown=true},3500);
+  }
 }
 function closeReelsVisual(){if(rObs){rObs.disconnect();rObs=null}$('#rScroll').innerHTML='';$('#reelBox').classList.remove('open');navSync()}
 
@@ -749,8 +809,25 @@ document.addEventListener('click',e=>{
     case 'open':openArticle(id);break;
     case 'ropen':{const was=$('#reader').classList.contains('open');closeReelsVisual();if(was){st.ignorePop=1;history.back()}else st.skipPush=1;openArticle(id);break}
     case 'reel':openReels(id,v);break;
-    case 'rtap':{const sl=el.closest('.r-slide'),pl=sl.dataset.ps==='1',pp=sl.querySelector('.r-pp');rCmd(sl,pl?'pauseVideo':'playVideo');pp.textContent=pl?'⏸':'▶';pp.classList.add('show');setTimeout(()=>pp.classList.remove('show'),600);break}
-    case 'rmute':{st.muted=!st.muted;rIframes().forEach(f=>rCmd(f.closest('.r-slide'),st.muted?'mute':'unMute'));$$('[data-a=rmute]').forEach(b=>b.innerHTML=st.muted?IC.mu:IC.un);break}
+    case 'rtap':{
+      const sl=el.closest('.r-slide');if(!sl)break;
+      const ps=sl.dataset.ps;
+      if(!ps)break;
+      const pp=sl.querySelector('.r-pp');
+      if(ps==='1'){rCmd(sl,'pauseVideo');pp.textContent='⏸';}
+      else{rPlay(sl);pp.textContent='▶';}
+      pp.classList.add('show');
+      clearTimeout(sl._ppt);
+      sl._ppt=setTimeout(()=>pp.classList.remove('show'),700);
+      break;
+    }
+    case 'rmute':{
+      st.muted=!st.muted;
+      rIframes().forEach(f=>{const s=f.closest('.r-slide');rCmd(s,st.muted?'mute':'unMute')});
+      $$('[data-a=rmute]').forEach(b=>b.innerHTML=st.muted?IC.mu:IC.un);
+      const hint=$('#rScroll .r-hint');if(hint&&!st.muted)hint.classList.remove('show');
+      break;
+    }
     case 'bm':toggleBm(id);break;
     case 'share':share(id);break;
     case 'speakc':speak(id,el);break;
