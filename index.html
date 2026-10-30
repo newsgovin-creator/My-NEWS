@@ -136,6 +136,10 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .body{flex:1;overflow-y:auto;padding:16px 16px 120px;background:var(--card)}
 .body h1{font-size:calc(var(--fs) + 5px);line-height:1.4;margin:8px 0}
 .body p{font-size:var(--fs);line-height:1.85;white-space:pre-line}
+
+/* SUB-HEADLINE CSS (INSIDE ARTICLE) */
+.in-sub { font-size: 1.25em; font-weight: 800; margin: 20px 0 8px; line-height: 1.4; border-bottom: 2px solid var(--line); padding-bottom: 4px; }
+
 .meta{font-size:12.5px;color:var(--mute)}
 .search{flex:1;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:22px;padding:10px 16px;font:inherit;font-size:15px;min-height:44px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px}
@@ -321,6 +325,12 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
          <input id="aBotT" placeholder="काली लाइन (उदा: प्रिंसिपल ने हत्या की)" style="flex:2; border-left:4px solid #1c1917">
        </div>
      </div>
+     
+     <!-- INNER SUB-HEADLINE COLOR PICKER (NEW) -->
+     <span class="meta" style="color:var(--accent);font-weight:bold">खबर के अंदर की सब-हेडलाइन का रंग (Blogger से आने वाली हेडिंग)</span>
+     <div class="cg" style="margin-bottom:12px;">
+       <input type="color" id="aSubC" value="#c2410c" style="width:100%;height:35px;border-radius:4px;">
+     </div>
 
      <input id="aLoc" placeholder="ज़िला / इलाका" value="कानपुर देहात">
      <input id="aImg" placeholder="फोटो लिंक (Blogger की फोटो का)">
@@ -415,13 +425,15 @@ async function fetchLive(q){
 }
 function norm(o){const s=(x,n)=>String(x==null?'':x).slice(0,n);
   return {type:['hero','compact','fc','3line'].includes(o.type)?o.type:'compact',cat:s(o.cat,20),badge:s(o.badge,20),bg:col(o.bg,'#dc2626'),bt:col(o.bt,'#ffffff'),kick:s(o.kick,80),kc:col(o.kc,''),head:s(o.head,300),hc:col(o.hc,''),
-  topT:s(o.topT,100),brY:s(o.brY,100),brW:s(o.brW,100),botBox:s(o.botBox,100),botT:s(o.botT,200),
+  topT:s(o.topT,100),brY:s(o.brY,100),brW:s(o.brW,100),botBox:s(o.botBox,100),botT:s(o.botT,200), subColor:col(o.subColor,''),
   loc:s(o.loc,40)||'उत्तरप्रदेश',img:safeUrl(o.img),vid:safeUrl(o.vid),dur:s(o.dur,8),full:s(o.full,20000),ver:o.ver==='v'?'v':'u',vsrc:(Array.isArray(o.vsrc)?o.vsrc:[]).map(safeUrl).filter(Boolean).slice(0,5),vnote:s(o.vnote,120),claim:s(o.claim,400),verdict:FV[o.verdict]?o.verdict:'',how:s(o.how,2000),src:'हमारी खबर',own:1}}
 const T=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r([]),ms))]);
 const onlyBlog=()=>st.cfg.only!==false&&!!st.cfg.blog;
 const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
 const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
 const yt=(id,pid)=>'<div class="yt" data-a="reel" data-v="'+id+'" '+(pid?'data-id="'+esc(pid)+'"':'')+' role="button" aria-label="वीडियो चलाएँ"><img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" loading="lazy" alt=""><span class="play">▶</span></div>';
+
+/* NEW BLOGGER HEADING PARSER (H1-H6 Catching) */
 const INL=/^(B|I|U|STRONG|EM|A|SPAN|FONT|SMALL|MARK)$/;
 function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/\s+/g,' ').trim();if(t)out.push({t:'p',x:t});buf=''};
   const walk=n=>{for(const c of n.childNodes){
@@ -430,15 +442,18 @@ function blocks(doc){const out=[];let buf='';const fl=()=>{const t=buf.replace(/
     if(tg==='BR'){fl();continue}
     if(tg==='IMG'){fl();const u=safeUrl(c.getAttribute('src'));if(u)out.push({t:'i',u});continue}
     if(tg==='IFRAME'){fl();const id=ytid(c.getAttribute('src'));if(id)out.push({t:'v',id});continue}
+    /* Catch H2, H3, etc. as sub-headlines */
+    if(/^H[1-6]$/.test(tg)){fl();const txt=c.textContent.replace(/\s+/g,' ').trim();if(txt)out.push({t:'h',x:txt});continue}
     if(tg==='SCRIPT'||tg==='STYLE')continue;
     if(INL.test(tg)&&!c.querySelector('img,iframe')){buf+=c.textContent;continue}
     fl();walk(c);fl()}};
   walk(doc.body);fl();return out.slice(0,60)}
 
-function renderBlocks(bl, heroImg, heroVid, pid){
+function renderBlocks(bl, heroImg, heroVid, pid, subColor){
   let imDone=false, vdDone=false;
   return bl.map(b=>{
     if(b.t==='p') return '<p>'+esc(b.x)+'</p>';
+    if(b.t==='h') return '<h3 class="in-sub" style="color:'+col(subColor,'var(--accent)')+'">'+esc(b.x)+'</h3>';
     if(b.t==='i'){
       if(!imDone && heroImg && b.u===heroImg){ imDone=true; return ''; }
       if(heroVid && b.u && b.u.includes(heroVid)) return '';
@@ -451,7 +466,8 @@ function renderBlocks(bl, heroImg, heroVid, pid){
     return '';
   }).join('');
 }
-function bodyHTML(it){return it.blocks&&it.blocks.length?renderBlocks(it.blocks,it.img,ytid(it.vid),it.id):'<p>'+esc(it.full||it.head)+'</p>'}
+function bodyHTML(it){return it.blocks&&it.blocks.length?renderBlocks(it.blocks,it.img,ytid(it.vid),it.id,it.subColor):'<p>'+esc(it.full||it.head)+'</p>'}
+
 function relHTML(it){
   const w=x=>new Set((x||'').split(/[\s,.:;|\-–()'"!?।]+/).filter(y=>y.length>3)),tw=w(it.kick+' '+it.head),tl=new Set(it.labels||[]);
   const sc=Object.values(st.byId).filter(o=>o.id!==it.id&&(!onlyBlog()||o.own)&&!o.hide).map(o=>{let n=0;(o.labels||[]).forEach(l=>{if(tl.has(l))n+=3});if(o.loc&&o.loc===it.loc)n+=2;w(o.kick+' '+o.head).forEach(x=>{if(tw.has(x))n++});return [n,o]})
@@ -756,7 +772,7 @@ function ovClean(v){const s=(x,n)=>String(x==null?'':x).slice(0,n),o={};
   if('ver' in v)o.ver=v.ver==='v'?'v':'u';
   ['vnote','head','kick','badge','loc','claim','topT','brY','brW','botBox','botT'].forEach(k=>{if(v[k]!=null)o[k]=s(v[k],300)});
   ['how','full'].forEach(k=>{if(v[k]!=null)o[k]=s(v[k],20000)});
-  ['kc','hc','bg','bt'].forEach(k=>{if(v[k]!=null)o[k]=col(v[k],'')});
+  ['kc','hc','bg','bt','subColor'].forEach(k=>{if(v[k]!=null)o[k]=col(v[k],'')});
   ['img','vid'].forEach(k=>{if(v[k]!=null)o[k]=safeUrl(v[k])});
   if(v.dur!=null)o.dur=s(v.dur,8);if(v.cat!=null)o.cat=s(v.cat,20);
   if(v.type!=null)o.type=['hero','compact','fc','3line'].includes(v.type)?v.type:'compact';
@@ -819,14 +835,15 @@ async function renderList(){
 async function delPost(id){if(!confirm('यह खबर सबके ऐप से हटाएँ?'))return;
   try{await fbWrite('/pub/custom/'+id);delete st.rem.custom[id];delete st.byId[id];S.set('rem',st.rem);st.bc=null;toast('हटा दी');renderList();dirty()}catch(e){toast('नहीं हट पाई: '+e.message)}}
 
-const FLDS=['type','cat','badge','bg','bt','kick','kc','head','hc','loc','img','vid','dur','full','ver','vnote','claim','verdict','how', 'topT', 'brY', 'brW', 'botBox', 'botT'];
+const FLDS=['type','cat','badge','bg','bt','kick','kc','head','hc','loc','img','vid','dur','full','ver','vnote','claim','verdict','how', 'topT', 'brY', 'brW', 'botBox', 'botT', 'subColor'];
 function readPost(){
   return {type:V('aType'),cat:V('aCat'),
     topT:V('aTopT'), brY:V('aBrY'), brW:V('aBrW'), botBox:V('aBotBox'), botT:V('aBotT'),
-    badge:V('aBadge'),bg:V('aBg'),bt:V('aBt'),kick:V('aKick'),kc:dv(V('aKc'),'#c2410c'),head:V('aTitle'),hc:dv(V('aHc'),'#111827'),loc:V('aLoc')||'उत्तरप्रदेश',img:safeUrl(V('aImg')),vid:safeUrl(V('aVid')),dur:V('aDur'),full:V('aFull'),ver:V('aVer'),vnote:V('aVnote'),claim:V('aClaim'),verdict:V('aVerdict'),how:V('aHow')}
+    badge:V('aBadge'),bg:V('aBg'),bt:V('aBt'),kick:V('aKick'),kc:dv(V('aKc'),'#c2410c'),head:V('aTitle'),hc:dv(V('aHc'),'#111827'), subColor:dv(V('aSubC'),'#c2410c'),
+    loc:V('aLoc')||'उत्तरप्रदेश',img:safeUrl(V('aImg')),vid:safeUrl(V('aVid')),dur:V('aDur'),full:V('aFull'),ver:V('aVer'),vnote:V('aVnote'),claim:V('aClaim'),verdict:V('aVerdict'),how:V('aHow')}
 }
 function clearForm(){st.editId=st.editOv=null;['aBadge','aKick','aTitle','aImg','aVid','aDur','aFull','aVnote','aClaim','aHow','aTopT','aBrY','aBrW','aBotBox','aBotT'].forEach(i=>$('#'+i).value='');
-  $('#aVer').value='u';$('#aVerdict').value='';$('#aBg').value='#dc2626';$('#aBt').value='#ffffff';$('#aKc').value='#c2410c';$('#aHc').value='#111827';
+  $('#aVer').value='u';$('#aVerdict').value='';$('#aBg').value='#dc2626';$('#aBt').value='#ffffff';$('#aKc').value='#c2410c';$('#aHc').value='#111827'; $('#aSubC').value='#c2410c';
   $('#aPubBtn').textContent='🚀 पब्लिश करें (सबके ऐप में)';$('#aNote').style.display='none';fcToggle()}
 async function adminPost(){
   const o=readPost();
@@ -850,7 +867,7 @@ async function adminPost(){
 }
 function editPost(id){const o=st.byId[id];if(!o)return;const cu=!!st.rem.custom[id];st.editId=cu?id:null;st.editOv=cu?null:id;
   const m={aType:['hero','compact','fc','3line'].includes(o.type)?o.type:'compact',aCat:o.cat||'',aBadge:o.badge,aBg:col(o.bg,'#dc2626'),aBt:col(o.bt,'#ffffff'),aKick:o.kick,aKc:col(o.kc,'#c2410c'),aTitle:o.head,aHc:col(o.hc,'#111827'),
-    aTopT:o.topT, aBrY:o.brY, aBrW:o.brW, aBotBox:o.botBox, aBotT:o.botT,
+    aTopT:o.topT, aBrY:o.brY, aBrW:o.brW, aBotBox:o.botBox, aBotT:o.botT, aSubC:col(o.subColor,'#c2410c'),
     aLoc:o.loc,aImg:o.img,aVid:o.vid,aDur:o.dur,aFull:o.full,aVer:verOf(o),aVnote:o.vnote,aClaim:o.claim,aVerdict:o.verdict,aHow:o.how};
   atab('aPost');for(const k in m)$('#'+k).value=m[k]||'';fcToggle();
   $('#aPubBtn').textContent=cu?'💾 बदलाव सेव करें':'💾 दिखावट के बदलाव सेव करें';$('#aNote').style.display=cu?'none':'block'}
