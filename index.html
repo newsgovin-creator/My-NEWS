@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -139,7 +138,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .body h1{font-size:calc(var(--fs) + 5px);line-height:1.4;margin:8px 0}
 .body p{font-size:var(--fs);line-height:1.85;white-space:pre-line}
 
-/* SUB-HEADLINE CSS (INSIDE ARTICLE) */
+/* SUB-HEADLINE CSS */
 .in-sub { font-size: 1.25em; font-weight: 800; margin: 20px 0 8px; line-height: 1.4; border-bottom: 2px solid var(--line); padding-bottom: 4px; }
 
 .meta{font-size:12.5px;color:var(--mute)}
@@ -203,7 +202,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .r-bot h3{margin:6px 0 10px;font-size:16px;line-height:1.4;text-shadow:0 2px 5px #000}
 .r-open{pointer-events:auto;background:var(--accent);color:#fff;border:0;padding:7px 14px;border-radius:18px;font-size:12px;font-weight:800}
 
-/* 3-LINE POSTER HEADLINE (BRUSH CSS) */
+/* 3-LINE POSTER HEADLINE */
 .card.line3 { text-align: center; background: transparent; padding: 0; border: 0; margin-bottom: 12px; cursor: pointer; }
 .l3-top { color: #b91c1c; font-size: 22px; font-weight: 800; margin-bottom: 4px; line-height: 1.2; }
 .l3-brush {
@@ -251,7 +250,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
       </div>
     </div>
     <div class="ticker" id="ticker" hidden><span id="tickTxt"></span></div>
-    <!-- MAIN NAVIGATION TABS -->
     <div class="cats" id="cats" role="tablist"></div>
     <div class="trend" id="trend"></div>
   </div>
@@ -273,7 +271,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
       <span>सेव</span>
     </button>
     <button class="nt" role="tab" aria-selected="false" data-tab="settings">
-      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       <span>सेटिंग</span>
     </button>
   </nav>
@@ -294,7 +292,6 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
       <input type="text" id="dSearch" placeholder="ज़िला खोजें..." class="search" style="width:100%; border-radius:12px; margin:0">
     </div>
     <div class="body" style="padding-top:16px;">
-      <!-- ALL DISTRICTS BUTTON -->
       <button class="btn" data-a="pickDist" data-v="उत्तर प्रदेश" style="width:100%; margin-top:0; margin-bottom:16px; background:var(--ink); color:#fff;">🌐 सभी ज़िले (उत्तर प्रदेश)</button>
       <div id="distList"></div>
     </div>
@@ -371,7 +368,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
      <h4>कैटेगरी जोड़ें / बदलें</h4>
      <input id="cName" placeholder="नाम (इमोजी भी लगा सकते हैं)">
      <input id="cQ" placeholder="खोज शब्द (Google News मोड के लिए)">
-     <input id="cLab" placeholder="Blogger लेबल (खाली = नाम वही लेबल)">
+     <input id="cLab" placeholder="Blogger लेबल (साफ़ शब्द, जैसे: Election)">
      <select id="cMode"><option value="both">लाइव + मेरी खबर</option><option value="live">सिर्फ़ लाइव खबर</option><option value="own">सिर्फ़ मेरी खबर</option></select>
      <button class="btn" id="cBtn" data-a="cadd" style="width:100%">➕ कैटेगरी जोड़ें</button>
      <h4>सभी कैटेगरी</h4><div id="acList"></div>
@@ -406,18 +403,18 @@ const hash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i)
 /* 75 DISTRICTS LIST */
 const UP_DISTS = ["आगरा","अलीगढ़","प्रयागराज","अंबेडकर नगर","अमेठी","अमरोहा","औरैया","अयोध्या","आज़मगढ़","बागपत","बहराइच","बलिया","बलरामपुर","बांदा","बाराबंकी","बरेली","बस्ती","भदोही","बिजनौर","बदायूं","बुलंदशहर","चंदौली","चित्रकूट","देवरिया","एटा","इटावा","फ़र्रूख़ाबाद","फ़तेहपुर","फ़िरोज़ाबाद","गौतम बुद्ध नगर","गाज़ियाबाद","ग़ाज़ीपुर","गोंडा","गोरखपुर","हमीरपुर","हापुड़","हरदोई","हाथरस","जालौन","जौनपुर","झांसी","कन्नौज","कानपुर देहात","कानपुर नगर","कासगंज","कौशाम्बी","कुशीनगर","लखीमपुर खीरी","ललितपुर","लखनऊ","महाराजगंज","महोबा","मैनपुरी","मथुरा","मऊ","मेरठ","मिर्ज़ापुर","मुरादाबाद","मुज़फ़्फ़रनगर","पीलीभीत","प्रतापगढ़","रायबरेली","रामपुर","सहारनपुर","सम्भल","संत कबीर नगर","शाहजहांपुर","शामली","श्रावस्ती","सिद्धार्थनगर","सीतापुर","सोनभद्र","सुल्तानपुर","उन्नाव","वाराणसी"];
 
-/* DYNAMIC CATEGORY LOGIC (TOP NEWS + SAVED DISTRICT) */
+/* DYNAMIC CATEGORY & PERMANENT LABELS MAPPING (FIX #2) */
 let savedDist = S.get('myDist', 'कानपुर देहात');
 const DEFCATS=[
-  ['टॉप न्यूज़','यूपी बड़ी खबरें'], 
-  [savedDist, savedDist], 
-  ['उत्तरप्रदेश','उत्तर प्रदेश समाचार'],
-  ['देश','भारत देश समाचार'],
-  ['क्रिकेट','क्रिकेट समाचार'],
-  ['मनोरंजन','मनोरंजन बॉलीवुड समाचार'],
-  ['बिजनेस','बिजनेस समाचार भारत'],
-  ['रोजगार','रोजगार सरकारी नौकरी समाचार']
-].map((a,i)=>({id:'c'+i,n:a[0],q:a[1],mode:'both',label:''}));
+  ['टॉप न्यूज़','यूपी बड़ी खबरें',''], 
+  [savedDist, savedDist, savedDist], 
+  ['उत्तरप्रदेश','उत्तर प्रदेश समाचार','उत्तरप्रदेश'],
+  ['देश','भारत देश समाचार','देश'],
+  ['क्रिकेट','क्रिकेट समाचार','क्रिकेट'],
+  ['मनोरंजन','मनोरंजन बॉलीवुड समाचार','मनोरंजन'],
+  ['बिजनेस','बिजनेस समाचार भारत','बिजनेस'],
+  ['रोजगार','रोजगार सरकारी नौकरी समाचार','रोजगार']
+].map((a,i)=>({id:'c'+i,n:a[0],q:a[1],mode:'both',label:a[2]||''}));
 
 const st={tab:'home',cat:0,items:[],byId:{},bm:S.get('bm',{})||{},local:S.get('local',[])||[],
   cfg:S.get('cfg',{blog:'',pin:''})||{blog:''},prefs:S.get('prefs',{fs:16,theme:'auto'})||{fs:16,theme:'auto'},recent:S.get('recent',[])||[],
@@ -429,9 +426,8 @@ st.cats = S.get('cats', null);
 if(!Array.isArray(st.cats)||!st.cats.length){
   st.cats = JSON.parse(JSON.stringify(DEFCATS));
 } else {
-  // Ensure District Tab is updated with local storage even if loaded from save
   let distCat = st.cats.find(c => c.id === 'c1');
-  if(distCat) { distCat.n = savedDist; distCat.q = savedDist; }
+  if(distCat) { distCat.n = savedDist; distCat.q = savedDist; distCat.label = savedDist; }
 }
 
 if(!S.get('fcAdded',0)){
@@ -524,7 +520,7 @@ function relHTML(it){
   return sc.length?'<div class="hl2"></div><h4 style="margin:6px 0">📌 यह भी पढ़ें</h4>'+sc.map(a=>'<div class="rel" data-a="open" data-id="'+esc(a[1].id)+'" tabindex="0">'+(a[1].type==='3line'?esc(a[1].head):titleHTML(a[1]))+'<div class="src">'+esc(a[1].src)+(a[1].date?' • '+ago(a[1].date):'')+'</div></div>').join(''):''}
 function searchPool(q){const ws=q.toLowerCase().split(/\s+/).filter(Boolean);return Object.values(st.byId).filter(o=>o.own&&!o.hide).filter(o=>{const t=(o.kick+' '+o.head+' '+o.full+' '+(o.labels||[]).join(' ')+' '+o.loc).toLowerCase();return ws.every(x=>t.includes(x))})}
 
-// PAGINATION UPDATE: max-results=25
+// PAGINATION UPDATE: max-results=15
 function getBlog(label,start){const k=(label||'')+'|'+(start||1),c=st.bc&&st.bc[k];if(c&&Date.now()-c.t<6e4)return Promise.resolve(c.items);st.berr=0;return fetchBlog(st.cfg.blog,label,start).then(i=>{if(i.length){st.bc=st.bc||{};st.bc[k]={t:Date.now(),items:i}}return i})}
 function fetchBlog(url,label,start,max){
   return new Promise(res=>{
@@ -542,14 +538,15 @@ function fetchBlog(url,label,start,max){
       if(!o){const p=parseTitle(t);o={kick:p.kick,head:p.head,loc:labels[1]||labels[0]||'उत्तरप्रदेश',src:'हमारी खबर',own:1,ver:'u'}}
       if(!o.img)o.img=im?safeUrl(im.u):'';if(!o.vid&&vd)o.vid='https://youtu.be/'+vd.id;if(!o.full)o.full=txt;
       o.blocks=bl;{const lk=(e.link||[]).find(x=>x.rel==='alternate');o.link=lk?safeUrl(lk.href):''}o.labels=labels;o.date=e.published?e.published.$t:'';o.id=hash('b'+(e.id?e.id.$t:t));return mk(o)}));
-    // LOAD ONLY 25 ITEMS AT A TIME
+    
     sc.src=u+'/feeds/posts/default'+(label?'/-/'+encodeURIComponent(label):'')+'?alt=json-in-script&max-results='+(max||15)+(start?'&start-index='+start:'')+'&callback='+cb;
     sc.onerror=()=>{st.berr=1;done([])};document.body.appendChild(sc);setTimeout(()=>{if(window[cb]){st.berr=1;done([])}},12000);
   });
 }
-const lbl=c=>c.label||c.n.replace(/^[^\u0900-\u097F\w]+/,'');
 
-/* TOP NEWS (Index 0) WILL SHOW EVERYTHING */
+/* STRICT CATEGORY LABEL MAPPING (FIX #2) */
+const lbl=c=>c.label?c.label:c.n.replace(/[^\w\s\u0900-\u097F-]/g,'').trim();
+
 function inCat(i,c){
   if(c===CATS[0]) return true;
   if(i.cat&&st.cats.some(x=>x.id===i.cat))return i.cat===c.id;
@@ -560,36 +557,58 @@ function inCat(i,c){
   return c===CATS[0];
 }
 
+/* SILENT FALLBACK & ZERO POSTS FIX (FIX #1) */
 async function load(q,force){try{await load0(q,force)}catch(e){$('#list').innerHTML='<div class="empty"><b>कुछ गड़बड़ हुई</b><small class="meta">'+esc(String(e&&e.message||e))+'</small><br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>'}}
 async function load0(q,force){
   const my=++st.reqId;if(force)st.bc=null;
   const key='cache_'+hash(q);
   const cached=S.get(key,null);
   if(cached&&cached.items&&!force){show(cached.items)}else showSkel();
-  let items=[],failed=false;
-  const slowT=(cached&&cached.items&&!force)?setTimeout(()=>{if(my===st.reqId)toast('नेट धीमा है, नई खबरें आ रही हैं…')},3000):0;
+  let items=[],failed=false,errType='';
+  const slowT=(cached&&cached.items&&!force)?setTimeout(()=>{if(my===st.reqId)toast('नेट धीमा है, नई खबरें खोज रहे हैं…')},3000):0;
   try{
     const c=st.tab==='home'?CATS[st.cat]:null,mode=c?(onlyBlog()&&c.mode==='live'?'both':c.mode):'both';
     const [own,live]=await Promise.all([st.cfg.blog&&mode!=='live'?T(getBlog(c&&c!==CATS[0]?lbl(c):''),14000):[],mode==='own'||onlyBlog()?[]:T(fetchLive(q).catch(()=>[]),12000)]);
-    st.dbg=(st.cfg.blog||'-').replace(/^https?:\/\//,'')+' • मिली पोस्ट: '+own.length+(st.berr?' • फ़ीड नहीं खुली':'');
+    
     items=[...[...st.local,...customList(),...own].filter(i=>!c||inCat(i,c)).map(mk),...live];
     items=items.filter(i=>!i.hide).sort((a,b)=>(b.pin?1:0)-(a.pin?1:0));
-    {const sn=new Set();items=items.filter(i=>sn.has(i.id)?false:(sn.add(i.id),true))} // DUPLICATE CHECK
-    if(!items.length&&((cached&&cached.items&&cached.items.length)||$('#list .card')))throw new Error('empty'); // NEVER REPLACE GOOD NEWS WITH EMPTY
-    st.more=onlyBlog()&&own.length>=15; // 15 Logic Update
+    {const sn=new Set();items=items.filter(i=>sn.has(i.id)?false:(sn.add(i.id),true))} 
+    
+    // Check if truly zero posts exist
+    if(!items.length){
+       if(st.berr) throw new Error('net');
+       else throw new Error('empty_cat');
+    }
+
+    st.more=onlyBlog()&&own.length>=15; 
     st.pg=1;
     $('#off').style.display='none';
-    if(items.length)S.set(key,{t:Date.now(),items:items.slice(0,15)}); // Cache only top 15
-  }catch(e){failed=true;}
+    if(items.length)S.set(key,{t:Date.now(),items:items.slice(0,15)}); 
+  }catch(e){failed=true; errType=e.message;}
   clearTimeout(slowT);
   if(my!==st.reqId)return;
+  
   if(failed){
-    if(force&&$('#list .card')){$('#off').style.display=navigator.onLine?'none':'block';toast('नेट धीमा है, पुरानी खबरें ही दिख रही हैं');return}
     $('#off').style.display=navigator.onLine?'none':'block';
-    if(cached&&cached.items){cached.items.forEach(i=>st.byId[i.id]=i);show(cached.items);toast('ताज़ा खबरें नहीं मिलीं, सेव की हुई दिखा रहे हैं');return}
-    $('#list').innerHTML='<div class="empty"><b>खबरें नहीं आ पाईं</b>इंटरनेट जाँचें और फिर कोशिश करें।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return;
+    
+    // CLEAN 0 POSTS MESSAGE (No URL, No Error Code)
+    if(errType === 'empty_cat') {
+       $('#list').innerHTML='<div class="empty"><b>कोई खबर नहीं मिली</b><br>इस कैटेगरी में अभी तक कोई पोस्ट उपलब्ध नहीं है।</div>';
+       return;
+    }
+
+    // SILENT CACHE FALLBACK (No URL shown)
+    if(cached&&cached.items&&cached.items.length){
+        cached.items.forEach(i=>st.byId[i.id]=i);
+        show(cached.items);
+        if(force) toast('नेट धीमा है, पुरानी सेव्ड खबरें दिखा रहे हैं');
+        return;
+    }
+    
+    // IF COMPLETELY OFFLINE AND NO CACHE
+    $('#list').innerHTML='<div class="empty"><b>खबरें लोड नहीं हो पाईं</b><br>अपना इंटरनेट चेक करें और दोबारा कोशिश करें।<br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';
+    return;
   }
-  if(onlyBlog()&&st.berr&&!items.length&&!(cached&&cached.items)){$('#list').innerHTML='<div class="empty"><b>खबरें नहीं आ पाईं</b>इंटरनेट जाँचें और फिर कोशिश करें।<br><small class="meta">'+esc(st.dbg||'')+'</small><br><button class="btn" data-a="retry">फिर कोशिश करें</button></div>';return}
   show(items);
   if(st.deep){const d=st.deep;st.deep=null;if(st.byId[d])openArticle(d)}
 }
@@ -638,7 +657,11 @@ function card(it,hero){
 }
 function show(items,into){
   const box=into||$('#list');
-  if(!items||!items.length){box.innerHTML='<div class="empty"><b>कुछ नहीं मिला</b>कोई दूसरी कैटेगरी या शब्द आज़माएँ।<br><small class="meta">'+esc(st.dbg||'')+'</small></div>';return}
+  if(!items||!items.length){
+    // Clean Empty Fallback
+    box.innerHTML='<div class="empty"><b>कुछ नहीं मिला</b><br>कोई दूसरी कैटेगरी या शब्द आज़माएँ।</div>';
+    return;
+  }
   st.items=into?st.items:items;
   box.innerHTML=items.map((it,i)=>card(it,it.type==='hero'||(i===0&&!it.type&&!into))).join('')+(!into&&st.more?MORE:'');
   if(!into){
@@ -717,7 +740,7 @@ function ago(d){
   const m=(Date.now()-new Date(d))/6e4;if(isNaN(m))return '';
   if(m<60)return Math.max(1,Math.round(m))+' मिनट पहले';
   if(m<1440)return Math.round(m/60)+' घंटे पहले';
-  return Math.round(m/1440)+' दिन पहले';
+  return Math.round(m/1440)+' दिन আগে';
 }
 
 function openArticle(id){
@@ -873,7 +896,7 @@ function applyRemote(r){
   
   let sd = S.get('myDist', 'कानपुर देहात');
   let distCat = st.cats.find(x => x.id === 'c1');
-  if(distCat) { distCat.n = sd; distCat.q = sd; }
+  if(distCat) { distCat.n = sd; distCat.q = sd; distCat.label = sd; }
   
   if(c.trend){const tr=Object.values(c.trend).map(String).filter(Boolean);if(tr.length)st.trend=tr}
   st.cfg.tick=c.tick||'';st.cfg.blog=c.blog&&/^https?:\/\//.test(c.blog)?c.blog:BLOG;st.cfg.only=c.only!==false;
@@ -968,7 +991,7 @@ function renderAC(){$('#acList').innerHTML=st.cats.map((c,i)=>'<div class="crow"
   +cbtn('cmv',i,-1,'↑')+cbtn('cmv',i,1,'↓')+cbtn('chide',i,0,c.hide?'🙈':'👁')+cbtn('cedit',i,0,'✏️')+cbtn('cdel',i,0,'🗑')+'</div>').join('')}
 function catSave(){
   const n=V('cName');if(!n){toast('नाम लिखें');return}
-  const o={n,q:V('cQ')||n+' समाचार',label:V('cLab'),mode:V('cMode')};
+  const o={n,q:V('cQ')||n+' समाचार',label:V('cLab')||n.replace(/[^\w\s\u0900-\u097F-]/g,'').trim(),mode:V('cMode')};
   if(st.ec!=null){Object.assign(st.cats[st.ec],o);st.ec=null}else st.cats.push(Object.assign({id:'c'+Date.now().toString(36)},o));
   ['cName','cQ','cLab'].forEach(i=>$('#'+i).value='');$('#cBtn').textContent='➕ कैटेगरी जोड़ें';saveCats();
 }
@@ -979,7 +1002,6 @@ function catDel(i){if(st.cats.length<2){toast('आख़िरी कैटे�
 function saveSet(){const b=V('aBlog');st.cfg.blog=/^https?:\/\//.test(b)?b.replace(/\/$/,''):BLOG;st.cfg.only=V('aMode')!=='mix';st.cfg.tick=V('aTick');
   st.trend=V('aTrend').split(',').map(x=>x.trim()).filter(Boolean);S.set('trend',st.trend);renderTrend();st.bc=null;dirty();pushConfig()}
   
-// AUTO-SCROLL + DUPLICATE CHECKER
 let moreBusy=false,moreObs=null;
 function watchMore(){
   if(moreObs)moreObs.disconnect();
@@ -1030,7 +1052,7 @@ document.addEventListener('click',e=>{
       let distName = (v === 'उत्तर प्रदेश') ? 'उत्तर प्रदेश' : v;
       S.set('myDist', distName);
       let distCat = st.cats.find(c => c.id === 'c1');
-      if(distCat) { distCat.n = distName; distCat.q = distName; }
+      if(distCat) { distCat.n = distName; distCat.q = distName; distCat.label = distName; }
       syncCats();
       st.cat = 1;
       renderCats();
@@ -1068,8 +1090,6 @@ function renderCats(){
   const a=$('.cat[aria-selected=true]');a&&a.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
 }
 
-/* 2 MINUTE AUTO-REFRESH LOGIC (120000ms = 2 mins) */
-// SMART REFRESH: every 2 min check only the 3 newest posts, no page reload, no scroll jump
 let newPend=[];
 function hideNew(){const b=$('#newBar');if(b)b.style.display='none'}
 async function checkNew(){
@@ -1093,7 +1113,6 @@ setInterval(checkNew,120000);
 
 try{if(st.cfg.blog){const l=document.createElement('link');l.rel='preconnect';l.href=new URL(/^https?:/.test(st.cfg.blog)?st.cfg.blog:'https://'+st.cfg.blog).origin;document.head.appendChild(l)}}catch(e){}
 
-// REGISTER SERVICE WORKER
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 const dm=/#a=([\w-]+)/.exec(location.hash);if(dm)st.deep=dm[1];
