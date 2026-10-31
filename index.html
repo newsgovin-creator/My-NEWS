@@ -482,6 +482,8 @@ const T=(p,ms)=>Promise.race([p,new Promise(r=>setTimeout(()=>r([]),ms))]);
 const onlyBlog=()=>st.cfg.only!==false&&!!st.cfg.blog;
 const ytid=u=>{const m=/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(u||'');return m?m[1]:''};
 const bimg=(u,w)=>/googleusercontent\.com|bp\.blogspot\.com|ggpht\.com/.test(u||'')?u.replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-z]+)*\//,'/w'+w+'/'):u;
+const imgKey=u=>String(u||'').split('?')[0].replace(/\/(?:s\d+|w\d+(?:-h\d+)?)(?:-[a-zA-Z0-9]+)*\//,'/').replace(/=[sw]\d+[^/]*$/,'');
+function imgFail(i){const p=i.parentNode;if(p&&!p.querySelector('.play'))p.style.display='none';i.remove()}
 const yt=(id,pid)=>'<div class="yt" data-a="reel" data-v="'+id+'" '+(pid?'data-id="'+esc(pid)+'"':'')+' role="button" aria-label="वीडियो चलाएँ"><img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" loading="lazy" alt=""><span class="play">▶</span></div>';
 
 /* SMART BLOGGER FORMATTING PARSER */
@@ -492,7 +494,8 @@ function blocks(doc){
   const out=[];let buf='';
   const fl=()=>{
     const t=buf.replace(/\s+/g,' ').trim();
-    if(t)out.push({t:'p',x:t});
+    const vis=t.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,'').trim();
+    if(vis)out.push({t:'p',x:t});
     buf='';
   };
   const walk=n=>{
@@ -501,9 +504,9 @@ function blocks(doc){
       if(c.nodeType!==1)continue;
       const tg=c.tagName;
       if(tg==='BR'){fl();continue}
-      if(tg==='IMG'){fl();const u=safeUrl(c.getAttribute('src'));if(u)out.push({t:'i',u});continue}
+      if(tg==='IMG'){fl();const u=safeUrl(c.getAttribute('src'));if(u&&u.length>15)out.push({t:'i',u});continue}
       if(tg==='IFRAME'){fl();const id=ytid(c.getAttribute('src'));if(id)out.push({t:'v',id});continue}
-      if(/^H[1-6]$/.test(tg)){fl();const txt=c.innerHTML;if(txt.trim())out.push({t:'h',x:txt});continue}
+      if(/^H[1-6]$/.test(tg)){fl();if(c.textContent.replace(/\s/g,'')&&c.innerHTML.trim())out.push({t:'h',x:c.innerHTML});continue}
       if(/^(B|I|U|STRONG|EM|A|SPAN|FONT|SMALL|MARK)$/i.test(tg)){
         if(c.querySelector('img,iframe')){ walk(c); continue; } 
         buf+=c.outerHTML; 
@@ -516,14 +519,17 @@ function blocks(doc){
 }
 
 function renderBlocks(bl, heroImg, heroVid, pid, subColor){
-  let imDone=false, vdDone=false;
+  let vdDone=false; const seenImg=new Set(); const hk=heroImg?imgKey(heroImg):'';
   return bl.map(b=>{
     if(b.t==='p') return '<p class="in-p">'+b.x+'</p>';
     if(b.t==='h') return '<h3 class="in-sub" style="color:'+col(subColor,'var(--accent)')+'">'+b.x+'</h3>';
     if(b.t==='i'){
-      if(!imDone && heroImg && b.u===heroImg){ imDone=true; return ''; }
+      const k=imgKey(b.u);
+      if(hk && k===hk) return '';
       if(heroVid && b.u && b.u.includes(heroVid)) return '';
-      return '<img class="pim" src="'+esc(bimg(b.u,720))+'" loading="lazy" decoding="async" alt="" referrerpolicy="no-referrer" onerror="this.remove()">';
+      if(seenImg.has(k)) return '';
+      seenImg.add(k);
+      return '<img class="pim" src="'+esc(bimg(b.u,720))+'" loading="lazy" decoding="async" alt="" referrerpolicy="no-referrer" onload="if(this.naturalWidth<2)this.remove()" onerror="this.remove()">';
     }
     if(b.t==='v'){
       if(!vdDone && heroVid && b.id===heroVid){ vdDone=true; return ''; }
@@ -634,7 +640,7 @@ function showSkel(){
 function imgBox(it,cls){
   const id=ytid(it.vid),im=it.img||(id?'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg':'');
   const act=id?' data-a="reel" data-v="'+id+'" data-id="'+esc(it.id)+'"':' data-a="open" data-id="'+esc(it.id)+'"';
-  return '<div class="img '+cls+'"'+act+'>'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="'+esc(it.head)+'" referrerpolicy="no-referrer" onerror="this.remove()">':'📰')+(id?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
+  return '<div class="img '+cls+'"'+act+'>'+(im?'<img src="'+esc(bimg(im,cls==='thumb'?240:720))+'" loading="lazy" decoding="async" alt="'+esc(it.head)+'" referrerpolicy="no-referrer" onerror="imgFail(this)">':'📰')+(id?'<span class="play">▶</span>':'')+(it.dur?'<span class="dur">'+esc(it.dur)+'</span>':'')+'</div>';
 }
 const SV=(p,c)=>'<svg class="'+(c||'')+'" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
 const IC={bm:SV('<path d="M6 3.5h12v17.2l-6-4.6-6 4.6z"/>','bmk'),sh:SV('<line x1="22" y1="3" x2="9.2" y2="10.1"/><polygon points="11.7 20.3 22 3 2 3 9.2 10.1 11.7 20.3"/>'),sp:SV('<path d="M11 5 6.5 9H3v6h3.5L11 19z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8.5 8.5 0 0 1 0 11"/>')};
@@ -645,7 +651,7 @@ function titleHTML(it){
    +(it.kick?'<span class="kick"'+(it.kc?' style="color:'+col(it.kc,'#c2410c')+'"':'')+'>'+esc(it.kick)+'</span> ':'')
    +'<span'+(it.hc?' style="color:'+col(it.hc,'#111827')+'"':'')+'>'+esc(it.head)+'</span>';
 }
-function media(it){const id=ytid(it.vid);return id?yt(id,it.id):imgBox(it,'big')}
+function media(it){return imgBox(it,'big')}
 
 function card(it,hero){
   const saved=st.bm[it.id]?' on':'',more='<button class="more" data-a="open" data-id="'+it.id+'">पूरी खबर पढ़ें ›</button>';
