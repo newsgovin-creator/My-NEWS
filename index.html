@@ -691,7 +691,7 @@ function show(items,into){
 }
 
 /* 1G DATA-SAVER INSTAGRAM-STYLE REELS PLAYER (ZERO BLACK SCREEN) */
-let rObs=null;
+let rObs=null,rBg=null;
 function openReels(pid, vidId){
   stopSpeak();
   let vids=Object.values(st.byId).filter(o=>!o.hide&&ytid(o.vid));
@@ -707,7 +707,7 @@ function openReels(pid, vidId){
     const v=ytid(it.vid),sv=st.bm[it.id]?' on':'';
     return '<div class="r-slide" data-vid="'+v+'">'
       // THUMBNAIL BACKGROUND FOR ZERO BLACK SCREEN & 1G SPEED
-      +'<div class="r-vid" style="background-image:url(https://i.ytimg.com/vi/'+v+'/hqdefault.jpg)"></div>'
+      +'<div class="r-vid" data-bg="https://i.ytimg.com/vi/'+v+'/hqdefault.jpg"></div>'
       +'<div class="r-mask"></div>'
       +'<div class="r-acts">'
         +'<button class="r-ab'+sv+'" data-a="bm" data-id="'+esc(it.id)+'">🔖</button>'
@@ -725,7 +725,7 @@ function openReels(pid, vidId){
   $('#mainNav').style.opacity='0';$('#mainNav').style.pointerEvents='none';
   pushS();
   box.scrollTop=0;
-  if(rObs)rObs.disconnect();
+  if(rObs)rObs.disconnect();if(rBg)rBg.disconnect();
   
   if('IntersectionObserver' in window){
     // Smart Load/Unload Logic - 50% Threshold
@@ -738,12 +738,15 @@ function openReels(pid, vidId){
           }
         }else{
           // DATA & RAM SAVER: Instantly kills background video
-          vw.innerHTML=''; 
+          const fr=vw.querySelector('iframe');if(fr)fr.src='about:blank';vw.innerHTML='';
         }
       });
     },{root:box,threshold:0.5});
     $$('#rScroll .r-slide').forEach(el=>rObs.observe(el));
+    rBg=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){const w=en.target.querySelector('.r-vid');if(w&&w.dataset.bg){w.style.backgroundImage='url('+w.dataset.bg+')';delete w.dataset.bg}rBg.unobserve(en.target)}}),{root:box,rootMargin:'100% 0px 100% 0px'});
+    $$('#rScroll .r-slide').forEach(el=>rBg.observe(el));
   }else{
+    $$('#rScroll .r-vid').forEach(w=>{if(w.dataset.bg)w.style.backgroundImage='url('+w.dataset.bg+')'});
     const f=box.querySelector('.r-vid'),v=vids[0]&&ytid(vids[0].vid);
     if(f&&v)f.innerHTML='<iframe src="https://www.youtube.com/embed/'+encodeURIComponent(v)+'?autoplay=1&mute=0&controls=0&rel=0&playsinline=1" allow="autoplay;fullscreen"></iframe>';
   }
@@ -803,7 +806,8 @@ function openArticle(id){
 }
 function closeSheet(){
   if($('#reelBox').classList.contains('open')){
-    if(rObs)rObs.disconnect();
+    if(rObs)rObs.disconnect();if(rBg)rBg.disconnect();
+    $$('#rScroll iframe').forEach(f=>f.src='about:blank');
     $('#rScroll').innerHTML='';
     $('#reelBox').classList.remove('open');
   }else{
